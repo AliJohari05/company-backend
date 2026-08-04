@@ -1,0 +1,49 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.2.2 Chrome/134.0.6998.178 Electron/35.1.2 Safari/537.36" version="26.2.2">
+  <diagram name="Page-1" id="eMo8qp0screy-qMzYBwi">
+    <mxGraphModel dx="948" dy="662" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-1" value="CustomUser" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="90" width="160" height="350" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-2" value="&lt;font style=&quot;color: rgb(255, 128, 0);&quot;&gt;PK id&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(255, 128, 0);&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;email (Unique)&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/div&gt;&lt;div&gt;password&lt;br&gt;&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;&lt;div&gt;first_name&lt;br&gt;&lt;br&gt;last_name&lt;br&gt;&lt;br&gt;phone_number&lt;br&gt;&lt;br&gt;company_name&lt;br&gt;&lt;br&gt;role&lt;br&gt;&lt;br&gt;created_at&lt;br&gt;&lt;br&gt;updated_at&lt;/div&gt;&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="-ZgQybFlOyxAOQugWuOv-1">
+          <mxGeometry y="50" width="160" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-3" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="-ZgQybFlOyxAOQugWuOv-1" source="-ZgQybFlOyxAOQugWuOv-2" target="-ZgQybFlOyxAOQugWuOv-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-6" value="ServiceCategory&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="90" width="160" height="300" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-7" value="&lt;font style=&quot;color: rgb(255, 128, 0);&quot;&gt;PK id&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(255, 128, 0);&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;div&gt;title&lt;br/&gt;&lt;br/&gt;slug (Unique)&lt;br/&gt;&lt;br/&gt;description&lt;br/&gt;&lt;br/&gt;icon&lt;br/&gt;&lt;br/&gt;is_active&lt;br/&gt;&lt;br/&gt;created_at&lt;br/&gt;&lt;br/&gt;updated_at&lt;/div&gt;&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="-ZgQybFlOyxAOQugWuOv-6">
+          <mxGeometry y="50" width="160" height="250" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-8" value="Service&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="480" width="160" height="340" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-9" value="&lt;font style=&quot;color: rgb(255, 128, 0);&quot;&gt;PK id&amp;nbsp;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(255, 128, 0);&quot;&gt;&lt;br&gt;&lt;/font&gt;&lt;div&gt;&lt;font style=&quot;color: rgb(102, 0, 51);&quot;&gt;FK category_id&lt;br&gt;&lt;/font&gt;&lt;br&gt;title&lt;br&gt;&lt;br&gt;slug&lt;br&gt;&lt;br&gt;short_description&lt;br&gt;&lt;br&gt;full_description&lt;br&gt;&lt;br&gt;icon&lt;br&gt;&lt;br&gt;is_active&lt;br&gt;&lt;br&gt;created_at&lt;br&gt;&lt;br&gt;updated_at&lt;/div&gt;&lt;/div&gt;" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="-ZgQybFlOyxAOQugWuOv-8">
+          <mxGeometry y="50" width="160" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-10" value="ServicePlan&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="510" y="480" width="160" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-11" value="&lt;font style=&quot;color: rgb(255, 128, 0);&quot;&gt;PK id&lt;br&gt;&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;color: rgb(102, 0, 51);&quot;&gt;FK service_id&lt;br&gt;&lt;/font&gt;&lt;br&gt;title&lt;br&gt;&lt;br&gt;price&lt;br&gt;&lt;br&gt;features&lt;br&gt;&lt;br&gt;created_at&lt;br&gt;&lt;br&gt;updated_at" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="-ZgQybFlOyxAOQugWuOv-10">
+          <mxGeometry y="50" width="160" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-12" value="ProjectRequest&lt;div&gt;&lt;br/&gt;&lt;/div&gt;" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="190" y="900" width="160" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-13" value="&lt;font style=&quot;color: rgb(255, 128, 0);&quot;&gt;PK id&lt;br&gt;&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;color: rgb(102, 0, 51);&quot;&gt;FK user_id&lt;br&gt;&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;color: rgb(103, 171, 159);&quot;&gt;FK service_id&lt;br&gt;&lt;/font&gt;&lt;br&gt;title&lt;br&gt;&lt;br&gt;description&lt;br&gt;&lt;br&gt;budget&lt;br&gt;&lt;br&gt;status&lt;br&gt;&lt;br&gt;created_at&lt;br&gt;&lt;br&gt;updated_at" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="-ZgQybFlOyxAOQugWuOv-12">
+          <mxGeometry y="50" width="160" height="280" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-16" value="&lt;div&gt;ProjectAttachment&amp;nbsp;&lt;/div&gt;" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="900" width="160" height="330" as="geometry" />
+        </mxCell>
+        <mxCell id="-ZgQybFlOyxAOQugWuOv-17" value="&lt;font style=&quot;color: rgb(255, 128, 0);&quot;&gt;PK id&lt;br&gt;&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;color: rgb(102, 0, 51);&quot;&gt;FK project_id&lt;br&gt;&lt;/font&gt;&lt;br&gt;file_path&lt;br&gt;&lt;br&gt;created_at" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;spacingRight=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;whiteSpace=wrap;" vertex="1" parent="-ZgQybFlOyxAOQugWuOv-16">
+          <mxGeometry y="50" width="160" height="280" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

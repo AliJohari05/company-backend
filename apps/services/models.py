@@ -28,8 +28,8 @@ class Service(TimeStampedModel):
     )
     title = models.CharField(_("Title"), max_length=250)
     slug = models.SlugField(_("Slug"), unique=True, allow_unicode=True)
-    short_description = models.TextField(_("Short Description"))
-    full_description = models.TextField(_("Full Description"))
+    short_description = models.TextField(_("Short Description"), blank=True, null=True)
+    full_description = models.TextField(_("Full Description"), blank=True, null=True)
     icon = models.CharField(_("Icon Class or URL"), max_length=100, blank=True, null=True)
     is_active = models.BooleanField(_("Is Active"), default=True)
 
@@ -51,7 +51,7 @@ class ServicePlan(TimeStampedModel):
     )
     title = models.CharField(_("Title"), max_length=250)
     price = models.DecimalField(_("Price"), max_digits=12, decimal_places=2)
-    features = models.JSONField(_("Features"), default=list)
+    features = models.JSONField(_("Features"), default=list, blank=True)
     is_popular = models.BooleanField(_("Is Popular"), default=False)
 
     class Meta:

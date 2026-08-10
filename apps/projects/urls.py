@@ -1,0 +1,12 @@
+from django.urls import path
+from .views import (
+    ProjectRequestListCreateView,
+    ProjectRequestDetailView,
+    ProjectAttachmentCreateView
+)
+
+urlpatterns = [
+    path('', ProjectRequestListCreateView.as_view(), name='project_list_create'),
+    path('<uuid:pk>/', ProjectRequestDetailView.as_view(), name='project_detail'),
+    path('<uuid:project_id>/attachments/', ProjectAttachmentCreateView.as_view(), name='project_attachment_create'),
+]

@@ -19,7 +19,7 @@ class CustomUserAdmin(UserAdmin):
         (_('Credentials'), {'fields': ('email', 'password')}),
         (_('Personal Info'), {'fields': ('first_name', 'last_name', 'phone_number', 'company_name')}),
         (_('Permissions & Roles'), {'fields': ('role', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        (_('Important dates'), {'fields': ('created_at', 'updated_at','last_login')}),
+        (_('Important dates'), {'fields': ('created_at', 'updated_at')}),
     )
 
     # Layout of the new user creation form in the admin panel

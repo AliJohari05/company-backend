@@ -3,34 +3,80 @@ from .models import ServiceCategory, Service, ServicePlan
 
 
 class ServicePlanSerializer(serializers.ModelSerializer):
+    """Serializer for pricing plans within a specific service."""
+
     class Meta:
         model = ServicePlan
         fields = ('id', 'title', 'price', 'features', 'is_popular')
 
 
 class ServiceListSerializer(serializers.ModelSerializer):
-    # For the list of services (without needing all the details or plans)  
-    class Meta:
-        model = Service
-        fields = ('id', 'title', 'slug', 'short_description', 'icon', 'is_active')
+    """Compact serializer for service listings and category lists."""
 
-
-class ServiceDetailSerializer(serializers.ModelSerializer):
-    # For a service detail page featuring pricing plans
-    plans = ServicePlanSerializer(many=True, read_only=True)
-    category_name = serializers.CharField(source='category.title', read_only=True)
+    category_name = serializers.CharField(
+        source='category.title',
+        read_only=True
+    )
+    category_slug = serializers.CharField(
+        source='category.slug',
+        read_only=True
+    )
 
     class Meta:
         model = Service
         fields = (
-            'id', 'category', 'category_name', 'title', 'slug',
-            'short_description', 'full_description', 'icon',
-            'is_active', 'plans'
+            'id',
+            'category',
+            'category_name',
+            'category_slug',
+            'title',
+            'slug',
+            'short_description',
+            'icon',
+            'is_active'
+        )
+
+
+class ServiceDetailSerializer(serializers.ModelSerializer):
+    """Full detail serializer for a single service including nested plans."""
+
+    plans = ServicePlanSerializer(
+        many=True,
+        read_only=True
+    )
+    category_name = serializers.CharField(
+        source='category.title',
+        read_only=True
+    )
+    category_slug = serializers.CharField(
+        source='category.slug',
+        read_only=True
+    )
+
+    class Meta:
+        model = Service
+        fields = (
+            'id',
+            'category',
+            'category_name',
+            'category_slug',
+            'title',
+            'slug',
+            'short_description',
+            'full_description',
+            'icon',
+            'is_active',
+            'plans'
         )
 
 
 class ServiceCategorySerializer(serializers.ModelSerializer):
-    services = ServiceListSerializer(many=True, read_only=True)
+    """Serializer for categories along with their nested services."""
+
+    services = ServiceListSerializer(
+        many=True,
+        read_only=True
+    )
 
     class Meta:
         model = ServiceCategory

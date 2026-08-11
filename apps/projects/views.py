@@ -1,61 +1,67 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, filters
 from rest_framework.parsers import MultiPartParser, FormParser
+from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
+
 from .models import ProjectRequest, ProjectAttachment
 from .serializers import ProjectRequestSerializer, ProjectAttachmentSerializer
 
 
 class ProjectRequestListCreateView(generics.ListCreateAPIView):
     """
-    Create a new project request and retrieve the user's project requests.
+    Create a new project request and retrieve user project requests.
+    Supports filtering by status, searching by title, and ordering.
     """
-
     serializer_class = ProjectRequestSerializer
     permission_classes = [permissions.IsAuthenticated]
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    
+    # Filter and search fields
+    filterset_fields = ['status', 'budget']
+    search_fields = ['title', 'description']
+    ordering_fields = ['created_at', 'updated_at']
+    ordering = ['-created_at']
 
     def get_queryset(self):
-        return ProjectRequest.objects.filter(user=self.request.user).prefetch_related('attachments')
+        user = self.request.user
+        # Staff members can inspect all requests; standard users access their own only.
+        if user.is_staff or user.is_superuser:
+            return ProjectRequest.objects.all().select_related('user').prefetch_related('attachments')
+        return ProjectRequest.objects.filter(user=user).prefetch_related('attachments')
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class ProjectRequestDetailView(generics.RetrieveAPIView):
     """
-    Retrieve the details of a project request owned by the authenticated user.
+    Retrieve the details of a project request owned by the user or staff.
     """
-
     serializer_class = ProjectRequestSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        # Return only project requests belonging to the authenticated user.
-        # This prevents users from accessing other users' project requests.
-        return ProjectRequest.objects.filter(
-            user=self.request.user
-        ).prefetch_related('attachments')
+        user = self.request.user
+        if user.is_staff or user.is_superuser:
+            return ProjectRequest.objects.all().select_related('user').prefetch_related('attachments')
+        return ProjectRequest.objects.filter(user=user).prefetch_related('attachments')
 
 
 class ProjectAttachmentCreateView(generics.CreateAPIView):
     """
-    Upload an attachment for a project request.
+    Upload an attachment for an existing project request.
     """
-
     serializer_class = ProjectAttachmentSerializer
     permission_classes = [permissions.IsAuthenticated]
-
-    # Enable multipart/form-data and form-data requests for file uploads.
-    parser_classes = [
-        MultiPartParser,
-        FormParser
-    ]
+    parser_classes = [MultiPartParser, FormParser]
 
     def perform_create(self, serializer):
-        # Get the project request ID from the URL.
         project_id = self.kwargs.get('project_id')
+        user = self.request.user
 
-        # Make sure the project exists and belongs to the authenticated user.
-        project = generics.get_object_or_404(
-            ProjectRequest,
-            id=project_id,
-            user=self.request.user
-        )
+        if user.is_staff or user.is_superuser:
+            project = get_object_or_404(ProjectRequest, id=project_id)
+        else:
+            project = get_object_or_404(ProjectRequest, id=project_id, user=user)
 
-        # Save the attachment and associate it with the project request.
         serializer.save(project_request=project)

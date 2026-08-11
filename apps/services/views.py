@@ -1,6 +1,5 @@
-from django.shortcuts import render
-from rest_framework import generics, permissions
-from rest_framework.response import Response
+from rest_framework import generics, permissions, filters
+from django_filters.rest_framework import DjangoFilterBackend
 from .models import ServiceCategory, Service
 from .serializers import (
     ServiceCategorySerializer,
@@ -11,7 +10,7 @@ from .serializers import (
 
 class ServiceCategoryListView(generics.ListAPIView):
     """
-Retrieve the list of all active categories along with their sub-services.
+    Retrieve all active service categories along with their sub-services.
     """
     queryset = ServiceCategory.objects.filter(is_active=True)
     serializer_class = ServiceCategorySerializer
@@ -20,23 +19,26 @@ Retrieve the list of all active categories along with their sub-services.
 
 class ServiceListView(generics.ListAPIView):
     """
-Get a list of all active services
-Ability to filter by `category_slug` via query parameter (e.g., `?category=web`)
+    Get a list of all active services.
+    Supports filtering by `category__slug` (e.g. `?category__slug=web`),
+    searching by service title, and ordering.
     """
+    queryset = Service.objects.filter(is_active=True).select_related('category')
     serializer_class = ServiceListSerializer
     permission_classes = [permissions.AllowAny]
-
-    def get_queryset(self):
-        queryset = Service.objects.filter(is_active=True).select_related('category')
-        category_slug = self.request.query_params.get('category')
-        if category_slug:
-            queryset = queryset.filter(category__slug=category_slug)
-        return queryset
+    
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    
+    # Allows filtering via URL params like ?category__slug=web or ?category=1
+    filterset_fields = ['category__slug', 'category']
+    search_fields = ['title', 'short_description', 'description']
+    ordering_fields = ['created_at', 'title']
+    ordering = ['created_at']
 
 
 class ServiceDetailView(generics.RetrieveAPIView):
     """
-    Retrieve the details of a service along with its related pricing plans based on the slug
+    Retrieve details of a specific service along with its pricing plans using its slug.
     """
     queryset = Service.objects.filter(is_active=True).prefetch_related('plans')
     serializer_class = ServiceDetailSerializer

@@ -39,6 +39,7 @@ urlpatterns = [
     path('api/v1/services/', include('apps.services.urls')),
     path('api/v1/projects/', include('apps.projects.urls')),
     path('api/v1/tickets/', include('apps.tickets.urls', namespace='tickets')),
+    path('api/v1/blog/', include('apps.blog.urls', namespace='blog')),
 ]
 
 if settings.DEBUG:

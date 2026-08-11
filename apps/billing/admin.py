@@ -1,0 +1,77 @@
+from django.contrib import admin
+from .models import Invoice, InvoiceItem, Transaction, Contract
+
+
+class InvoiceItemInline(admin.TabularInline):
+    """
+    Allows editing itemized rows directly inside the Invoice detail view.
+    """
+    model = InvoiceItem
+    extra = 1
+    fields = ('description', 'quantity', 'unit_price', 'total_price')
+    readonly_fields = ('total_price',)
+
+
+class TransactionInline(admin.TabularInline):
+    """
+    Displays related payment receipts inside the Invoice detail view.
+    """
+    model = Transaction
+    extra = 0
+    fields = ('user', 'amount', 'reference_code', 'status', 'created_at')
+    readonly_fields = ('created_at',)
+
+
+@admin.register(Invoice)
+class InvoiceAdmin(admin.ModelAdmin):
+    list_display = (
+        'invoice_number',
+        'user',
+        'total_amount',
+        'status',
+        'due_date',
+        'created_at'
+    )
+    list_filter = ('status', 'due_date', 'created_at')
+    search_fields = (
+        'invoice_number',
+        'user__email',
+        'user__first_name',
+        'user__last_name'
+    )
+    readonly_fields = ('created_at', 'updated_at')
+    inlines = [InvoiceItemInline, TransactionInline]
+
+
+@admin.register(InvoiceItem)
+class InvoiceItemAdmin(admin.ModelAdmin):
+    list_display = ('invoice', 'description', 'quantity', 'unit_price', 'total_price')
+    search_fields = ('description', 'invoice__invoice_number')
+    readonly_fields = ('total_price',)
+
+
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = (
+        'reference_code',
+        'invoice',
+        'user',
+        'amount',
+        'status',
+        'created_at'
+    )
+    list_filter = ('status', 'created_at')
+    search_fields = (
+        'reference_code',
+        'invoice__invoice_number',
+        'user__email'
+    )
+    readonly_fields = ('created_at',)
+
+
+@admin.register(Contract)
+class ContractAdmin(admin.ModelAdmin):
+    list_display = ('title', 'user', 'status', 'start_date', 'end_date', 'created_at')
+    list_filter = ('status', 'start_date', 'end_date', 'created_at')
+    search_fields = ('title', 'user__email', 'user__first_name', 'user__last_name')
+    readonly_fields = ('created_at',)

@@ -36,10 +36,13 @@ urlpatterns = [
     path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
     path('api/v1/accounts/', include('apps.accounts.urls')),
+    path('api/v1/core/', include('apps.core.urls', namespace='core')),
     path('api/v1/services/', include('apps.services.urls')),
     path('api/v1/projects/', include('apps.projects.urls')),
     path('api/v1/tickets/', include('apps.tickets.urls', namespace='tickets')),
     path('api/v1/blog/', include('apps.blog.urls', namespace='blog')),
+    path('api/v1/billing/', include('apps.billing.urls', namespace='billing')),
+    path('api/v1/portfolio/', include('apps.portfolio.urls', namespace='portfolio')),
 ]
 
 if settings.DEBUG:

@@ -3,28 +3,32 @@ from .models import ProjectRequest, ProjectAttachment
 from apps.services.serializers import ServiceListSerializer
 
 
-# Serializer for project attachments (uploaded files)
 class ProjectAttachmentSerializer(serializers.ModelSerializer):
+    """Serializer for project request file attachments."""
 
     class Meta:
         model = ProjectAttachment
-
-        # Fields exposed through the API
         fields = ('id', 'file', 'description', 'created_at')
 
 
-# Serializer for project requests submitted by users
 class ProjectRequestSerializer(serializers.ModelSerializer):
+    """
+    Serializer for handling user project requests,
+    including read-only attached files and nested service details.
+    """
 
-    # Include related attachments in the response
-    # Read-only because attachments are managed separately
     attachments = ProjectAttachmentSerializer(
         many=True,
         read_only=True
     )
-
-    # Human-readable status value
-    # Example: "Pending" instead of "PENDING"
+    user_email = serializers.EmailField(
+        source='user.email',
+        read_only=True
+    )
+    service_detail = ServiceListSerializer(
+        source='service',
+        read_only=True
+    )
     status_display = serializers.CharField(
         source='get_status_display',
         read_only=True
@@ -32,12 +36,12 @@ class ProjectRequestSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProjectRequest
-
-        # Fields exposed through the API
         fields = (
             'id',
             'user',
+            'user_email',
             'service',
+            'service_detail',
             'title',
             'description',
             'estimated_budget',
@@ -47,9 +51,6 @@ class ProjectRequestSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         )
-
-        # These fields are automatically managed by the system
-        # and cannot be modified by clients
         read_only_fields = (
             'user',
             'status',
@@ -58,13 +59,11 @@ class ProjectRequestSerializer(serializers.ModelSerializer):
         )
 
     def create(self, validated_data):
-        """
-        Automatically assign the authenticated user
-        as the owner of the project request.
-        """
+        """Automatically set the current authenticated user as request owner."""
         request = self.context.get('request')
+        user = validated_data.pop('user', getattr(request, 'user', None))
 
-        if request and request.user.is_authenticated:
-            validated_data['user'] = request.user
+        if user and user.is_authenticated:
+            validated_data['user'] = user
 
         return super().create(validated_data)

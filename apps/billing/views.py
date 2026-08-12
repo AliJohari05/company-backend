@@ -8,6 +8,7 @@ from .serializers import (
     TransactionSerializer,
     ContractSerializer
 )
+from apps.core.pagination import InvoiceListPagination
 
 # ==========================================
 # INVOICE VIEWS
@@ -25,6 +26,7 @@ class InvoiceListCreateView(generics.ListCreateAPIView):
     search_fields = ['invoice_number']
     ordering_fields = ['created_at', 'due_date', 'total_amount']
     ordering = ['-created_at']
+    pagination_class = InvoiceListPagination
 
     def get_queryset(self):
         user = self.request.user

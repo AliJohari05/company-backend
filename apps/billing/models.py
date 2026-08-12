@@ -89,7 +89,9 @@ class InvoiceItem(models.Model):
 
     @property
     def total_price(self):
-        return self.quantity * self.unit_price
+        quantity = self.quantity or 0
+        unit_price = self.unit_price or 0
+        return quantity * unit_price
 
     def __str__(self):
         return f"{self.description} ({self.invoice.invoice_number})"

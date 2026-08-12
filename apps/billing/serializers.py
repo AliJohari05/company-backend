@@ -97,6 +97,8 @@ class InvoiceSerializer(serializers.ModelSerializer):
             'updated_at'
         )
 
+    def get_formatted_total_price(self, obj):
+            return f"{obj.total_price:,} ریال"
 
 class ContractSerializer(serializers.ModelSerializer):
     """Serializer for legal customer contracts and documents."""

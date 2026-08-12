@@ -8,7 +8,7 @@ class Category(TimeStampedModel):
     name = models.CharField(_("Name"), max_length=100)
     slug = models.SlugField(_("Slug"), max_length=100, unique=True, allow_unicode=True)
     description = models.TextField(_("Description"), blank=True, null=True)
-
+    pagination_class = None
     class Meta:
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
@@ -26,7 +26,7 @@ class Category(TimeStampedModel):
 class Tag(TimeStampedModel):
     name = models.CharField(_("Name"), max_length=100)
     slug = models.SlugField(_("Slug"), max_length=100, unique=True, allow_unicode=True)
-
+    pagination_class = None
     class Meta:
         verbose_name = _("Tag")
         verbose_name_plural = _("Tags")

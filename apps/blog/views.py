@@ -8,7 +8,7 @@ from .serializers import (
     PostListSerializer,
     PostDetailSerializer,
 )
-
+from apps.core.pagination import BlogPostsPagination
 
 class CategoryListCreateView(generics.ListCreateAPIView):
     """
@@ -64,6 +64,7 @@ class PostListCreateView(generics.ListCreateAPIView):
     search_fields = ['title', 'content', 'meta_description']
     ordering_fields = ['published_at', 'views_count', 'created_at']
     ordering = ['-published_at']
+    pagination_class = BlogPostsPagination
 
     def get_permissions(self):
         if self.request.method == 'GET':

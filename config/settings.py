@@ -6,6 +6,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'default-unsafe-key')
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -102,6 +118,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
     "http://localhost:3000",
+    "http://127.0.0.1:3000",
 ]
 
 REST_FRAMEWORK = {
@@ -109,6 +126,10 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+
+    # standard pagination settings
+    'DEFAULT_PAGINATION_CLASS': 'apps.core.pagination.StandardResultsSetPagination',
+        'PAGE_SIZE': 10,
 }
 
 SIMPLE_JWT = {
@@ -124,4 +145,7 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API documentation for Web Development, SEO, and Automation Agency services.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+    'SERVERS': [
+        {'url': 'http://127.0.0.1:8000', 'description': 'Local Development Server'},
+    ],
 }

@@ -296,7 +296,3 @@ async function fetchAPI(endpoint, options = {}) {
 }
 
 ```
-
-```
-
-```

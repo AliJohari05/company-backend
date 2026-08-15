@@ -128,7 +128,7 @@ All monetary fields (`amount`, `unit_price`, `total_price`, `estimated_budget`) 
 | `GET` | `/tickets/` | JWT | List user's support tickets |
 | `POST` | `/tickets/` | JWT | Create a new ticket with initial message |
 | `GET` | `/tickets/{id}/` | JWT | Get ticket details and full message history |
-| `POST` | `/tickets/{id}/status/` | JWT | Toggle ticket status (Close / Reopen) |
+| `POST` | `/tickets/{id}/status/` | JWT | Client may set `CLOSED` or reopen a closed ticket with `OPEN`; staff may set any valid status |
 | `POST` | `/tickets/{ticket_id}/messages/` | JWT | Add a reply message to an existing ticket |
 
 ### 5.5 Billing & Financials

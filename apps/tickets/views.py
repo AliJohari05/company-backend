@@ -5,8 +5,8 @@ from rest_framework.parsers import JSONParser, MultiPartParser, FormParser
 
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from rest_framework.exceptions import ValidationError
-from drf_spectacular.utils import extend_schema, OpenApiTypes, OpenApiParameter
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from drf_spectacular.utils import extend_schema
 
 from .models import Ticket, TicketStatus
 from .serializers import (
@@ -53,6 +53,23 @@ class TicketListCreateView(generics.ListCreateAPIView):
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        ticket = serializer.instance
+        response_serializer = TicketDetailSerializer(
+            ticket,
+            context=self.get_serializer_context(),
+        )
+        headers = self.get_success_headers(response_serializer.data)
+        return Response(
+            response_serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers,
+        )
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -111,20 +128,38 @@ class TicketMessageCreateView(generics.CreateAPIView):
 
         ticket.save(update_fields=['status', 'updated_at'])
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        response_serializer = TicketMessageSerializer(
+            serializer.instance,
+            context=self.get_serializer_context(),
+        )
+        headers = self.get_success_headers(response_serializer.data)
+        return Response(
+            response_serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=headers,
+        )
+
 
 class TicketStatusUpdateView(APIView):
     """
-    Action endpoint to change a ticket's status manually.
+    Client users can close or reopen their own tickets.
+    Staff users can set any valid ticket status.
     """
     permission_classes = [permissions.IsAuthenticated]
 
     @extend_schema(
         request=TicketStatusUpdateSerializer,
-        responses={200: dict}
+        responses={200: TicketDetailSerializer}
     )
     def post(self, request, pk):
         user = request.user
-        if user.is_staff or user.is_superuser:
+        is_staff = user.is_staff or user.is_superuser
+        if is_staff:
             ticket = get_object_or_404(Ticket, pk=pk)
         else:
             ticket = get_object_or_404(Ticket, pk=pk, user=user)
@@ -133,10 +168,30 @@ class TicketStatusUpdateView(APIView):
         serializer.is_valid(raise_exception=True)
 
         new_status = serializer.validated_data['status']
+
+        if not is_staff:
+            if new_status == TicketStatus.CLOSED:
+                if ticket.status == TicketStatus.CLOSED:
+                    raise ValidationError({
+                        'status': 'This ticket is already closed.'
+                    })
+            elif new_status == TicketStatus.OPEN:
+                if ticket.status != TicketStatus.CLOSED:
+                    raise ValidationError({
+                        'status': 'Only a closed ticket can be reopened.'
+                    })
+            else:
+                raise PermissionDenied(
+                    'Clients can only close or reopen their own tickets.'
+                )
+
         ticket.status = new_status
         ticket.save(update_fields=['status', 'updated_at'])
 
         return Response(
-            {"detail": f"Ticket status changed to {ticket.status} successfully."},
-            status=status.HTTP_200_OK
+            TicketDetailSerializer(
+                ticket,
+                context={'request': request},
+            ).data,
+            status=status.HTTP_200_OK,
         )

@@ -11,6 +11,7 @@ class Invoice(models.Model):
     """
     class StatusChoices(models.TextChoices):
         UNPAID = 'UNPAID', _('Unpaid')
+        PARTIALLY_PAID = 'PARTIALLY_PAID', _('Partially Paid')
         PAID = 'PAID', _('Paid')
         OVERDUE = 'OVERDUE', _('Overdue')
         CANCELED = 'CANCELED', _('Canceled')

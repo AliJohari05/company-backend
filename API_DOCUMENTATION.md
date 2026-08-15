@@ -147,7 +147,9 @@ All monetary fields (`amount`, `unit_price`, `total_price`, `estimated_budget`) 
 | `GET/PUT/PATCH/DELETE` | `/billing/invoice-items/{id}/` | Admin | Manage specific invoice item |
 | `GET` | `/billing/transactions/` | JWT | List transactions / payment receipts |
 | `POST` | `/billing/transactions/` | JWT | Upload payment receipt for an invoice |
-| `GET/PUT/PATCH/DELETE` | `/billing/transactions/{id}/` | JWT/Admin | Manage specific payment transaction |
+| `GET` | `/billing/transactions/{id}/` | JWT | Get a payment receipt (Admin sees all; Client sees own) |
+| `PUT/PATCH` | `/billing/transactions/{id}/` | Admin | Approve or reject a receipt by updating its `status` |
+| `DELETE` | `/billing/transactions/{id}/` | Admin | Delete a payment receipt |
 
 ### 5.6 Blog
 
@@ -189,7 +191,7 @@ Enum values are case-sensitive and must be sent/handled exactly as defined below
 | **Project Status** | `PENDING`, `APPROVED`, `IN_PROGRESS`, `COMPLETED`, `REJECTED` | Project request status |
 | **Ticket Priority** | `LOW`, `MEDIUM`, `HIGH` | Support ticket priority level |
 | **Ticket Status** | `OPEN`, `IN_PROGRESS`, `RESOLVED`, `CLOSED` | Support ticket resolution state |
-| **Invoice Status** | `UNPAID`, `PAID`, `OVERDUE`, `CANCELED` | Billing invoice state |
+| **Invoice Status** | `UNPAID`, `PARTIALLY_PAID`, `PAID`, `OVERDUE`, `CANCELED` | Billing invoice state |
 | **Transaction Status** | `PENDING`, `APPROVED`, `REJECTED` | Payment verification status |
 
 ---

@@ -1,4 +1,10 @@
-from rest_framework import generics, permissions, filters, exceptions
+from decimal import Decimal
+
+from django.db import transaction as db_transaction
+from django.db.models import DecimalField, Q, Sum, Value
+from django.db.models.functions import Coalesce
+from rest_framework import generics, permissions, filters, exceptions, status
+from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.translation import gettext_lazy as _
 from .models import Invoice, InvoiceItem, Transaction, Contract
@@ -6,6 +12,7 @@ from .serializers import (
     InvoiceSerializer,
     InvoiceItemSerializer,
     TransactionSerializer,
+    TransactionStatusUpdateSerializer,
     ContractSerializer
 )
 from apps.core.pagination import InvoiceListPagination
@@ -13,6 +20,43 @@ from apps.core.pagination import InvoiceListPagination
 # ==========================================
 # INVOICE VIEWS
 # ==========================================
+
+
+def with_payment_summary(queryset):
+    """Add the total of approved receipts to each invoice queryset."""
+    return queryset.annotate(
+        approved_amount=Coalesce(
+            Sum(
+                'transactions__amount',
+                filter=Q(
+                    transactions__status=Transaction.StatusChoices.APPROVED
+                ),
+            ),
+            Value(Decimal('0.00')),
+            output_field=DecimalField(max_digits=12, decimal_places=2),
+        )
+    )
+
+
+def refresh_invoice_payment_status(invoice):
+    """Set an invoice status from the sum of approved payment receipts."""
+    approved_amount = (
+        invoice.transactions.filter(
+            status=Transaction.StatusChoices.APPROVED
+        ).aggregate(total=Sum('amount'))['total']
+        or Decimal('0.00')
+    )
+
+    if approved_amount >= invoice.total_amount:
+        new_status = Invoice.StatusChoices.PAID
+    elif approved_amount > Decimal('0.00'):
+        new_status = Invoice.StatusChoices.PARTIALLY_PAID
+    else:
+        new_status = Invoice.StatusChoices.UNPAID
+
+    if invoice.status != new_status:
+        invoice.status = new_status
+        invoice.save(update_fields=['status', 'updated_at'])
 
 class InvoiceListCreateView(generics.ListCreateAPIView):
     """
@@ -35,8 +79,14 @@ class InvoiceListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
-            return Invoice.objects.all().select_related('user', 'project_request', 'service')
-        return Invoice.objects.filter(user=user).select_related('user', 'project_request', 'service')
+            queryset = Invoice.objects.all()
+        else:
+            queryset = Invoice.objects.filter(user=user)
+
+        return with_payment_summary(
+            queryset.select_related('user', 'project_request', 'service')
+            .prefetch_related('items', 'transactions')
+        )
 
 class InvoiceDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -49,8 +99,14 @@ class InvoiceDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
-            return Invoice.objects.all().select_related('user', 'project_request', 'service')
-        return Invoice.objects.filter(user=user)
+            queryset = Invoice.objects.all()
+        else:
+            queryset = Invoice.objects.filter(user=user)
+
+        return with_payment_summary(
+            queryset.select_related('user', 'project_request', 'service')
+            .prefetch_related('items', 'transactions')
+        )
 
     def check_object_permissions(self, request, obj):
         super().check_object_permissions(request, obj)
@@ -95,8 +151,12 @@ class TransactionDetailView(generics.RetrieveUpdateDestroyAPIView):
     GET: Retrieve transaction details.
     PUT/PATCH/DELETE: Admin only.
     """
-    serializer_class = TransactionSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method in ('PUT', 'PATCH'):
+            return TransactionStatusUpdateSerializer
+        return TransactionSerializer
 
     def get_queryset(self):
         user = self.request.user
@@ -108,6 +168,36 @@ class TransactionDetailView(generics.RetrieveUpdateDestroyAPIView):
         super().check_object_permissions(request, obj)
         if request.method not in permissions.SAFE_METHODS and not request.user.is_staff:
             raise exceptions.PermissionDenied(_("You do not have permission to modify this transaction."))
+
+    @db_transaction.atomic
+    def perform_update(self, serializer):
+        transaction = serializer.save()
+        refresh_invoice_payment_status(transaction.invoice)
+
+    @db_transaction.atomic
+    def perform_destroy(self, instance):
+        invoice = instance.invoice
+        instance.delete()
+        refresh_invoice_payment_status(invoice)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(
+            instance,
+            data=request.data,
+            partial=partial,
+        )
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(
+            TransactionSerializer(
+                serializer.instance,
+                context=self.get_serializer_context(),
+            ).data,
+            status=status.HTTP_200_OK,
+        )
 
 
 # ==========================================

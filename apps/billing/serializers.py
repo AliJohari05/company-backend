@@ -51,7 +51,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 
 
 class InvoiceSerializer(serializers.ModelSerializer):
-    """Serializer for invoices including nested items and transaction history."""
+    """Serializer for reading invoice details including nested items."""
 
     items = InvoiceItemSerializer(
         many=True,
@@ -88,20 +88,19 @@ class InvoiceSerializer(serializers.ModelSerializer):
             'items',
             'transactions'
         )
+        # user and invoice_number removed from read_only_fields so admins can populate them
         read_only_fields = (
             'id',
-            'invoice_number',
-            'user',
             'status',
             'created_at',
             'updated_at'
         )
 
-    def get_formatted_total_price(self, obj):
-            return f"{obj.total_price:,} ریال"
 
 class ContractSerializer(serializers.ModelSerializer):
     """Serializer for legal customer contracts and documents."""
+
+    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
     status_display = serializers.CharField(
         source='get_status_display',
@@ -126,4 +125,17 @@ class ContractSerializer(serializers.ModelSerializer):
             'end_date',
             'created_at'
         )
-        read_only_fields = ('id', 'user', 'created_at')
+        # 'user' is writable so admin can assign the contract to a specific user
+        read_only_fields = ('id', 'created_at')
+
+    def validate_file(self, value):
+        """Accept PDF contracts up to 10 MB."""
+        if not value.name.lower().endswith('.pdf'):
+            raise serializers.ValidationError('Only PDF contract files are allowed.')
+
+        if value.size > self.MAX_FILE_SIZE:
+            raise serializers.ValidationError(
+                'Contract file size must not exceed 10 MB.'
+            )
+
+        return value

@@ -148,4 +148,5 @@ SPECTACULAR_SETTINGS = {
     'SERVERS': [
         {'url': 'http://127.0.0.1:8000', 'description': 'Local Development Server'},
     ],
+    'COMPONENT_SPLIT_REQUEST': True,
 }

@@ -31,7 +31,7 @@ class ServiceListView(generics.ListAPIView):
     
     # Allows filtering via URL params like ?category__slug=web or ?category=1
     filterset_fields = ['category__slug', 'category']
-    search_fields = ['title', 'short_description', 'description']
+    search_fields = ['title', 'short_description', 'full_description']
     ordering_fields = ['created_at', 'title']
     ordering = ['created_at']
 

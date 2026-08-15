@@ -11,6 +11,8 @@ class TicketPriority(models.TextChoices):
 
 class TicketStatus(models.TextChoices):
     OPEN = "OPEN", _("Open")
+    PENDING = "PENDING", _("Pending User Reply")
+    ANSWERED = "ANSWERED", _("Answered")
     IN_PROGRESS = "IN_PROGRESS", _("In Progress")
     RESOLVED = "RESOLVED", _("Resolved")
     CLOSED = "CLOSED", _("Closed")

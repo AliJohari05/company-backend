@@ -17,7 +17,7 @@ class ProjectRequestListCreateView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
     
     # Filter and search fields
-    filterset_fields = ['status', 'budget']
+    filterset_fields = ['status', 'estimated_budget']
     search_fields = ['title', 'description']
     ordering_fields = ['created_at', 'updated_at']
     ordering = ['-created_at']

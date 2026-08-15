@@ -46,7 +46,7 @@ class ChangePasswordView(generics.GenericAPIView):
 
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
-        serializer.is_validate(raise_exception=True)
+        serializer.is_valid(raise_exception=True)
         user = request.user
 
         if not user.check_password(serializer.validated_data['old_password']):

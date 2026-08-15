@@ -20,7 +20,6 @@ class InvoiceListCreateView(generics.ListCreateAPIView):
     POST: Create a new invoice (Admins only).
     """
     serializer_class = InvoiceSerializer
-    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_fields = ['status', 'user']
     search_fields = ['invoice_number']
@@ -28,17 +27,16 @@ class InvoiceListCreateView(generics.ListCreateAPIView):
     ordering = ['-created_at']
     pagination_class = InvoiceListPagination
 
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.IsAdminUser()]
+        return [permissions.IsAuthenticated()]
+
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
             return Invoice.objects.all().select_related('user', 'project_request', 'service')
         return Invoice.objects.filter(user=user).select_related('user', 'project_request', 'service')
-
-    def perform_create(self, serializer):
-        if not self.request.user.is_staff:
-            raise exceptions.PermissionDenied(_("Only administrators can generate invoices."))
-        serializer.save()
-
 
 class InvoiceDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -85,7 +83,6 @@ class TransactionListCreateView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         invoice = serializer.validated_data.get('invoice')
-        # Ensure non-admin users can only attach transactions to their own invoices
         if not self.request.user.is_staff and invoice.user != self.request.user:
             raise exceptions.ValidationError({
                 "invoice": _("You can only submit payment receipts for your own invoices.")
@@ -123,24 +120,22 @@ class ContractListCreateView(generics.ListCreateAPIView):
     POST: Create a new contract (Admins only).
     """
     serializer_class = ContractSerializer
-    permission_classes = [permissions.IsAuthenticated]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter, filters.SearchFilter]
     filterset_fields = ['status', 'user']
     search_fields = ['title']
     ordering_fields = ['created_at', 'start_date', 'end_date']
     ordering = ['-created_at']
 
+    def get_permissions(self):
+        if self.request.method == 'POST':
+            return [permissions.IsAdminUser()]
+        return [permissions.IsAuthenticated()]
+
     def get_queryset(self):
         user = self.request.user
         if user.is_staff:
             return Contract.objects.all().select_related('user')
         return Contract.objects.filter(user=user).select_related('user')
-
-    def perform_create(self, serializer):
-        if not self.request.user.is_staff:
-            raise exceptions.PermissionDenied(_("Only administrators can upload or assign contracts."))
-        serializer.save()
-
 
 class ContractDetailView(generics.RetrieveUpdateDestroyAPIView):
     """

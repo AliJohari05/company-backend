@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
@@ -13,6 +14,11 @@ class ProjectStatus(models.TextChoices):
 
 
 class ProjectRequest(TimeStampedModel):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
@@ -55,6 +61,11 @@ class ProjectRequest(TimeStampedModel):
 
 
 class ProjectAttachment(TimeStampedModel):
+    id = models.UUIDField(
+        primary_key=True,
+        default=uuid.uuid4,
+        editable=False
+    )
     project_request = models.ForeignKey(
         ProjectRequest,
         on_delete=models.CASCADE,

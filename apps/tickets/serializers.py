@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from django.db import transaction
-from .models import Ticket, TicketMessage
+from .models import Ticket, TicketMessage, TicketStatus
 
 
 class TicketMessageSerializer(serializers.ModelSerializer):
-    """Serializer for individual ticket messages, including sender details."""
+    """Serializer for displaying ticket messages in thread views."""
 
     user_email = serializers.EmailField(
         source='user.email',
@@ -34,6 +34,20 @@ class TicketMessageSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         )
+
+
+class TicketMessageCreateSerializer(serializers.ModelSerializer):
+    """Serializer explicitly used for creating a new message reply."""
+
+    attachment = serializers.FileField(
+        required=False,
+        allow_null=True,
+        allow_empty_file=False
+    )
+
+    class Meta:
+        model = TicketMessage
+        fields = ('message', 'attachment')
 
 
 class TicketListSerializer(serializers.ModelSerializer):
@@ -84,7 +98,8 @@ class TicketCreateSerializer(serializers.ModelSerializer):
     attachment = serializers.FileField(
         write_only=True,
         required=False,
-        allow_null=True
+        allow_null=True,
+        allow_empty_file=False
     )
 
     class Meta:
@@ -105,7 +120,6 @@ class TicketCreateSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         user = validated_data.pop('user', getattr(request, 'user', None))
 
-        # Atomic transaction to ensure both records are created safely
         with transaction.atomic():
             ticket = Ticket.objects.create(
                 user=user,
@@ -163,3 +177,9 @@ class TicketDetailSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         )
+
+
+class TicketStatusUpdateSerializer(serializers.Serializer):
+    """Serializer for validating status update requests."""
+
+    status = serializers.ChoiceField(choices=TicketStatus.choices)

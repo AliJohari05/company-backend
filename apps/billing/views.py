@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction as db_transaction
 from django.db.models import DecimalField, Q, Sum, Value
 from django.db.models.functions import Coalesce
@@ -22,6 +23,12 @@ from apps.core.pagination import InvoiceListPagination
 # ==========================================
 
 
+def django_validation_details(error):
+    if hasattr(error, 'message_dict'):
+        return error.message_dict
+    return {'non_field_errors': error.messages}
+
+
 def with_payment_summary(queryset):
     """Add the total of approved receipts to each invoice queryset."""
     return queryset.annotate(
@@ -37,26 +44,6 @@ def with_payment_summary(queryset):
         )
     )
 
-
-def refresh_invoice_payment_status(invoice):
-    """Set an invoice status from the sum of approved payment receipts."""
-    approved_amount = (
-        invoice.transactions.filter(
-            status=Transaction.StatusChoices.APPROVED
-        ).aggregate(total=Sum('amount'))['total']
-        or Decimal('0.00')
-    )
-
-    if approved_amount >= invoice.total_amount:
-        new_status = Invoice.StatusChoices.PAID
-    elif approved_amount > Decimal('0.00'):
-        new_status = Invoice.StatusChoices.PARTIALLY_PAID
-    else:
-        new_status = Invoice.StatusChoices.UNPAID
-
-    if invoice.status != new_status:
-        invoice.status = new_status
-        invoice.save(update_fields=['status', 'updated_at'])
 
 class InvoiceListCreateView(generics.ListCreateAPIView):
     """
@@ -77,6 +64,9 @@ class InvoiceListCreateView(generics.ListCreateAPIView):
         return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Invoice.objects.none()
+
         user = self.request.user
         if user.is_staff:
             queryset = Invoice.objects.all()
@@ -97,6 +87,9 @@ class InvoiceDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Invoice.objects.none()
+
         user = self.request.user
         if user.is_staff:
             queryset = Invoice.objects.all()
@@ -132,6 +125,9 @@ class TransactionListCreateView(generics.ListCreateAPIView):
     ordering = ['-created_at']
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Transaction.objects.none()
+
         user = self.request.user
         if user.is_staff:
             return Transaction.objects.all().select_related('invoice', 'user')
@@ -143,7 +139,12 @@ class TransactionListCreateView(generics.ListCreateAPIView):
             raise exceptions.ValidationError({
                 "invoice": _("You can only submit payment receipts for your own invoices.")
             })
-        serializer.save(user=self.request.user)
+        try:
+            serializer.save(user=invoice.user)
+        except DjangoValidationError as error:
+            raise exceptions.ValidationError(
+                django_validation_details(error)
+            ) from error
 
 
 class TransactionDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -159,6 +160,9 @@ class TransactionDetailView(generics.RetrieveUpdateDestroyAPIView):
         return TransactionSerializer
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Transaction.objects.none()
+
         user = self.request.user
         if user.is_staff:
             return Transaction.objects.all().select_related('invoice', 'user')
@@ -169,20 +173,28 @@ class TransactionDetailView(generics.RetrieveUpdateDestroyAPIView):
         if request.method not in permissions.SAFE_METHODS and not request.user.is_staff:
             raise exceptions.PermissionDenied(_("You do not have permission to modify this transaction."))
 
-    @db_transaction.atomic
     def perform_update(self, serializer):
-        transaction = serializer.save()
-        refresh_invoice_payment_status(transaction.invoice)
+        try:
+            serializer.save()
+        except DjangoValidationError as error:
+            raise exceptions.ValidationError(
+                django_validation_details(error)
+            ) from error
+
+    def perform_destroy(self, instance):
+        try:
+            instance.delete()
+        except DjangoValidationError as error:
+            raise exceptions.ValidationError(
+                django_validation_details(error)
+            ) from error
 
     @db_transaction.atomic
-    def perform_destroy(self, instance):
-        invoice = instance.invoice
-        instance.delete()
-        refresh_invoice_payment_status(invoice)
-
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        Invoice.objects.select_for_update().get(pk=instance.invoice_id)
+        instance = Transaction.objects.select_for_update().get(pk=instance.pk)
         serializer = self.get_serializer(
             instance,
             data=request.data,
@@ -198,6 +210,13 @@ class TransactionDetailView(generics.RetrieveUpdateDestroyAPIView):
             ).data,
             status=status.HTTP_200_OK,
         )
+
+    @db_transaction.atomic
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        Invoice.objects.select_for_update().get(pk=instance.invoice_id)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # ==========================================
@@ -222,6 +241,9 @@ class ContractListCreateView(generics.ListCreateAPIView):
         return [permissions.IsAuthenticated()]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Contract.objects.none()
+
         user = self.request.user
         if user.is_staff:
             return Contract.objects.all().select_related('user')
@@ -236,6 +258,9 @@ class ContractDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Contract.objects.none()
+
         user = self.request.user
         if user.is_staff:
             return Contract.objects.all().select_related('user')
@@ -261,6 +286,17 @@ class InvoiceItemListCreateView(generics.ListCreateAPIView):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['invoice']
 
+    @db_transaction.atomic
+    def perform_create(self, serializer):
+        invoice = serializer.validated_data['invoice']
+        locked_invoice = Invoice.objects.select_for_update().get(pk=invoice.pk)
+        try:
+            serializer.save(invoice=locked_invoice)
+        except DjangoValidationError as error:
+            raise exceptions.ValidationError(
+                django_validation_details(error)
+            ) from error
+
 
 class InvoiceItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
@@ -269,3 +305,24 @@ class InvoiceItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = InvoiceItem.objects.all().select_related('invoice')
     serializer_class = InvoiceItemSerializer
     permission_classes = [permissions.IsAdminUser]
+
+    @db_transaction.atomic
+    def perform_update(self, serializer):
+        invoice_id = serializer.instance.invoice_id
+        Invoice.objects.select_for_update().get(pk=invoice_id)
+        try:
+            serializer.save()
+        except DjangoValidationError as error:
+            raise exceptions.ValidationError(
+                django_validation_details(error)
+            ) from error
+
+    @db_transaction.atomic
+    def perform_destroy(self, instance):
+        Invoice.objects.select_for_update().get(pk=instance.invoice_id)
+        try:
+            instance.delete()
+        except DjangoValidationError as error:
+            raise exceptions.ValidationError(
+                django_validation_details(error)
+            ) from error

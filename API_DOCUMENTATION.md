@@ -140,7 +140,7 @@ All monetary fields (`amount`, `unit_price`, `total_price`, `estimated_budget`) 
 | `GET` | `/billing/contracts/{id}/` | JWT | Get contract details |
 | `PUT/PATCH/DELETE` | `/billing/contracts/{id}/` | Admin | Update or delete contract |
 | `GET` | `/billing/invoices/` | JWT | List invoices (Admin sees all, Client sees own) |
-| `POST` | `/billing/invoices/` | Admin | Create a new invoice |
+| `POST` | `/billing/invoices/` | Admin | Create an invoice header; `total_amount` is calculated from its items |
 | `GET` | `/billing/invoices/{id}/` | JWT | Get invoice details and line items |
 | `PUT/PATCH/DELETE` | `/billing/invoices/{id}/` | Admin | Update or delete invoice |
 | `GET/POST` | `/billing/invoice-items/` | Admin | List or create individual invoice items |
@@ -150,6 +150,21 @@ All monetary fields (`amount`, `unit_price`, `total_price`, `estimated_budget`) 
 | `GET` | `/billing/transactions/{id}/` | JWT | Get a payment receipt (Admin sees all; Client sees own) |
 | `PUT/PATCH` | `/billing/transactions/{id}/` | Admin | Approve or reject a receipt by updating its `status` |
 | `DELETE` | `/billing/transactions/{id}/` | Admin | Delete a payment receipt |
+
+Billing rules:
+
+- `total_amount` is read-only and is recalculated after every invoice item
+  create, update, or delete operation.
+- Invoice items cannot be changed after a payment receipt is approved or when
+  the invoice is canceled.
+- Transaction requests use the integer invoice `id` in the writable `invoice`
+  field. Responses also include the human-readable `invoice_number`.
+- Financial amounts are returned as decimal strings with exactly two decimal
+  places.
+- Transaction amounts must be positive, cannot exceed the current remaining
+  amount, and a reference code cannot be reused for the same invoice.
+- Receipts cannot be submitted for canceled, fully paid, or zero-total
+  invoices.
 
 ### 5.6 Blog
 
@@ -222,17 +237,20 @@ Enum values are case-sensitive and must be sent/handled exactly as defined below
   "invoice_number": "INV-2026-001",
   "user": 1,
   "user_email": "user@example.com",
-  "total_amount": 250000000,
+  "total_amount": "250000000.00",
+  "approved_amount": "0.00",
+  "remaining_amount": "250000000.00",
   "status": "UNPAID",
   "status_display": "Unpaid",
   "due_date": "2026-09-01",
   "items": [
     {
       "id": 1,
+      "invoice": 10,
       "description": "Frontend Development - Phase 1",
       "quantity": 1,
-      "unit_price": 250000000,
-      "total_price": 250000000
+      "unit_price": "250000000.00",
+      "total_price": "250000000.00"
     }
   ],
   "transactions": []

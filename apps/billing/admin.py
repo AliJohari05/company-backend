@@ -19,7 +19,10 @@ class TransactionInline(admin.TabularInline):
     model = Transaction
     extra = 0
     fields = ('user', 'amount', 'reference_code', 'status', 'created_at')
-    readonly_fields = ('created_at',)
+    readonly_fields = ('user', 'amount', 'reference_code', 'created_at')
+
+    def has_add_permission(self, request, obj):
+        return False
 
 
 @admin.register(Invoice)
@@ -39,7 +42,7 @@ class InvoiceAdmin(admin.ModelAdmin):
         'user__first_name',
         'user__last_name'
     )
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('total_amount', 'created_at', 'updated_at')
     inlines = [InvoiceItemInline, TransactionInline]
 
 
@@ -48,6 +51,10 @@ class InvoiceItemAdmin(admin.ModelAdmin):
     list_display = ('invoice', 'description', 'quantity', 'unit_price', 'total_price')
     search_fields = ('description', 'invoice__invoice_number')
     readonly_fields = ('total_price',)
+
+    def delete_queryset(self, request, queryset):
+        for item in queryset.select_related('invoice'):
+            item.delete()
 
 
 @admin.register(Transaction)
@@ -67,6 +74,18 @@ class TransactionAdmin(admin.ModelAdmin):
         'user__email'
     )
     readonly_fields = ('created_at',)
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj is None:
+            return self.readonly_fields
+        return (
+            'invoice',
+            'user',
+            'amount',
+            'reference_code',
+            'receipt_attachment',
+            'created_at',
+        )
 
 
 @admin.register(Contract)

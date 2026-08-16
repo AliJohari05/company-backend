@@ -1,14 +1,25 @@
 from decimal import Decimal
 
-from django.db.models import Sum
+from django.db.models import DecimalField, ExpressionWrapper, F, Sum
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
-from .models import Invoice, InvoiceItem, Transaction, Contract
+from .models import (
+    MAX_INVOICE_AMOUNT,
+    Contract,
+    Invoice,
+    InvoiceItem,
+    Transaction,
+)
 
 
 class InvoiceItemSerializer(serializers.ModelSerializer):
     """Serializer for individual itemized rows in an invoice."""
 
-    total_price = serializers.ReadOnlyField()
+    total_price = serializers.DecimalField(
+        max_digits=12,
+        decimal_places=2,
+        read_only=True,
+    )
 
     class Meta:
         model = InvoiceItem
@@ -22,10 +33,86 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ('id', 'total_price')
 
+    def validate(self, attrs):
+        invoice = attrs.get(
+            'invoice',
+            self.instance.invoice if self.instance else None,
+        )
+
+        if (
+            self.instance
+            and 'invoice' in attrs
+            and attrs['invoice'].pk != self.instance.invoice_id
+        ):
+            raise serializers.ValidationError({
+                'invoice': 'Moving an existing item to another invoice is not allowed.'
+            })
+
+        if invoice is not None:
+            if invoice.status in {
+                Invoice.StatusChoices.PARTIALLY_PAID,
+                Invoice.StatusChoices.PAID,
+                Invoice.StatusChoices.CANCELED,
+            }:
+                raise serializers.ValidationError({
+                    'invoice': (
+                        'Items of a paid, partially paid, or canceled invoice '
+                        'cannot be changed.'
+                    )
+                })
+
+            if invoice.transactions.filter(
+                status=Transaction.StatusChoices.APPROVED
+            ).exists():
+                raise serializers.ValidationError({
+                    'invoice': (
+                        'Invoice items cannot be changed after a payment is approved.'
+                    )
+                })
+
+            quantity = attrs.get(
+                'quantity',
+                self.instance.quantity if self.instance else 1,
+            )
+            unit_price = attrs.get(
+                'unit_price',
+                self.instance.unit_price if self.instance else None,
+            )
+            if unit_price is not None:
+                line_total = ExpressionWrapper(
+                    F('quantity') * F('unit_price'),
+                    output_field=DecimalField(
+                        max_digits=12,
+                        decimal_places=2,
+                    ),
+                )
+                other_items_total = (
+                    invoice.items.exclude(
+                        pk=self.instance.pk if self.instance else None
+                    ).aggregate(total=Sum(line_total))['total']
+                    or Decimal('0.00')
+                )
+                if (
+                    other_items_total + (quantity * unit_price)
+                    > MAX_INVOICE_AMOUNT
+                ):
+                    raise serializers.ValidationError({
+                        'unit_price': (
+                            'The sum of invoice items exceeds the maximum '
+                            'invoice amount.'
+                        )
+                    })
+
+        return attrs
+
 
 class TransactionSerializer(serializers.ModelSerializer):
     """Serializer for manual/offline payment receipt submissions."""
 
+    invoice_number = serializers.CharField(
+        source='invoice.invoice_number',
+        read_only=True,
+    )
     status_display = serializers.CharField(
         source='get_status_display',
         read_only=True
@@ -40,6 +127,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'invoice',
+            'invoice_number',
             'user',
             'user_email',
             'amount',
@@ -50,6 +138,13 @@ class TransactionSerializer(serializers.ModelSerializer):
             'created_at'
         )
         read_only_fields = ('id', 'user', 'status', 'created_at')
+
+    def validate_amount(self, value):
+        if value <= Decimal('0.00'):
+            raise serializers.ValidationError(
+                'Transaction amount must be greater than zero.'
+            )
+        return value
 
     def validate_receipt_attachment(self, value):
         if value is None:
@@ -67,6 +162,68 @@ class TransactionSerializer(serializers.ModelSerializer):
             )
 
         return value
+
+    def validate(self, attrs):
+        invoice = attrs.get(
+            'invoice',
+            self.instance.invoice if self.instance else None,
+        )
+        reference_code = attrs.get(
+            'reference_code',
+            self.instance.reference_code if self.instance else None,
+        )
+        amount = attrs.get(
+            'amount',
+            self.instance.amount if self.instance else None,
+        )
+
+        if invoice is None:
+            return attrs
+
+        if invoice.status == Invoice.StatusChoices.CANCELED:
+            raise serializers.ValidationError({
+                'invoice': 'A receipt cannot be submitted for a canceled invoice.'
+            })
+
+        if invoice.status == Invoice.StatusChoices.PAID:
+            raise serializers.ValidationError({
+                'invoice': 'This invoice has already been paid in full.'
+            })
+
+        if invoice.total_amount <= Decimal('0.00'):
+            raise serializers.ValidationError({
+                'invoice': 'Add at least one invoice item before submitting a receipt.'
+            })
+
+        approved_total = (
+            invoice.transactions.filter(
+                status=Transaction.StatusChoices.APPROVED
+            ).aggregate(total=Sum('amount'))['total']
+            or Decimal('0.00')
+        )
+        remaining_amount = max(
+            invoice.total_amount - approved_total,
+            Decimal('0.00'),
+        )
+        if amount is not None and amount > remaining_amount:
+            raise serializers.ValidationError({
+                'amount': 'Transaction amount exceeds the invoice remaining amount.'
+            })
+
+        duplicate_reference = Transaction.objects.filter(
+            invoice=invoice,
+            reference_code=reference_code,
+        )
+        if self.instance:
+            duplicate_reference = duplicate_reference.exclude(pk=self.instance.pk)
+        if reference_code and duplicate_reference.exists():
+            raise serializers.ValidationError({
+                'reference_code': (
+                    'This reference code has already been used for this invoice.'
+                )
+            })
+
+        return attrs
 
 
 class TransactionStatusUpdateSerializer(serializers.ModelSerializer):
@@ -151,25 +308,44 @@ class InvoiceSerializer(serializers.ModelSerializer):
         read_only_fields = (
             'id',
             'status',
+            'total_amount',
             'created_at',
             'updated_at'
         )
 
+    @extend_schema_field(
+        serializers.DecimalField(max_digits=12, decimal_places=2)
+    )
     def get_approved_amount(self, obj):
         approved_amount = getattr(obj, 'approved_amount', None)
         if approved_amount is not None:
-            return approved_amount
+            return f'{approved_amount:.2f}'
 
-        return (
+        approved_amount = (
             obj.transactions.filter(
                 status=Transaction.StatusChoices.APPROVED
             ).aggregate(total=Sum('amount'))['total']
             or Decimal('0.00')
         )
+        return f'{approved_amount:.2f}'
 
+    @extend_schema_field(
+        serializers.DecimalField(max_digits=12, decimal_places=2)
+    )
     def get_remaining_amount(self, obj):
-        approved_amount = self.get_approved_amount(obj)
-        return max(obj.total_amount - approved_amount, Decimal('0.00'))
+        approved_amount = getattr(obj, 'approved_amount', None)
+        if approved_amount is None:
+            approved_amount = (
+                obj.transactions.filter(
+                    status=Transaction.StatusChoices.APPROVED
+                ).aggregate(total=Sum('amount'))['total']
+                or Decimal('0.00')
+            )
+        remaining_amount = max(
+            obj.total_amount - approved_amount,
+            Decimal('0.00'),
+        )
+        return f'{remaining_amount:.2f}'
 
 
 class ContractSerializer(serializers.ModelSerializer):

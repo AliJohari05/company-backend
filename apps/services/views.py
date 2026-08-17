@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions, filters
+from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import ServiceCategory, Service
 from .serializers import (
@@ -12,7 +13,14 @@ class ServiceCategoryListView(generics.ListAPIView):
     """
     Retrieve all active service categories along with their sub-services.
     """
-    queryset = ServiceCategory.objects.filter(is_active=True)
+    queryset = ServiceCategory.objects.filter(is_active=True).prefetch_related(
+        Prefetch(
+            'services',
+            queryset=Service.objects.filter(is_active=True).select_related(
+                'category'
+            ),
+        )
+    )
     serializer_class = ServiceCategorySerializer
     permission_classes = [permissions.AllowAny]
 

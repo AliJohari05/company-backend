@@ -23,6 +23,9 @@ class ProjectRequestListCreateView(generics.ListCreateAPIView):
     ordering = ['-created_at']
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return ProjectRequest.objects.none()
+
         user = self.request.user
         # Staff members can inspect all requests; standard users access their own only.
         if user.is_staff or user.is_superuser:
@@ -41,6 +44,9 @@ class ProjectRequestDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return ProjectRequest.objects.none()
+
         user = self.request.user
         if user.is_staff or user.is_superuser:
             return ProjectRequest.objects.all().select_related('user').prefetch_related('attachments')

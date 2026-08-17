@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Category, Technology, PortfolioItem, PortfolioImage
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class PortfolioCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ('id', 'title', 'slug')
@@ -22,7 +22,7 @@ class PortfolioImageSerializer(serializers.ModelSerializer):
 
 class PortfolioItemListSerializer(serializers.ModelSerializer):
     """Lightweight serializer for listing portfolio items on main pages."""
-    category = CategorySerializer(read_only=True)
+    category = PortfolioCategorySerializer(read_only=True)
     technologies = TechnologySerializer(many=True, read_only=True)
 
     class Meta:
@@ -43,7 +43,7 @@ class PortfolioItemListSerializer(serializers.ModelSerializer):
 
 class PortfolioItemDetailSerializer(serializers.ModelSerializer):
     """Detailed serializer including gallery images for full single project view."""
-    category = CategorySerializer(read_only=True)
+    category = PortfolioCategorySerializer(read_only=True)
     technologies = TechnologySerializer(many=True, read_only=True)
     images = PortfolioImageSerializer(many=True, read_only=True)
 

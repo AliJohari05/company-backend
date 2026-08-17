@@ -2,7 +2,7 @@ from rest_framework import generics, permissions, filters
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Category, PortfolioItem
 from .serializers import (
-    CategorySerializer,
+    PortfolioCategorySerializer,
     PortfolioItemListSerializer,
     PortfolioItemDetailSerializer
 )
@@ -10,8 +10,8 @@ from .serializers import (
 
 class CategoryListView(generics.ListAPIView):
     """GET: List all portfolio categories."""
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    queryset = Category.objects.order_by('id')
+    serializer_class = PortfolioCategorySerializer
     permission_classes = [permissions.AllowAny]
 
 

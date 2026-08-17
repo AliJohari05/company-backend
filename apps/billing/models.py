@@ -405,3 +405,7 @@ class Contract(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.user.email}"
+
+
+# Module-level alias used by drf-spectacular's enum name resolver.
+TransactionStatusChoices = Transaction.StatusChoices

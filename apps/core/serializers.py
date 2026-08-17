@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from .models import SiteSetting, SocialLink, FAQ
 
 
@@ -30,6 +31,7 @@ class SiteSettingSerializer(serializers.ModelSerializer):
             'social_links'
         )
 
+    @extend_schema_field(SocialLinkSerializer(many=True))
     def get_social_links(self, obj):
         active_links = SocialLink.objects.filter(is_active=True)
         return SocialLinkSerializer(active_links, many=True).data

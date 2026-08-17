@@ -39,6 +39,9 @@ class TicketListCreateView(generics.ListCreateAPIView):
         return TicketListSerializer
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Ticket.objects.none()
+
         user = self.request.user
         if user.is_staff or user.is_superuser:
             return Ticket.objects.all().select_related('user')
@@ -83,6 +86,9 @@ class TicketDetailView(generics.RetrieveAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        if getattr(self, 'swagger_fake_view', False):
+            return Ticket.objects.none()
+
         user = self.request.user
         if user.is_staff or user.is_superuser:
             return Ticket.objects.all().select_related('user').prefetch_related('messages__user')

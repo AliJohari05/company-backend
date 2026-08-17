@@ -21,7 +21,7 @@ class PostListSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField()
     category = serializers.StringRelatedField()
     tags = serializers.StringRelatedField(many=True)
-    excerpt = serializers.ReadOnlyField()
+    excerpt = serializers.CharField(read_only=True)
     
     class Meta:
         model = Post

@@ -112,6 +112,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+PRIVATE_MEDIA_URL = '/api/v1/billing/private-files/'
+PRIVATE_MEDIA_ROOT = BASE_DIR / 'private_media'
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [

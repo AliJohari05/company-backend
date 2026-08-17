@@ -1,11 +1,21 @@
 from decimal import Decimal
+from mimetypes import guess_type
+from pathlib import PurePosixPath
 
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction as db_transaction
 from django.db.models import DecimalField, Q, Sum, Value
 from django.db.models.functions import Coalesce
+from django.http import FileResponse
+from django.shortcuts import get_object_or_404
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, filters, exceptions, status
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.negotiation import DefaultContentNegotiation
 from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django_filters.rest_framework import DjangoFilterBackend
 from django.utils.translation import gettext_lazy as _
 from .models import Invoice, InvoiceItem, Transaction, Contract
@@ -27,6 +37,41 @@ def django_validation_details(error):
     if hasattr(error, 'message_dict'):
         return error.message_dict
     return {'non_field_errors': error.messages}
+
+
+class FileDownloadContentNegotiation(DefaultContentNegotiation):
+    """
+    Let FileResponse determine the final content type.
+
+    DRF's default negotiation would reject Accept headers such as
+    application/pdf before the download view can return the file.
+    """
+
+    def select_renderer(self, request, renderers, format_suffix=None):
+        renderer = renderers[0]
+        return renderer, renderer.media_type
+
+
+def private_file_response(field_file):
+    if not field_file:
+        raise exceptions.NotFound(_("File not found."))
+
+    try:
+        file_handle = field_file.open('rb')
+    except (FileNotFoundError, OSError) as error:
+        raise exceptions.NotFound(_("File not found.")) from error
+
+    filename = PurePosixPath(field_file.name).name
+    content_type = guess_type(filename)[0] or 'application/octet-stream'
+    response = FileResponse(
+        file_handle,
+        as_attachment=True,
+        filename=filename,
+        content_type=content_type,
+    )
+    response['Cache-Control'] = 'private, no-store'
+    response['X-Content-Type-Options'] = 'nosniff'
+    return response
 
 
 def with_payment_summary(queryset):
@@ -270,6 +315,79 @@ class ContractDetailView(generics.RetrieveUpdateDestroyAPIView):
         super().check_object_permissions(request, obj)
         if request.method not in permissions.SAFE_METHODS and not request.user.is_staff:
             raise exceptions.PermissionDenied(_("You do not have permission to modify this contract."))
+
+
+class ContractDownloadView(APIView):
+    """Download a contract owned by the current user, or any contract as staff."""
+
+    permission_classes = [permissions.IsAuthenticated]
+    content_negotiation_class = FileDownloadContentNegotiation
+
+    @extend_schema(responses={(200, 'application/pdf'): OpenApiTypes.BINARY})
+    def get(self, request, pk):
+        queryset = Contract.objects.all()
+        if not request.user.is_staff:
+            queryset = queryset.filter(user=request.user)
+
+        contract = get_object_or_404(queryset, pk=pk)
+        return private_file_response(contract.file)
+
+
+class TransactionReceiptDownloadView(APIView):
+    """Download a payment receipt owned by the current user, or any as staff."""
+
+    permission_classes = [permissions.IsAuthenticated]
+    content_negotiation_class = FileDownloadContentNegotiation
+
+    @extend_schema(
+        responses={(200, 'application/octet-stream'): OpenApiTypes.BINARY}
+    )
+    def get(self, request, pk):
+        queryset = Transaction.objects.all()
+        if not request.user.is_staff:
+            queryset = queryset.filter(user=request.user)
+
+        payment = get_object_or_404(queryset, pk=pk)
+        return private_file_response(payment.receipt_attachment)
+
+
+class PrivateBillingFileDownloadView(APIView):
+    """
+    Authenticated storage URL used by Django Admin file widgets.
+
+    React clients should use the resource-specific download endpoints instead.
+    """
+
+    authentication_classes = [JWTAuthentication, SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+    content_negotiation_class = FileDownloadContentNegotiation
+
+    @extend_schema(exclude=True)
+    def get(self, request, file_path):
+        path = PurePosixPath(file_path)
+        if path.is_absolute() or '..' in path.parts:
+            raise exceptions.NotFound(_("File not found."))
+
+        normalized_path = path.as_posix()
+        if normalized_path.startswith('contracts/'):
+            queryset = Contract.objects.filter(file=normalized_path)
+            field_name = 'file'
+        elif normalized_path.startswith('receipts/'):
+            queryset = Transaction.objects.filter(
+                receipt_attachment=normalized_path
+            )
+            field_name = 'receipt_attachment'
+        else:
+            raise exceptions.NotFound(_("File not found."))
+
+        if not request.user.is_staff:
+            queryset = queryset.filter(user=request.user)
+
+        instance = queryset.first()
+        if instance is None:
+            raise exceptions.NotFound(_("File not found."))
+
+        return private_file_response(getattr(instance, field_name))
 
 
 # ==========================================

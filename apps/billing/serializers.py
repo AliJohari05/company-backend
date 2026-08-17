@@ -1,6 +1,7 @@
 from decimal import Decimal
 
 from django.db.models import DecimalField, ExpressionWrapper, F, Sum
+from django.urls import reverse
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 from .models import (
@@ -109,6 +110,12 @@ class InvoiceItemSerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     """Serializer for manual/offline payment receipt submissions."""
 
+    receipt_attachment = serializers.FileField(
+        write_only=True,
+        required=False,
+        allow_null=True,
+    )
+    receipt_download_url = serializers.SerializerMethodField()
     invoice_number = serializers.CharField(
         source='invoice.invoice_number',
         read_only=True,
@@ -133,11 +140,24 @@ class TransactionSerializer(serializers.ModelSerializer):
             'amount',
             'reference_code',
             'receipt_attachment',
+            'receipt_download_url',
             'status',
             'status_display',
             'created_at'
         )
         read_only_fields = ('id', 'user', 'status', 'created_at')
+
+    @extend_schema_field(serializers.URLField(allow_null=True))
+    def get_receipt_download_url(self, obj):
+        if not obj.receipt_attachment:
+            return None
+
+        url = reverse(
+            'billing:transaction-receipt-download',
+            kwargs={'pk': obj.pk},
+        )
+        request = self.context.get('request')
+        return request.build_absolute_uri(url) if request else url
 
     def validate_amount(self, value):
         if value <= Decimal('0.00'):
@@ -353,6 +373,8 @@ class ContractSerializer(serializers.ModelSerializer):
 
     MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 
+    file = serializers.FileField(write_only=True)
+    download_url = serializers.SerializerMethodField()
     status_display = serializers.CharField(
         source='get_status_display',
         read_only=True
@@ -370,6 +392,7 @@ class ContractSerializer(serializers.ModelSerializer):
             'user_email',
             'title',
             'file',
+            'download_url',
             'status',
             'status_display',
             'start_date',
@@ -378,6 +401,15 @@ class ContractSerializer(serializers.ModelSerializer):
         )
         # 'user' is writable so admin can assign the contract to a specific user
         read_only_fields = ('id', 'created_at')
+
+    @extend_schema_field(serializers.URLField())
+    def get_download_url(self, obj):
+        url = reverse(
+            'billing:contract-download',
+            kwargs={'pk': obj.pk},
+        )
+        request = self.context.get('request')
+        return request.build_absolute_uri(url) if request else url
 
     def validate_file(self, value):
         """Accept PDF contracts up to 10 MB."""

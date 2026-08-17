@@ -139,6 +139,7 @@ All monetary fields (`amount`, `unit_price`, `total_price`, `estimated_budget`) 
 | `POST` | `/billing/contracts/` | Admin | Create a new contract |
 | `GET` | `/billing/contracts/{id}/` | JWT | Get contract details |
 | `PUT/PATCH/DELETE` | `/billing/contracts/{id}/` | Admin | Update or delete contract |
+| `GET` | `/billing/contracts/{id}/download/` | JWT | Securely download a contract (owner or Admin) |
 | `GET` | `/billing/invoices/` | JWT | List invoices (Admin sees all, Client sees own) |
 | `POST` | `/billing/invoices/` | Admin | Create an invoice header; `total_amount` is calculated from its items |
 | `GET` | `/billing/invoices/{id}/` | JWT | Get invoice details and line items |
@@ -150,6 +151,7 @@ All monetary fields (`amount`, `unit_price`, `total_price`, `estimated_budget`) 
 | `GET` | `/billing/transactions/{id}/` | JWT | Get a payment receipt (Admin sees all; Client sees own) |
 | `PUT/PATCH` | `/billing/transactions/{id}/` | Admin | Approve or reject a receipt by updating its `status` |
 | `DELETE` | `/billing/transactions/{id}/` | Admin | Delete a payment receipt |
+| `GET` | `/billing/transactions/{id}/receipt/` | JWT | Securely download a receipt (owner or Admin) |
 
 Billing rules:
 
@@ -165,6 +167,10 @@ Billing rules:
   amount, and a reference code cannot be reused for the same invoice.
 - Receipts cannot be submitted for canceled, fully paid, or zero-total
   invoices.
+- Contract and receipt files are stored outside public `MEDIA_ROOT`. Their
+  direct storage URLs are not included in API responses.
+- File downloads require authentication and are limited to the file owner or
+  an Admin/Staff user.
 
 ### 5.6 Blog
 
@@ -284,6 +290,35 @@ const response = await fetch(`${API_BASE_URL}/billing/transactions/`, {
   body: formData
 });
 
+```
+
+Secure file download example:
+
+```javascript
+const response = await fetch(contract.download_url, {
+  headers: {
+    Authorization: `Bearer ${accessToken}`
+  }
+});
+
+if (!response.ok) {
+  throw new Error("File download failed");
+}
+
+const blob = await response.blob();
+const objectUrl = URL.createObjectURL(blob);
+const link = document.createElement("a");
+link.href = objectUrl;
+link.download = "contract.pdf";
+link.click();
+URL.revokeObjectURL(objectUrl);
+```
+
+After deploying a version that introduces private billing storage, run:
+
+```bash
+python manage.py migrate
+python manage.py move_billing_files_to_private
 ```
 
 ---

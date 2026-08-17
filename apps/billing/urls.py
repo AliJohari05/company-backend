@@ -15,8 +15,25 @@ urlpatterns = [
     # Transactions / Receipts
     path('transactions/', views.TransactionListCreateView.as_view(), name='transaction-list-create'),
     path('transactions/<int:pk>/', views.TransactionDetailView.as_view(), name='transaction-detail'),
+    path(
+        'transactions/<int:pk>/receipt/',
+        views.TransactionReceiptDownloadView.as_view(),
+        name='transaction-receipt-download',
+    ),
 
     # Contracts
     path('contracts/', views.ContractListCreateView.as_view(), name='contract-list-create'),
     path('contracts/<int:pk>/', views.ContractDetailView.as_view(), name='contract-detail'),
+    path(
+        'contracts/<int:pk>/download/',
+        views.ContractDownloadView.as_view(),
+        name='contract-download',
+    ),
+
+    # Private storage URL used by authenticated clients and Django Admin.
+    path(
+        'private-files/<path:file_path>',
+        views.PrivateBillingFileDownloadView.as_view(),
+        name='private-file-download',
+    ),
 ]

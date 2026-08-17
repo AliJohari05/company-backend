@@ -8,6 +8,7 @@ from django.db.models import DecimalField, ExpressionWrapper, F, Sum
 from django.utils.translation import gettext_lazy as _
 from apps.projects.models import ProjectRequest
 from apps.services.models import Service
+from .storage import private_billing_storage
 
 
 MAX_INVOICE_AMOUNT = Decimal('9999999999.99')
@@ -261,6 +262,7 @@ class Transaction(models.Model):
     )
     receipt_attachment = models.FileField(
         upload_to='receipts/',
+        storage=private_billing_storage,
         null=True,
         blank=True,
         verbose_name=_("Receipt Attachment")
@@ -381,7 +383,11 @@ class Contract(models.Model):
         verbose_name=_("User")
     )
     title = models.CharField(max_length=255, verbose_name=_("Contract Title"))
-    file = models.FileField(upload_to='contracts/', verbose_name=_("Contract Document (PDF)"))
+    file = models.FileField(
+        upload_to='contracts/',
+        storage=private_billing_storage,
+        verbose_name=_("Contract Document (PDF)")
+    )
     status = models.CharField(
         max_length=20,
         choices=StatusChoices.choices,

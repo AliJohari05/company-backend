@@ -8,13 +8,18 @@ ENV PYTHONUNBUFFERED 1
 # 3. Set work directory inside container
 WORKDIR /app
 
-# 4. Install dependencies
+# 4. Install system and Python dependencies
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y gettext && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY requirements.txt /app/
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
 # 5. Copy project code
 COPY . /app/
+RUN python manage.py compilemessages
 
 # 6. Expose port 8000
 EXPOSE 8000

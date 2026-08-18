@@ -63,6 +63,25 @@ The API uses **JWT (JSON Web Token)** Bearer Authentication.
 
 ## 4. Response Structure, Pagination & Currency
 
+### Language
+
+The API supports English and Persian for translatable validation and response
+messages. English is the default language. Send the standard
+`Accept-Language` header to select a language:
+
+```http
+Accept-Language: fa
+```
+
+or:
+
+```http
+Accept-Language: en
+```
+
+Enum values and field names remain stable English API identifiers; only
+human-readable messages and display labels are translated.
+
 ### Paginated Responses (List Endpoints)
 
 Endpoints that return lists (Blog Posts, Invoices, Projects, etc.) follow Django REST Framework's standard paginated format:

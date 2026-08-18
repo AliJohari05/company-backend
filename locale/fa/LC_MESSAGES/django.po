@@ -1,0 +1,573 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CtrlOps API 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-18 08:34+0000\n"
+"PO-Revision-Date: 2026-08-18 12:15+0330\n"
+"Last-Translator: CtrlOps Team\n"
+"Language-Team: Persian\n"
+"Language: fa\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Credentials"
+msgstr "اطلاعات ورود"
+
+msgid "Personal Info"
+msgstr "اطلاعات شخصی"
+
+msgid "Permissions & Roles"
+msgstr "مجوزها و نقش‌ها"
+
+msgid "Important dates"
+msgstr "تاریخ‌های مهم"
+
+msgid "Email address is required."
+msgstr "آدرس ایمیل الزامی است."
+
+msgid "Superuser must have is_staff=True."
+msgstr "برای ابرکاربر مقدار is_staff باید True باشد."
+
+msgid "Superuser must have is_superuser=True."
+msgstr "برای ابرکاربر مقدار is_superuser باید True باشد."
+
+msgid "Administrator"
+msgstr "مدیر"
+
+msgid "Staff"
+msgstr "کارمند"
+
+msgid "Client"
+msgstr "مشتری"
+
+msgid "Email Address"
+msgstr "آدرس ایمیل"
+
+msgid "Email Verified"
+msgstr "ایمیل تأیید شده"
+
+msgid "Email Verified At"
+msgstr "زمان تأیید ایمیل"
+
+msgid "Phone Number"
+msgstr "شماره تلفن"
+
+msgid "Company Name"
+msgstr "نام شرکت"
+
+msgid "User Role"
+msgstr "نقش کاربر"
+
+msgid "A user with this email address already exists."
+msgstr "کاربری با این آدرس ایمیل از قبل وجود دارد."
+
+msgid "Invalid phone number format."
+msgstr "قالب شماره تلفن معتبر نیست."
+
+msgid "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)."
+msgstr "رمز عبور باید حداقل ۸ کاراکتر داشته باشد و شامل حداقل یک حرف بزرگ، یک حرف کوچک، یک عدد و یک نویسه ویژه (@$!%*?&) باشد."
+
+msgid "Passwords do not match."
+msgstr "رمزهای عبور یکسان نیستند."
+
+msgid "New password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)."
+msgstr "رمز عبور جدید باید حداقل ۸ کاراکتر داشته باشد و شامل حداقل یک حرف بزرگ، یک حرف کوچک، یک عدد و یک نویسه ویژه (@$!%*?&) باشد."
+
+msgid "Verify your email address"
+msgstr "آدرس ایمیل خود را تأیید کنید"
+
+#, python-format
+msgid "Hello %(name)s,"
+msgstr "سلام %(name)s،"
+
+msgid "Thank you for creating a CtrlOps account. Verify your email address to activate your account."
+msgstr "از ایجاد حساب کاربری در CtrlOps سپاسگزاریم. برای فعال‌سازی حساب، آدرس ایمیل خود را تأیید کنید."
+
+msgid "Verify email address"
+msgstr "تأیید آدرس ایمیل"
+
+#, python-format
+msgid "This link expires in %(expires_in_hours)s hours. If you did not create this account, you can ignore this email."
+msgstr "این لینک پس از %(expires_in_hours)s ساعت منقضی می‌شود. اگر این حساب را ایجاد نکرده‌اید، می‌توانید این ایمیل را نادیده بگیرید."
+
+msgid "CtrlOps Team"
+msgstr "تیم CtrlOps"
+
+msgid "Thank you for creating a CtrlOps account."
+msgstr "از ایجاد حساب کاربری در CtrlOps سپاسگزاریم."
+
+msgid "Use the link below to verify your email address and activate your account:"
+msgstr "برای تأیید آدرس ایمیل و فعال‌سازی حساب خود از لینک زیر استفاده کنید:"
+
+msgid "Verify your CtrlOps email address"
+msgstr "آدرس ایمیل حساب CtrlOps خود را تأیید کنید"
+
+msgid "Registration successful. Please verify your email address."
+msgstr "ثبت‌نام با موفقیت انجام شد. لطفاً آدرس ایمیل خود را تأیید کنید."
+
+msgid "Email address is already verified."
+msgstr "آدرس ایمیل قبلاً تأیید شده است."
+
+msgid "Email address verified successfully."
+msgstr "آدرس ایمیل با موفقیت تأیید شد."
+
+msgid "The verification link is invalid or has expired."
+msgstr "لینک تأیید نامعتبر است یا منقضی شده است."
+
+msgid "If an eligible account exists, a verification email has been sent."
+msgstr "اگر حساب واجد شرایطی وجود داشته باشد، ایمیل تأیید ارسال شده است."
+
+msgid "Successfully logged out."
+msgstr "خروج از حساب با موفقیت انجام شد."
+
+msgid "Invalid token."
+msgstr "توکن نامعتبر است."
+
+msgid "Wrong password."
+msgstr "رمز عبور نادرست است."
+
+msgid "Password updated successfully."
+msgstr "رمز عبور با موفقیت به‌روزرسانی شد."
+
+msgid "Unpaid"
+msgstr "پرداخت‌نشده"
+
+msgid "Partially Paid"
+msgstr "بخشی پرداخت‌شده"
+
+msgid "Paid"
+msgstr "پرداخت‌شده"
+
+msgid "Overdue"
+msgstr "سررسید گذشته"
+
+msgid "Canceled"
+msgstr "لغوشده"
+
+msgid "Invoice Number"
+msgstr "شماره فاکتور"
+
+msgid "User"
+msgstr "کاربر"
+
+msgid "Related Project Request"
+msgstr "درخواست پروژه مرتبط"
+
+msgid "Related Service"
+msgstr "خدمت مرتبط"
+
+msgid "Total Amount"
+msgstr "مبلغ کل"
+
+msgid "Status"
+msgstr "وضعیت"
+
+msgid "Due Date"
+msgstr "تاریخ سررسید"
+
+msgid "Created At"
+msgstr "زمان ایجاد"
+
+msgid "Updated At"
+msgstr "زمان به‌روزرسانی"
+
+msgid "Invoice"
+msgstr "فاکتور"
+
+msgid "Invoices"
+msgstr "فاکتورها"
+
+msgid "Description"
+msgstr "توضیحات"
+
+msgid "Quantity"
+msgstr "تعداد"
+
+msgid "Unit Price"
+msgstr "قیمت واحد"
+
+msgid "Invoice Item"
+msgstr "آیتم فاکتور"
+
+msgid "Invoice Items"
+msgstr "آیتم‌های فاکتور"
+
+msgid "Items of a paid, partially paid, or canceled invoice cannot be changed."
+msgstr "آیتم‌های فاکتور پرداخت‌شده، بخشی پرداخت‌شده یا لغوشده قابل تغییر نیستند."
+
+msgid "Invoice items cannot be changed after a payment is approved."
+msgstr "پس از تأیید پرداخت، آیتم‌های فاکتور قابل تغییر نیستند."
+
+msgid "The sum of invoice items exceeds the maximum invoice amount."
+msgstr "مجموع آیتم‌های فاکتور از حداکثر مبلغ مجاز بیشتر است."
+
+msgid "Pending Verification"
+msgstr "در انتظار بررسی"
+
+msgid "Approved"
+msgstr "تأییدشده"
+
+msgid "Rejected"
+msgstr "ردشده"
+
+msgid "Related Invoice"
+msgstr "فاکتور مرتبط"
+
+msgid "Amount Paid"
+msgstr "مبلغ پرداختی"
+
+msgid "Reference Code / Tracking Number"
+msgstr "کد مرجع / شماره پیگیری"
+
+msgid "Receipt Attachment"
+msgstr "فایل پیوست رسید"
+
+msgid "Verification Status"
+msgstr "وضعیت بررسی"
+
+msgid "Transaction"
+msgstr "تراکنش"
+
+msgid "Transactions"
+msgstr "تراکنش‌ها"
+
+msgid "Transaction user must match the invoice user."
+msgstr "کاربر تراکنش باید با کاربر فاکتور یکسان باشد."
+
+msgid "A receipt cannot be submitted for a canceled invoice."
+msgstr "برای فاکتور لغوشده نمی‌توان رسید ثبت کرد."
+
+msgid "This invoice has already been paid in full."
+msgstr "این فاکتور قبلاً به‌طور کامل پرداخت شده است."
+
+msgid "Add at least one invoice item before submitting a receipt."
+msgstr "پیش از ثبت رسید، حداقل یک آیتم به فاکتور اضافه کنید."
+
+msgid "Transaction amount exceeds the invoice remaining amount."
+msgstr "مبلغ تراکنش از مبلغ باقی‌مانده فاکتور بیشتر است."
+
+msgid "A receipt cannot be approved for a canceled invoice."
+msgstr "رسید مربوط به فاکتور لغوشده قابل تأیید نیست."
+
+msgid "Approving this receipt would exceed the invoice total."
+msgstr "با تأیید این رسید، مبلغ پرداختی از مبلغ کل فاکتور بیشتر می‌شود."
+
+msgid "Active"
+msgstr "فعال"
+
+msgid "Expired"
+msgstr "منقضی‌شده"
+
+msgid "Terminated"
+msgstr "فسخ‌شده"
+
+msgid "Contract Title"
+msgstr "عنوان قرارداد"
+
+msgid "Contract Document (PDF)"
+msgstr "سند قرارداد (PDF)"
+
+msgid "Contract Status"
+msgstr "وضعیت قرارداد"
+
+msgid "Start Date"
+msgstr "تاریخ شروع"
+
+msgid "End Date"
+msgstr "تاریخ پایان"
+
+msgid "Contract"
+msgstr "قرارداد"
+
+msgid "Contracts"
+msgstr "قراردادها"
+
+msgid "File not found."
+msgstr "فایل پیدا نشد."
+
+msgid "You do not have permission to modify this invoice."
+msgstr "اجازه تغییر این فاکتور را ندارید."
+
+msgid "You can only submit payment receipts for your own invoices."
+msgstr "فقط برای فاکتورهای خودتان می‌توانید رسید پرداخت ثبت کنید."
+
+msgid "You do not have permission to modify this transaction."
+msgstr "اجازه تغییر این تراکنش را ندارید."
+
+msgid "You do not have permission to modify this contract."
+msgstr "اجازه تغییر این قرارداد را ندارید."
+
+msgid "Name"
+msgstr "نام"
+
+msgid "Slug"
+msgstr "نامک"
+
+msgid "Category"
+msgstr "دسته‌بندی"
+
+msgid "Categories"
+msgstr "دسته‌بندی‌ها"
+
+msgid "Tag"
+msgstr "برچسب"
+
+msgid "Tags"
+msgstr "برچسب‌ها"
+
+msgid "Author"
+msgstr "نویسنده"
+
+msgid "Title"
+msgstr "عنوان"
+
+msgid "Content"
+msgstr "محتوا"
+
+msgid "Featured Image"
+msgstr "تصویر شاخص"
+
+msgid "Meta Description"
+msgstr "توضیحات متا"
+
+msgid "Is Published"
+msgstr "منتشر شده"
+
+msgid "Published At"
+msgstr "زمان انتشار"
+
+msgid "Views Count"
+msgstr "تعداد بازدید"
+
+msgid "Post"
+msgstr "نوشته"
+
+msgid "Posts"
+msgstr "نوشته‌ها"
+
+msgid "Site Name"
+msgstr "نام سایت"
+
+msgid "Site Logo"
+msgstr "لوگوی سایت"
+
+msgid "About Us Text"
+msgstr "متن درباره ما"
+
+msgid "Contact Email"
+msgstr "ایمیل تماس"
+
+msgid "Physical Address"
+msgstr "آدرس"
+
+msgid "Working Hours"
+msgstr "ساعات کاری"
+
+msgid "Site Setting"
+msgstr "تنظیمات سایت"
+
+msgid "Site Settings"
+msgstr "تنظیمات سایت"
+
+msgid "Platform Name"
+msgstr "نام پلتفرم"
+
+msgid "Profile URL"
+msgstr "آدرس پروفایل"
+
+msgid "Icon / SVG"
+msgstr "آیکون / SVG"
+
+msgid "Is Active"
+msgstr "فعال است"
+
+msgid "Social Link"
+msgstr "لینک شبکه اجتماعی"
+
+msgid "Social Links"
+msgstr "لینک‌های شبکه اجتماعی"
+
+msgid "Question"
+msgstr "پرسش"
+
+msgid "Answer"
+msgstr "پاسخ"
+
+msgid "Display Order"
+msgstr "ترتیب نمایش"
+
+msgid "FAQ"
+msgstr "پرسش متداول"
+
+msgid "FAQs"
+msgstr "پرسش‌های متداول"
+
+msgid "Category Title"
+msgstr "عنوان دسته‌بندی"
+
+msgid "Technology Name"
+msgstr "نام فناوری"
+
+msgid "Technology"
+msgstr "فناوری"
+
+msgid "Technologies"
+msgstr "فناوری‌ها"
+
+msgid "Project Title"
+msgstr "عنوان پروژه"
+
+msgid "Technologies Used"
+msgstr "فناوری‌های استفاده‌شده"
+
+msgid "Cover Image"
+msgstr "تصویر کاور"
+
+msgid "Short Summary"
+msgstr "خلاصه کوتاه"
+
+msgid "Full Project Description"
+msgstr "توضیحات کامل پروژه"
+
+msgid "GitHub Repository URL"
+msgstr "آدرس مخزن GitHub"
+
+msgid "Live Demo URL"
+msgstr "آدرس دموی آنلاین"
+
+msgid "Client Name"
+msgstr "نام مشتری"
+
+msgid "Show on Home Page"
+msgstr "نمایش در صفحه اصلی"
+
+msgid "Portfolio Item"
+msgstr "نمونه‌کار"
+
+msgid "Portfolio Items"
+msgstr "نمونه‌کارها"
+
+msgid "Portfolio Project"
+msgstr "پروژه نمونه‌کار"
+
+msgid "Image"
+msgstr "تصویر"
+
+msgid "Caption"
+msgstr "عنوان تصویر"
+
+msgid "Portfolio Image"
+msgstr "تصویر نمونه‌کار"
+
+msgid "Portfolio Images"
+msgstr "تصاویر نمونه‌کار"
+
+msgid "Pending"
+msgstr "در انتظار"
+
+msgid "In Progress"
+msgstr "در حال انجام"
+
+msgid "Completed"
+msgstr "تکمیل‌شده"
+
+msgid "Service"
+msgstr "خدمت"
+
+msgid "Estimated Budget"
+msgstr "بودجه تخمینی"
+
+msgid "Project Request"
+msgstr "درخواست پروژه"
+
+msgid "Project Requests"
+msgstr "درخواست‌های پروژه"
+
+msgid "File"
+msgstr "فایل"
+
+msgid "Project Attachment"
+msgstr "پیوست پروژه"
+
+msgid "Project Attachments"
+msgstr "پیوست‌های پروژه"
+
+msgid "Icon Class or URL"
+msgstr "کلاس آیکون یا آدرس آن"
+
+msgid "Service Category"
+msgstr "دسته‌بندی خدمات"
+
+msgid "Service Categories"
+msgstr "دسته‌بندی‌های خدمات"
+
+msgid "Short Description"
+msgstr "توضیحات کوتاه"
+
+msgid "Full Description"
+msgstr "توضیحات کامل"
+
+msgid "Services"
+msgstr "خدمات"
+
+msgid "Price"
+msgstr "قیمت"
+
+msgid "Features"
+msgstr "ویژگی‌ها"
+
+msgid "Is Popular"
+msgstr "محبوب است"
+
+msgid "Service Plan"
+msgstr "پلن خدمت"
+
+msgid "Service Plans"
+msgstr "پلن‌های خدمات"
+
+msgid "Low"
+msgstr "کم"
+
+msgid "Medium"
+msgstr "متوسط"
+
+msgid "High"
+msgstr "زیاد"
+
+msgid "Open"
+msgstr "باز"
+
+msgid "Pending User Reply"
+msgstr "در انتظار پاسخ کاربر"
+
+msgid "Answered"
+msgstr "پاسخ داده‌شده"
+
+msgid "Resolved"
+msgstr "حل‌شده"
+
+msgid "Closed"
+msgstr "بسته"
+
+msgid "Priority"
+msgstr "اولویت"
+
+msgid "Ticket"
+msgstr "تیکت"
+
+msgid "Tickets"
+msgstr "تیکت‌ها"
+
+msgid "Message"
+msgstr "پیام"
+
+msgid "Attachment"
+msgstr "پیوست"
+
+msgid "Ticket Message"
+msgstr "پیام تیکت"
+
+msgid "Ticket Messages"
+msgstr "پیام‌های تیکت"

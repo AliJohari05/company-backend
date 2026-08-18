@@ -1,12 +1,13 @@
 {% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
 <!doctype html>
-<html lang="en">
+<html lang="{{ LANGUAGE_CODE }}" dir="{% if LANGUAGE_CODE == 'fa' %}rtl{% else %}ltr{% endif %}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% translate "Verify your email address" %}</title>
 </head>
-<body style="margin:0;background:#f4f7fb;font-family:Arial,sans-serif;color:#182230;">
+<body style="margin:0;background:#f4f7fb;font-family:Arial,sans-serif;color:#182230;text-align:{% if LANGUAGE_CODE == 'fa' %}right{% else %}left{% endif %};">
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f7fb;padding:32px 16px;">
     <tr>
       <td align="center">

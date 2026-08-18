@@ -52,8 +52,13 @@ jobs:
 
       - name: Install dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y gettext
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
+
+      - name: Compile translations
+        run: python manage.py compilemessages
 
       - name: Run Django system checks
         run: python manage.py check

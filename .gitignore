@@ -52,6 +52,7 @@ coverage.xml
 cover/
 
 # Translations
+# Compiled catalogs are generated during Docker/CI builds.
 *.mo
 *.pot
 

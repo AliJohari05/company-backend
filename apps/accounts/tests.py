@@ -252,6 +252,48 @@ class AccountsAPITests(APITestCase):
             status.HTTP_400_BAD_REQUEST,
         )
 
+    def test_accept_language_fa_translates_api_and_verification_email(self):
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.post(
+                reverse('auth_register'),
+                {
+                    'email': 'persian-user@example.com',
+                    'first_name': 'علی',
+                    'password': 'StrongPass1!',
+                    'password_confirm': 'StrongPass1!',
+                },
+                format='json',
+                HTTP_ACCEPT_LANGUAGE='fa',
+            )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            response.data['detail'],
+            'ثبت‌نام با موفقیت انجام شد. لطفاً آدرس ایمیل خود را تأیید کنید.',
+        )
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(
+            mail.outbox[0].subject,
+            'آدرس ایمیل حساب CtrlOps خود را تأیید کنید',
+        )
+        self.assertIn('سلام علی،', mail.outbox[0].body)
+        html_body = mail.outbox[0].alternatives[0][0]
+        self.assertIn('lang="fa"', html_body)
+        self.assertIn('dir="rtl"', html_body)
+
+    def test_accept_language_en_remains_default(self):
+        response = self.client.post(
+            reverse('verify_email'),
+            {'uid': 'invalid', 'token': 'invalid'},
+            format='json',
+            HTTP_ACCEPT_LANGUAGE='en',
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data['detail'],
+            'The verification link is invalid or has expired.',
+        )
+
     def test_profile_requires_authentication_and_updates_current_user(self):
         url = reverse('user_profile')
         anonymous_response = self.client.get(url)

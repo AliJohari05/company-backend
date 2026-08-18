@@ -175,7 +175,12 @@ REST_FRAMEWORK = {
 
     # standard pagination settings
     'DEFAULT_PAGINATION_CLASS': 'apps.core.pagination.StandardResultsSetPagination',
-        'PAGE_SIZE': 10,
+    'PAGE_SIZE': 10,
+    'DEFAULT_THROTTLE_RATES': {
+        'register': '5/hour',
+        'email_verification': '20/hour',
+        'verification_resend': '3/hour',
+    },
 }
 
 SIMPLE_JWT = {
@@ -203,3 +208,30 @@ if API_SERVER_URL:
     SPECTACULAR_SETTINGS['SERVERS'] = [
         {'url': API_SERVER_URL, 'description': 'Configured API server'},
     ]
+
+FRONTEND_URL = os.environ.get(
+    'FRONTEND_URL',
+    'http://localhost:5173',
+).rstrip('/')
+
+EMAIL_BACKEND = os.environ.get(
+    'EMAIL_BACKEND',
+    'django.core.mail.backends.console.EmailBackend',
+)
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'localhost')
+EMAIL_PORT = int(os.environ.get('EMAIL_PORT', '587'))
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+EMAIL_USE_TLS = env_bool('EMAIL_USE_TLS', True)
+EMAIL_USE_SSL = env_bool('EMAIL_USE_SSL', False)
+EMAIL_TIMEOUT = int(os.environ.get('EMAIL_TIMEOUT', '10'))
+DEFAULT_FROM_EMAIL = os.environ.get(
+    'DEFAULT_FROM_EMAIL',
+    'CtrlOps <no-reply@ctrlops.local>',
+)
+EMAIL_VERIFICATION_TIMEOUT = int(
+    os.environ.get('EMAIL_VERIFICATION_TIMEOUT', '86400')
+)
+# Email verification tokens use Django's hardened password-reset token
+# implementation and therefore share its timeout setting.
+PASSWORD_RESET_TIMEOUT = EMAIL_VERIFICATION_TIMEOUT

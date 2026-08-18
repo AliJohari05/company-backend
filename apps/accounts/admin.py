@@ -33,8 +33,23 @@ class CustomUserAdmin(UserAdmin):
     form = CustomUserChangeForm
 
     # List view display configuration
-    list_display = ('email', 'first_name', 'last_name', 'phone_number', 'role', 'is_active', 'is_staff')
-    list_filter = ('role', 'is_active', 'is_staff', 'created_at')
+    list_display = (
+        'email',
+        'first_name',
+        'last_name',
+        'phone_number',
+        'role',
+        'is_email_verified',
+        'is_active',
+        'is_staff',
+    )
+    list_filter = (
+        'role',
+        'is_email_verified',
+        'is_active',
+        'is_staff',
+        'created_at',
+    )
     search_fields = ('email', 'phone_number', 'first_name', 'last_name', 'company_name')
     ordering = ('-created_at',)
 
@@ -42,16 +57,56 @@ class CustomUserAdmin(UserAdmin):
     fieldsets = (
         (_('Credentials'), {'fields': ('email', 'password')}),
         (_('Personal Info'), {'fields': ('first_name', 'last_name', 'phone_number', 'company_name')}),
-        (_('Permissions & Roles'), {'fields': ('role', 'is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        (_('Important dates'), {'fields': ('created_at', 'updated_at', 'last_login')}),
+        (
+            _('Permissions & Roles'),
+            {
+                'fields': (
+                    'role',
+                    'is_email_verified',
+                    'is_active',
+                    'is_staff',
+                    'is_superuser',
+                    'groups',
+                    'user_permissions',
+                )
+            },
+        ),
+        (
+            _('Important dates'),
+            {
+                'fields': (
+                    'created_at',
+                    'updated_at',
+                    'last_login',
+                    'email_verified_at',
+                )
+            },
+        ),
     )
 
     # New user creation page layout
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'password1', 'password2', 'first_name', 'last_name', 'phone_number', 'company_name', 'role', 'is_active', 'is_staff'),
+            'fields': (
+                'email',
+                'password1',
+                'password2',
+                'first_name',
+                'last_name',
+                'phone_number',
+                'company_name',
+                'role',
+                'is_email_verified',
+                'is_active',
+                'is_staff',
+            ),
         }),
     )
 
-    readonly_fields = ('created_at', 'updated_at', 'last_login')
+    readonly_fields = (
+        'created_at',
+        'updated_at',
+        'last_login',
+        'email_verified_at',
+    )

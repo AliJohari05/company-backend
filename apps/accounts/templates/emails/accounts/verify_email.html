@@ -1,0 +1,39 @@
+{% load i18n %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% translate "Verify your email address" %}</title>
+</head>
+<body style="margin:0;background:#f4f7fb;font-family:Arial,sans-serif;color:#182230;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f4f7fb;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:600px;background:#ffffff;border-radius:12px;padding:32px;">
+          <tr>
+            <td>
+              <h1 style="margin:0 0 20px;font-size:24px;">CtrlOps</h1>
+              <p style="line-height:1.7;">
+                {% blocktranslate with name=user.first_name|default:user.email %}Hello {{ name }},{% endblocktranslate %}
+              </p>
+              <p style="line-height:1.7;">
+                {% translate "Thank you for creating a CtrlOps account. Verify your email address to activate your account." %}
+              </p>
+              <p style="margin:28px 0;">
+                <a href="{{ verification_url }}" style="display:inline-block;background:#2563eb;color:#ffffff;text-decoration:none;padding:12px 22px;border-radius:8px;">
+                  {% translate "Verify email address" %}
+                </a>
+              </p>
+              <p style="line-height:1.7;color:#52606d;">
+                {% blocktranslate %}This link expires in {{ expires_in_hours }} hours. If you did not create this account, you can ignore this email.{% endblocktranslate %}
+              </p>
+              <p style="line-height:1.7;color:#52606d;">{% translate "CtrlOps Team" %}</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>

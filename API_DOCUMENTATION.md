@@ -48,10 +48,16 @@ The API uses **JWT (JSON Web Token)** Bearer Authentication.
 
 ### Token Flow
 
-1. Send credentials to `/accounts/login/` to receive `access` and `refresh` tokens.
-2. Store tokens securely on the client side.
-3. Attach the `access` token to all protected API requests.
-4. When the `access` token expires (`401 Unauthorized`), send the `refresh` token to `/accounts/refresh/` to obtain a new access token.
+1. Register using `/accounts/register/`. The account remains inactive until
+   its email address is verified.
+2. Open the email verification link. The frontend sends its `uid` and `token`
+   to `/accounts/verify-email/`.
+3. Send verified credentials to `/accounts/login/` to receive `access` and
+   `refresh` tokens.
+4. Store tokens securely on the client side.
+5. Attach the `access` token to all protected API requests.
+6. When the access token expires (`401 Unauthorized`), send the refresh token
+   to `/accounts/refresh/` to obtain a new access token.
 
 ---
 
@@ -95,7 +101,9 @@ All monetary fields (`amount`, `unit_price`, `total_price`, `estimated_budget`) 
 
 | Method | Endpoint | Auth | Purpose |
 | --- | --- | --- | --- |
-| `POST` | `/accounts/register/` | Public | Register a new user account |
+| `POST` | `/accounts/register/` | Public | Register an inactive account and send its verification email |
+| `POST` | `/accounts/verify-email/` | Public | Verify the signed email token and activate the account |
+| `POST` | `/accounts/resend-verification/` | Public | Resend verification without revealing whether an account exists |
 | `POST` | `/accounts/login/` | Public | Authenticate and obtain JWT token pair |
 | `POST` | `/accounts/refresh/` | Public | Obtain a new access token using refresh token |
 | `POST` | `/accounts/logout/` | JWT | Logout and blacklist refresh token |
@@ -103,6 +111,18 @@ All monetary fields (`amount`, `unit_price`, `total_price`, `estimated_budget`) 
 | `PUT` | `/accounts/profile/` | JWT | Update user profile |
 | `PATCH` | `/accounts/profile/` | JWT | Partially update user profile |
 | `POST` | `/accounts/change-password/` | JWT | Change authenticated user password |
+
+Email verification rules:
+
+- Registration does not return JWT tokens. Users must verify their email
+  before they can log in.
+- Verification links expire after the configured
+  `EMAIL_VERIFICATION_TIMEOUT` period (24 hours by default).
+- The frontend verification page reads `uid` and `token` from the email link
+  and sends them as JSON to `/accounts/verify-email/`.
+- Resend responses are intentionally identical for existing and unknown email
+  addresses to prevent account enumeration.
+- Registration, verification, and resend endpoints are rate limited.
 
 ### 5.2 Services
 

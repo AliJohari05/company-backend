@@ -20,6 +20,14 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = User
         fields = ('email', 'first_name', 'last_name', 'phone_number', 'company_name', 'password', 'password_confirm')
 
+    def validate_email(self, value):
+        email = User.objects.normalize_email(value).strip().lower()
+        if User.objects.filter(email__iexact=email).exists():
+            raise serializers.ValidationError(
+                _("A user with this email address already exists.")
+            )
+        return email
+
     def validate_phone_number(self, value):
         if value and not PHONE_REGEX.match(value):
             raise serializers.ValidationError(_("Invalid phone number format."))
@@ -44,14 +52,36 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop('password_confirm')
-        return User.objects.create_user(**validated_data)
+        return User.objects.create_user(
+            is_active=False,
+            is_email_verified=False,
+            **validated_data,
+        )
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'phone_number', 'company_name', 'role', 'created_at')
-        read_only_fields = ('id', 'email', 'role', 'created_at')
+        fields = (
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'phone_number',
+            'company_name',
+            'role',
+            'is_email_verified',
+            'email_verified_at',
+            'created_at',
+        )
+        read_only_fields = (
+            'id',
+            'email',
+            'role',
+            'is_email_verified',
+            'email_verified_at',
+            'created_at',
+        )
 
     def validate_phone_number(self, value):
         if value and not PHONE_REGEX.match(value):
@@ -81,3 +111,19 @@ class LogoutSerializer(serializers.Serializer):
 
 class DetailResponseSerializer(serializers.Serializer):
     detail = serializers.CharField(read_only=True)
+
+
+class RegisterResponseSerializer(DetailResponseSerializer):
+    email = serializers.EmailField(read_only=True)
+
+
+class VerifyEmailSerializer(serializers.Serializer):
+    uid = serializers.CharField()
+    token = serializers.CharField()
+
+
+class ResendVerificationSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        return User.objects.normalize_email(value).strip().lower()

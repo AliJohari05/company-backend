@@ -7,8 +7,13 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from apps.core.files import (
+    FileDownloadContentNegotiation,
+    private_file_response,
+)
 
-from .models import Ticket, TicketStatus
+from .models import Ticket, TicketMessage, TicketStatus
 from .serializers import (
     TicketListSerializer,
     TicketCreateSerializer,
@@ -201,3 +206,21 @@ class TicketStatusUpdateView(APIView):
             ).data,
             status=status.HTTP_200_OK,
         )
+
+
+class TicketAttachmentDownloadView(APIView):
+    """Download a ticket attachment for its owner, or any as staff."""
+
+    permission_classes = [permissions.IsAuthenticated]
+    content_negotiation_class = FileDownloadContentNegotiation
+
+    @extend_schema(
+        responses={(200, 'application/octet-stream'): OpenApiTypes.BINARY}
+    )
+    def get(self, request, pk):
+        queryset = TicketMessage.objects.select_related('ticket')
+        if not (request.user.is_staff or request.user.is_superuser):
+            queryset = queryset.filter(ticket__user=request.user)
+
+        message = get_object_or_404(queryset, pk=pk)
+        return private_file_response(message.attachment)

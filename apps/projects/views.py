@@ -1,7 +1,14 @@
 from rest_framework import generics, permissions, filters
+from rest_framework.views import APIView
 from rest_framework.parsers import MultiPartParser, FormParser
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
+from apps.core.files import (
+    FileDownloadContentNegotiation,
+    private_file_response,
+)
 
 from .models import ProjectRequest, ProjectAttachment
 from .serializers import ProjectRequestSerializer, ProjectAttachmentSerializer
@@ -71,3 +78,23 @@ class ProjectAttachmentCreateView(generics.CreateAPIView):
             project = get_object_or_404(ProjectRequest, id=project_id, user=user)
 
         serializer.save(project_request=project)
+
+
+class ProjectAttachmentDownloadView(APIView):
+    """Download an attachment owned by the current user, or any as staff."""
+
+    permission_classes = [permissions.IsAuthenticated]
+    content_negotiation_class = FileDownloadContentNegotiation
+
+    @extend_schema(
+        responses={(200, 'application/octet-stream'): OpenApiTypes.BINARY}
+    )
+    def get(self, request, pk):
+        queryset = ProjectAttachment.objects.select_related(
+            'project_request'
+        )
+        if not (request.user.is_staff or request.user.is_superuser):
+            queryset = queryset.filter(project_request__user=request.user)
+
+        attachment = get_object_or_404(queryset, pk=pk)
+        return private_file_response(attachment.file)

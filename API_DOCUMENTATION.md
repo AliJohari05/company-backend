@@ -82,6 +82,9 @@ Accept-Language: en
 Enum values and field names remain stable English API identifiers; only
 human-readable messages and display labels are translated.
 
+Swagger displays an `Accept-Language` selector for every operation. Choose
+`fa` or `en` before pressing **Execute**.
+
 ### Paginated Responses (List Endpoints)
 
 Endpoints that return lists (Blog Posts, Invoices, Projects, etc.) follow Django REST Framework's standard paginated format:

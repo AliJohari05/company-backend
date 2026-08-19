@@ -1,4 +1,7 @@
 from django.urls import reverse
+from unittest.mock import patch
+
+from django.db import DatabaseError
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -53,3 +56,26 @@ class CoreAPITests(APITestCase):
             result_ids,
             [self.first_faq.pk, self.second_faq.pk],
         )
+
+    def test_health_check_reports_database_readiness(self):
+        response = self.client.get(reverse('health-check'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.json(),
+            {'status': 'ok', 'database': 'ok'},
+        )
+
+    @patch(
+        'apps.core.views.connection.cursor',
+        side_effect=DatabaseError('database unavailable'),
+    )
+    def test_health_check_returns_503_when_database_is_unavailable(
+        self,
+        mocked_cursor,
+    ):
+        response = self.client.get(reverse('health-check'))
+        self.assertEqual(
+            response.status_code,
+            status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
+        self.assertEqual(response.json()['status'], 'unhealthy')

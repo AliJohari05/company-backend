@@ -1,5 +1,8 @@
 from rest_framework import serializers
 from django.db import transaction
+from django.urls import reverse
+from drf_spectacular.utils import extend_schema_field
+
 from .models import Ticket, TicketMessage, TicketStatus
 
 
@@ -14,6 +17,7 @@ class TicketMessageSerializer(serializers.ModelSerializer):
         source='user.is_staff',
         read_only=True
     )
+    attachment_download_url = serializers.SerializerMethodField()
 
     class Meta:
         model = TicketMessage
@@ -24,7 +28,7 @@ class TicketMessageSerializer(serializers.ModelSerializer):
             'user_email',
             'is_staff',
             'message',
-            'attachment',
+            'attachment_download_url',
             'created_at',
             'updated_at'
         )
@@ -34,6 +38,17 @@ class TicketMessageSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at'
         )
+
+    @extend_schema_field(serializers.URLField(allow_null=True))
+    def get_attachment_download_url(self, obj):
+        if not obj.attachment:
+            return None
+        url = reverse(
+            'tickets:ticket-attachment-download',
+            kwargs={'pk': obj.pk},
+        )
+        request = self.context.get('request')
+        return request.build_absolute_uri(url) if request else url
 
 
 class TicketMessageCreateSerializer(serializers.ModelSerializer):

@@ -1,12 +1,27 @@
+from django.core.files.base import ContentFile
+from django.core.files.storage import InMemoryStorage
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from apps.accounts.models import User
-from .models import Ticket, TicketStatus
+from .models import Ticket, TicketMessage, TicketStatus
 
 
 class TicketAPITests(APITestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.memory_storage = InMemoryStorage()
+        cls.attachment_field = TicketMessage._meta.get_field('attachment')
+        cls.original_storage = cls.attachment_field.storage
+        cls.attachment_field.storage = cls.memory_storage
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.attachment_field.storage = cls.original_storage
+        super().tearDownClass()
+
     def setUp(self):
         self.client_user = User.objects.create_user(
             email='ticket-client@example.com',
@@ -175,4 +190,58 @@ class TicketAPITests(APITestCase):
         self.assertEqual(
             closed_message.status_code,
             status.HTTP_400_BAD_REQUEST,
+        )
+
+    def test_ticket_attachment_download_is_private_and_owner_scoped(self):
+        ticket = Ticket.objects.create(
+            user=self.client_user,
+            title='Private attachment',
+        )
+        message = TicketMessage.objects.create(
+            ticket=ticket,
+            user=self.client_user,
+            message='Please inspect this private file.',
+            attachment=ContentFile(
+                b'private ticket document',
+                name='ticket-private.txt',
+            ),
+        )
+        detail_url = reverse(
+            'tickets:ticket-detail',
+            kwargs={'pk': ticket.pk},
+        )
+        download_url = reverse(
+            'tickets:ticket-attachment-download',
+            kwargs={'pk': message.pk},
+        )
+
+        self.authenticate(self.client_user)
+        detail_response = self.client.get(detail_url)
+        message_data = detail_response.data['messages'][0]
+        self.assertNotIn('attachment', message_data)
+        self.assertEqual(
+            message_data['attachment_download_url'],
+            f'http://testserver{download_url}',
+        )
+
+        owner_response = self.client.get(download_url)
+        self.assertEqual(owner_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            owner_response['Cache-Control'],
+            'private, no-store',
+        )
+
+        self.authenticate(self.other_user)
+        other_response = self.client.get(download_url)
+        self.assertEqual(other_response.status_code, status.HTTP_404_NOT_FOUND)
+
+        self.authenticate(self.staff)
+        staff_response = self.client.get(download_url)
+        self.assertEqual(staff_response.status_code, status.HTTP_200_OK)
+
+        self.client.force_authenticate(user=None)
+        anonymous_response = self.client.get(download_url)
+        self.assertEqual(
+            anonymous_response.status_code,
+            status.HTTP_401_UNAUTHORIZED,
         )

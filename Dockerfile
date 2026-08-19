@@ -20,9 +20,10 @@ RUN pip install --upgrade pip && \
 # 5. Copy project code
 COPY . /app/
 RUN python manage.py compilemessages
+RUN chmod +x /app/docker/entrypoint.sh
 
 # 6. Expose port 8000
 EXPOSE 8000
 
 # 7. Default command
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["/app/docker/entrypoint.sh"]

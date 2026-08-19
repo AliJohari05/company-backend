@@ -150,6 +150,8 @@ activemq-data/
 
 # Environments
 .env
+.env.staging
+.env.production
 .envrc
 .venv
 env/
@@ -221,3 +223,4 @@ __marimo__/
 
 /media/
 /private_media/
+/backups/

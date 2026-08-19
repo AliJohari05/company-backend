@@ -1,0 +1,81 @@
+services:
+  db:
+    image: postgres:15-alpine
+    restart: unless-stopped
+    env_file:
+      - ${STAGING_ENV_FILE:-.env.staging}
+    volumes:
+      - staging_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+  web:
+    build:
+      context: .
+    restart: unless-stopped
+    env_file:
+      - ${STAGING_ENV_FILE:-.env.staging}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - staging_static_data:/app/staticfiles
+      - staging_media_data:/app/media
+      - staging_private_media_data:/app/private_media
+    expose:
+      - "8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; request = urllib.request.Request('http://127.0.0.1:8000/health/', headers={'X-Forwarded-Proto': 'https'}); urllib.request.urlopen(request, timeout=5)",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - backend
+
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    env_file:
+      - ${STAGING_ENV_FILE:-.env.staging}
+    depends_on:
+      web:
+        condition: service_healthy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - staging_static_data:/srv/static:ro
+      - staging_media_data:/srv/media:ro
+      - staging_caddy_data:/data
+      - staging_caddy_config:/config
+    networks:
+      - backend
+
+volumes:
+  staging_postgres_data:
+  staging_static_data:
+  staging_media_data:
+  staging_private_media_data:
+  staging_caddy_data:
+  staging_caddy_config:
+
+networks:
+  backend:
+    driver: bridge

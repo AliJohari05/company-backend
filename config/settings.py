@@ -48,6 +48,7 @@ CSRF_TRUSTED_ORIGINS = env_list('CSRF_TRUSTED_ORIGINS')
 
 CORS_ALLOW_HEADERS = [
     "accept",
+    "accept-language",
     "accept-encoding",
     "authorization",
     "content-type",
@@ -91,6 +92,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
+    'config.middleware.AdminLanguageMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -121,9 +123,18 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DB_ENGINE', 'django.db.backends.postgresql'),
-        'NAME': os.environ.get('DB_NAME', 'agency_db'),
-        'USER': os.environ.get('DB_USER', 'agency_user'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'agency_secure_password'),
+        'NAME': os.environ.get(
+            'DB_NAME',
+            os.environ.get('POSTGRES_DB', 'agency_db'),
+        ),
+        'USER': os.environ.get(
+            'DB_USER',
+            os.environ.get('POSTGRES_USER', 'agency_user'),
+        ),
+        'PASSWORD': os.environ.get(
+            'DB_PASSWORD',
+            os.environ.get('POSTGRES_PASSWORD', 'agency_secure_password'),
+        ),
         'HOST': os.environ.get('DB_HOST', 'db'), 
         'PORT': os.environ.get('DB_PORT', '5432'),
     }
@@ -156,6 +167,7 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 PRIVATE_MEDIA_URL = '/api/v1/billing/private-files/'
 PRIVATE_MEDIA_ROOT = BASE_DIR / 'private_media'
+PRIVATE_UPLOAD_URL = '/api/v1/core/private-files/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -205,11 +217,17 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'COMPONENT_SPLIT_REQUEST': True,
+    'POSTPROCESSING_HOOKS': [
+        'drf_spectacular.hooks.postprocess_schema_enums',
+        'config.schema.add_accept_language_header',
+    ],
     'ENUM_NAME_OVERRIDES': {
         'TicketStatusEnum': 'apps.tickets.models.TicketStatus',
         'TransactionStatusEnum': 'apps.billing.models.TransactionStatusChoices',
     },
 }
+
+API_DOCS_ENABLED = env_bool('API_DOCS_ENABLED', DEBUG)
 
 API_SERVER_URL = os.environ.get('API_SERVER_URL', '').strip()
 if API_SERVER_URL:
@@ -243,3 +261,40 @@ EMAIL_VERIFICATION_TIMEOUT = int(
 # Email verification tokens use Django's hardened password-reset token
 # implementation and therefore share its timeout setting.
 PASSWORD_RESET_TIMEOUT = EMAIL_VERIFICATION_TIMEOUT
+
+DJANGO_LOG_LEVEL = os.environ.get('DJANGO_LOG_LEVEL', 'INFO')
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': (
+                '{asctime} {levelname} {name} '
+                'pid={process:d} thread={thread:d} {message}'
+            ),
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': DJANGO_LOG_LEVEL,
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'level': DJANGO_LOG_LEVEL,
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['console'],
+            'level': 'WARNING',
+            'propagate': False,
+        },
+    },
+}

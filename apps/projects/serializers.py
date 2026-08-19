@@ -1,4 +1,7 @@
 from rest_framework import serializers
+from django.urls import reverse
+from drf_spectacular.utils import extend_schema_field
+
 from .models import ProjectRequest, ProjectAttachment
 from apps.services.serializers import ServiceListSerializer
 
@@ -6,9 +9,28 @@ from apps.services.serializers import ServiceListSerializer
 class ProjectAttachmentSerializer(serializers.ModelSerializer):
     """Serializer for project request file attachments."""
 
+    file = serializers.FileField(write_only=True)
+    download_url = serializers.SerializerMethodField()
+
     class Meta:
         model = ProjectAttachment
-        fields = ('id', 'file', 'description', 'created_at')
+        fields = (
+            'id',
+            'file',
+            'download_url',
+            'description',
+            'created_at',
+        )
+        read_only_fields = ('id', 'download_url', 'created_at')
+
+    @extend_schema_field(serializers.URLField())
+    def get_download_url(self, obj):
+        url = reverse(
+            'project_attachment_download',
+            kwargs={'pk': obj.pk},
+        )
+        request = self.context.get('request')
+        return request.build_absolute_uri(url) if request else url
 
 
 class ProjectRequestSerializer(serializers.ModelSerializer):

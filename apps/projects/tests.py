@@ -158,3 +158,54 @@ class ProjectAPITests(APITestCase):
             format='multipart',
         )
         self.assertEqual(staff_response.status_code, status.HTTP_201_CREATED)
+
+    def test_attachment_download_is_private_and_owner_scoped(self):
+        project = ProjectRequest.objects.create(
+            user=self.client_user,
+            service=self.service,
+            title='Private project',
+            description='Contains a private attachment.',
+        )
+        attachment = ProjectAttachment.objects.create(
+            project_request=project,
+            file=ContentFile(
+                b'private project document',
+                name='private-project.txt',
+            ),
+        )
+        detail_url = reverse('project_detail', kwargs={'pk': project.pk})
+        download_url = reverse(
+            'project_attachment_download',
+            kwargs={'pk': attachment.pk},
+        )
+
+        self.authenticate(self.client_user)
+        detail_response = self.client.get(detail_url)
+        attachment_data = detail_response.data['attachments'][0]
+        self.assertNotIn('file', attachment_data)
+        self.assertEqual(
+            attachment_data['download_url'],
+            f'http://testserver{download_url}',
+        )
+
+        owner_response = self.client.get(download_url)
+        self.assertEqual(owner_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            owner_response['Cache-Control'],
+            'private, no-store',
+        )
+
+        self.authenticate(self.other_user)
+        other_response = self.client.get(download_url)
+        self.assertEqual(other_response.status_code, status.HTTP_404_NOT_FOUND)
+
+        self.authenticate(self.staff)
+        staff_response = self.client.get(download_url)
+        self.assertEqual(staff_response.status_code, status.HTTP_200_OK)
+
+        self.client.force_authenticate(user=None)
+        anonymous_response = self.client.get(download_url)
+        self.assertEqual(
+            anonymous_response.status_code,
+            status.HTTP_401_UNAUTHORIZED,
+        )

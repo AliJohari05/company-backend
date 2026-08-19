@@ -3,6 +3,7 @@ from django.db import models
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 from apps.core.models import TimeStampedModel
+from apps.core.storage import private_media_storage
 
 
 class ProjectStatus(models.TextChoices):
@@ -74,7 +75,8 @@ class ProjectAttachment(TimeStampedModel):
     )
     file = models.FileField(
         _("File"),
-        upload_to='project_attachments/%Y/%m/'
+        upload_to='project_attachments/%Y/%m/',
+        storage=private_media_storage,
     )
     description = models.CharField(
         _("Description"),

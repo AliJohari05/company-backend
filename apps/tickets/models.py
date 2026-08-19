@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from apps.core.models import TimeStampedModel
+from apps.core.storage import private_media_storage
 
 
 class TicketPriority(models.TextChoices):
@@ -65,6 +66,7 @@ class TicketMessage(TimeStampedModel):
     attachment = models.FileField(
         _("Attachment"),
         upload_to='tickets/attachments/',
+        storage=private_media_storage,
         blank=True,
         null=True
     )

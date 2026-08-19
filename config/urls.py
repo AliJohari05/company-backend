@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.i18n import set_language
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
@@ -23,17 +24,13 @@ from drf_spectacular.views import (
 )
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.core.views import health_check
 
 
 urlpatterns = [
+    path('health/', health_check, name='health-check'),
+    path('i18n/setlang/', set_language, name='set-language'),
     path('admin/', admin.site.urls),
-    
-    # OpenAPI Schema & Swagger Documentation
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    # The main Swagger UI :    
-    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    # Alternative user interface(Redoc):
-    path('api/redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 
     path('api/v1/accounts/', include('apps.accounts.urls')),
     path('api/v1/core/', include('apps.core.urls', namespace='core')),
@@ -45,7 +42,21 @@ urlpatterns = [
     path('api/v1/portfolio/', include('apps.portfolio.urls', namespace='portfolio')),
 ]
 
+if settings.API_DOCS_ENABLED:
+    urlpatterns += [
+        path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+        path(
+            'api/docs/',
+            SpectacularSwaggerView.as_view(url_name='schema'),
+            name='swagger-ui',
+        ),
+        path(
+            'api/redoc/',
+            SpectacularRedocView.as_view(url_name='schema'),
+            name='redoc',
+        ),
+    ]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    CORS_ALLOW_ALL_ORIGINS = True

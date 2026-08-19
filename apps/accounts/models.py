@@ -1,8 +1,8 @@
-from django.db import models
-
 # Create your models here.
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
 from django.utils.translation import gettext_lazy as _
+
 from apps.core.models import TimeStampedModel
 
 
@@ -54,22 +54,13 @@ class User(AbstractUser, TimeStampedModel):
     )
 
     phone_number = models.CharField(
-        _("Phone Number"),
-        max_length=15,
-        blank=True,
-        null=True
+        _("Phone Number"), max_length=15, blank=True, null=True
     )
     company_name = models.CharField(
-        _("Company Name"),
-        max_length=100,
-        blank=True,
-        null=True
+        _("Company Name"), max_length=100, blank=True, null=True
     )
     role = models.CharField(
-        _("User Role"),
-        max_length=10,
-        choices=UserRole.choices,
-        default=UserRole.CLIENT
+        _("User Role"), max_length=10, choices=UserRole.choices, default=UserRole.CLIENT
     )
 
     USERNAME_FIELD = "email"

@@ -17,7 +17,7 @@ class IsAdminOrAuthor(permissions.BasePermission):
             return False
 
         # For creating new posts (POST), only staff/admin is allowed
-        if request.method == 'POST':
+        if request.method == "POST":
             return request.user.is_staff or request.user.is_superuser
 
         return True
@@ -30,7 +30,7 @@ class IsAdminOrAuthor(permissions.BasePermission):
         # Instance must have an attribute named `author`
         # Staff/Admins or the owner/author of the post can edit/delete it
         return (
-            request.user.is_staff or 
-            request.user.is_superuser or 
-            getattr(obj, 'author', None) == request.user
+            request.user.is_staff
+            or request.user.is_superuser
+            or getattr(obj, "author", None) == request.user
         )

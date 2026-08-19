@@ -1,18 +1,19 @@
-from rest_framework import serializers
 from drf_spectacular.utils import extend_schema_field
-from .models import SiteSetting, SocialLink, FAQ
+from rest_framework import serializers
+
+from .models import FAQ, SiteSetting, SocialLink
 
 
 class SocialLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = SocialLink
-        fields = ('id', 'title', 'url', 'icon')
+        fields = ("id", "title", "url", "icon")
 
 
 class FAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
-        fields = ('id', 'question', 'answer', 'order')
+        fields = ("id", "question", "answer", "order")
 
 
 class SiteSettingSerializer(serializers.ModelSerializer):
@@ -21,14 +22,14 @@ class SiteSettingSerializer(serializers.ModelSerializer):
     class Meta:
         model = SiteSetting
         fields = (
-            'site_name',
-            'site_logo',
-            'about_us',
-            'email',
-            'phone_number',
-            'address',
-            'working_hours',
-            'social_links'
+            "site_name",
+            "site_logo",
+            "about_us",
+            "email",
+            "phone_number",
+            "address",
+            "working_hours",
+            "social_links",
         )
 
     @extend_schema_field(SocialLinkSerializer(many=True))

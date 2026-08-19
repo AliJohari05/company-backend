@@ -1,5 +1,5 @@
-from pathlib import PurePosixPath
 from mimetypes import guess_type
+from pathlib import PurePosixPath
 
 from django.http import FileResponse
 from django.utils.translation import gettext_lazy as _
@@ -20,9 +20,9 @@ def private_file_response(field_file):
         raise exceptions.NotFound(_("File not found."))
 
     filename = PurePosixPath(field_file.name).name
-    content_type = guess_type(filename)[0] or 'application/octet-stream'
+    content_type = guess_type(filename)[0] or "application/octet-stream"
     try:
-        file_handle = field_file.open('rb')
+        file_handle = field_file.open("rb")
     except (FileNotFoundError, OSError, ValueError) as error:
         raise exceptions.NotFound(_("File not found.")) from error
 
@@ -32,6 +32,6 @@ def private_file_response(field_file):
         filename=filename,
         content_type=content_type,
     )
-    response['Cache-Control'] = 'private, no-store'
-    response['X-Content-Type-Options'] = 'nosniff'
+    response["Cache-Control"] = "private, no-store"
+    response["X-Content-Type-Options"] = "nosniff"
     return response

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import ProjectRequest, ProjectAttachment
+
+from .models import ProjectAttachment, ProjectRequest
 
 
 class ProjectAttachmentInline(admin.TabularInline):
@@ -9,14 +10,14 @@ class ProjectAttachmentInline(admin.TabularInline):
 
 @admin.register(ProjectRequest)
 class ProjectRequestAdmin(admin.ModelAdmin):
-    list_display = ('title', 'user', 'service', 'status', 'created_at')
-    list_filter = ('status', 'created_at')
-    search_fields = ('title', 'description', 'user__email', 'service__title')
+    list_display = ("title", "user", "service", "status", "created_at")
+    list_filter = ("status", "created_at")
+    search_fields = ("title", "description", "user__email", "service__title")
     inlines = [ProjectAttachmentInline]
 
 
 @admin.register(ProjectAttachment)
 class ProjectAttachmentAdmin(admin.ModelAdmin):
-    list_display = ('project_request', 'file', 'description', 'created_at')
-    list_filter = ('created_at',)
-    search_fields = ('project_request__title', 'description')
+    list_display = ("project_request", "file", "description", "created_at")
+    list_filter = ("created_at",)
+    search_fields = ("project_request__title", "description")

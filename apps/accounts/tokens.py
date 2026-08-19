@@ -6,8 +6,8 @@ class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
 
     def _make_hash_value(self, user, timestamp):
         return (
-            f'{user.pk}{timestamp}{user.email}'
-            f'{user.is_email_verified}{user.is_active}'
+            f"{user.pk}{timestamp}{user.email}"
+            f"{user.is_email_verified}{user.is_active}"
         )
 
 

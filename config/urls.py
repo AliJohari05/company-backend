@@ -14,46 +14,46 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 from django.views.i18n import set_language
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from django.conf import settings
-from django.conf.urls.static import static
+
 from apps.core.views import health_check
 
-
 urlpatterns = [
-    path('health/', health_check, name='health-check'),
-    path('i18n/setlang/', set_language, name='set-language'),
-    path('admin/', admin.site.urls),
-
-    path('api/v1/accounts/', include('apps.accounts.urls')),
-    path('api/v1/core/', include('apps.core.urls', namespace='core')),
-    path('api/v1/services/', include('apps.services.urls')),
-    path('api/v1/projects/', include('apps.projects.urls')),
-    path('api/v1/tickets/', include('apps.tickets.urls', namespace='tickets')),
-    path('api/v1/blog/', include('apps.blog.urls', namespace='blog')),
-    path('api/v1/billing/', include('apps.billing.urls', namespace='billing')),
-    path('api/v1/portfolio/', include('apps.portfolio.urls', namespace='portfolio')),
+    path("health/", health_check, name="health-check"),
+    path("i18n/setlang/", set_language, name="set-language"),
+    path("admin/", admin.site.urls),
+    path("api/v1/accounts/", include("apps.accounts.urls")),
+    path("api/v1/core/", include("apps.core.urls", namespace="core")),
+    path("api/v1/services/", include("apps.services.urls")),
+    path("api/v1/projects/", include("apps.projects.urls")),
+    path("api/v1/tickets/", include("apps.tickets.urls", namespace="tickets")),
+    path("api/v1/blog/", include("apps.blog.urls", namespace="blog")),
+    path("api/v1/billing/", include("apps.billing.urls", namespace="billing")),
+    path("api/v1/portfolio/", include("apps.portfolio.urls", namespace="portfolio")),
 ]
 
 if settings.API_DOCS_ENABLED:
     urlpatterns += [
-        path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+        path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
         path(
-            'api/docs/',
-            SpectacularSwaggerView.as_view(url_name='schema'),
-            name='swagger-ui',
+            "api/docs/",
+            SpectacularSwaggerView.as_view(url_name="schema"),
+            name="swagger-ui",
         ),
         path(
-            'api/redoc/',
-            SpectacularRedocView.as_view(url_name='schema'),
-            name='redoc',
+            "api/redoc/",
+            SpectacularRedocView.as_view(url_name="schema"),
+            name="redoc",
         ),
     ]
 

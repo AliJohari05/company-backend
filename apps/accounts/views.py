@@ -7,7 +7,7 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
-from rest_framework import generics, status, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
 from rest_framework_simplejwt.exceptions import TokenError
@@ -18,8 +18,8 @@ from .serializers import (
     ChangePasswordSerializer,
     DetailResponseSerializer,
     LogoutSerializer,
-    RegisterSerializer,
     RegisterResponseSerializer,
+    RegisterSerializer,
     ResendVerificationSerializer,
     UserProfileSerializer,
     VerifyEmailSerializer,
@@ -34,7 +34,7 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = RegisterSerializer
     throttle_classes = [ScopedRateThrottle]
-    throttle_scope = 'register'
+    throttle_scope = "register"
 
     @extend_schema(
         responses={201: RegisterResponseSerializer},
@@ -52,10 +52,10 @@ class RegisterView(generics.CreateAPIView):
 
         return Response(
             {
-                'detail': _(
-                    'Registration successful. Please verify your email address.'
+                "detail": _(
+                    "Registration successful. Please verify your email address."
                 ),
-                'email': user.email,
+                "email": user.email,
             },
             status=status.HTTP_201_CREATED,
         )
@@ -65,7 +65,7 @@ class VerifyEmailView(generics.GenericAPIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = VerifyEmailSerializer
     throttle_classes = [ScopedRateThrottle]
-    throttle_scope = 'email_verification'
+    throttle_scope = "email_verification"
 
     @extend_schema(
         request=VerifyEmailSerializer,
@@ -79,9 +79,7 @@ class VerifyEmailView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         try:
-            user_id = force_str(
-                urlsafe_base64_decode(serializer.validated_data['uid'])
-            )
+            user_id = force_str(urlsafe_base64_decode(serializer.validated_data["uid"]))
         except (TypeError, ValueError, OverflowError):
             return self._invalid_token_response()
 
@@ -93,13 +91,13 @@ class VerifyEmailView(generics.GenericAPIView):
 
             if not email_verification_token.check_token(
                 user,
-                serializer.validated_data['token'],
+                serializer.validated_data["token"],
             ):
                 return self._invalid_token_response()
 
             if user.is_email_verified:
                 return Response(
-                    {'detail': _('Email address is already verified.')},
+                    {"detail": _("Email address is already verified.")},
                     status=status.HTTP_200_OK,
                 )
 
@@ -108,22 +106,22 @@ class VerifyEmailView(generics.GenericAPIView):
             user.email_verified_at = timezone.now()
             user.save(
                 update_fields=(
-                    'is_email_verified',
-                    'is_active',
-                    'email_verified_at',
-                    'updated_at',
+                    "is_email_verified",
+                    "is_active",
+                    "email_verified_at",
+                    "updated_at",
                 )
             )
 
         return Response(
-            {'detail': _('Email address verified successfully.')},
+            {"detail": _("Email address verified successfully.")},
             status=status.HTTP_200_OK,
         )
 
     @staticmethod
     def _invalid_token_response():
         return Response(
-            {'detail': _('The verification link is invalid or has expired.')},
+            {"detail": _("The verification link is invalid or has expired.")},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -132,7 +130,7 @@ class ResendVerificationEmailView(generics.GenericAPIView):
     permission_classes = (permissions.AllowAny,)
     serializer_class = ResendVerificationSerializer
     throttle_classes = [ScopedRateThrottle]
-    throttle_scope = 'verification_resend'
+    throttle_scope = "verification_resend"
 
     @extend_schema(
         request=ResendVerificationSerializer,
@@ -141,7 +139,7 @@ class ResendVerificationEmailView(generics.GenericAPIView):
     def post(self, request):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        email = serializer.validated_data['email']
+        email = serializer.validated_data["email"]
 
         user = User.objects.filter(
             email__iexact=email,
@@ -155,9 +153,9 @@ class ResendVerificationEmailView(generics.GenericAPIView):
 
         return Response(
             {
-                'detail': _(
-                    'If an eligible account exists, a verification email '
-                    'has been sent.'
+                "detail": _(
+                    "If an eligible account exists, a verification email "
+                    "has been sent."
                 )
             },
             status=status.HTTP_200_OK,
@@ -191,9 +189,14 @@ class LogoutView(generics.GenericAPIView):
             refresh_token = serializer.validated_data["refresh"]
             token = RefreshToken(refresh_token)
             token.blacklist()
-            return Response({"detail": _("Successfully logged out.")}, status=status.HTTP_205_RESET_CONTENT)
+            return Response(
+                {"detail": _("Successfully logged out.")},
+                status=status.HTTP_205_RESET_CONTENT,
+            )
         except TokenError:
-            return Response({"detail": _("Invalid token.")}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": _("Invalid token.")}, status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 class ChangePasswordView(generics.GenericAPIView):
@@ -205,9 +208,14 @@ class ChangePasswordView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         user = request.user
 
-        if not user.check_password(serializer.validated_data['old_password']):
-            return Response({"old_password": [_("Wrong password.")]}, status=status.HTTP_400_BAD_REQUEST)
+        if not user.check_password(serializer.validated_data["old_password"]):
+            return Response(
+                {"old_password": [_("Wrong password.")]},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        user.set_password(serializer.validated_data['new_password'])
+        user.set_password(serializer.validated_data["new_password"])
         user.save()
-        return Response({"detail": _("Password updated successfully.")}, status=status.HTTP_200_OK)
+        return Response(
+            {"detail": _("Password updated successfully.")}, status=status.HTTP_200_OK
+        )

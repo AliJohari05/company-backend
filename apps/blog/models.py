@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+
 from apps.core.models import TimeStampedModel
 
 
@@ -9,10 +10,11 @@ class Category(TimeStampedModel):
     slug = models.SlugField(_("Slug"), max_length=100, unique=True, allow_unicode=True)
     description = models.TextField(_("Description"), blank=True, null=True)
     pagination_class = None
+
     class Meta:
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")
-        ordering = ['name']
+        ordering = ["name"]
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -27,10 +29,11 @@ class Tag(TimeStampedModel):
     name = models.CharField(_("Name"), max_length=100)
     slug = models.SlugField(_("Slug"), max_length=100, unique=True, allow_unicode=True)
     pagination_class = None
+
     class Meta:
         verbose_name = _("Tag")
         verbose_name_plural = _("Tags")
-        ordering = ['name']
+        ordering = ["name"]
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -43,39 +46,30 @@ class Tag(TimeStampedModel):
 
 class Post(TimeStampedModel):
     author = models.ForeignKey(
-        'accounts.User',
+        "accounts.User",
         on_delete=models.CASCADE,
-        related_name='posts',
-        verbose_name=_("Author")
+        related_name="posts",
+        verbose_name=_("Author"),
     )
     title = models.CharField(_("Title"), max_length=250)
     slug = models.SlugField(_("Slug"), max_length=250, unique=True, allow_unicode=True)
     content = models.TextField(_("Content"))
     featured_image = models.ImageField(
-        _("Featured Image"),
-        upload_to='blog/featured_images/',
-        blank=True,
-        null=True
+        _("Featured Image"), upload_to="blog/featured_images/", blank=True, null=True
     )
     meta_description = models.CharField(
-        _("Meta Description"),
-        max_length=160,
-        blank=True,
-        null=True
+        _("Meta Description"), max_length=160, blank=True, null=True
     )
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
-        related_name='posts',
+        related_name="posts",
         verbose_name=_("Category"),
         null=True,
-        blank=True
+        blank=True,
     )
     tags = models.ManyToManyField(
-        Tag,
-        related_name='posts',
-        verbose_name=_("Tags"),
-        blank=True
+        Tag, related_name="posts", verbose_name=_("Tags"), blank=True
     )
     is_published = models.BooleanField(_("Is Published"), default=False)
     published_at = models.DateTimeField(_("Published At"), blank=True, null=True)
@@ -84,7 +78,7 @@ class Post(TimeStampedModel):
     class Meta:
         verbose_name = _("Post")
         verbose_name_plural = _("Posts")
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -93,6 +87,7 @@ class Post(TimeStampedModel):
 
     def __str__(self):
         return self.title
+
     @property
     def excerpt(self):
         """Generating a summary of the article text for display in lists."""
@@ -101,4 +96,4 @@ class Post(TimeStampedModel):
         clean_text = self.content.strip()
         if len(clean_text) <= 180:
             return clean_text
-        return clean_text[:180].rsplit(' ', 1)[0] + '...'
+        return clean_text[:180].rsplit(" ", 1)[0] + "..."

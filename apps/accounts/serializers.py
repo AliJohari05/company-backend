@@ -1,15 +1,18 @@
 import re
-from rest_framework import serializers
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.utils.translation import gettext_lazy as _
+from rest_framework import serializers
 
 User = get_user_model()
 
-PHONE_REGEX = re.compile(r'^(\+98|0)?9\d{9}$')
+PHONE_REGEX = re.compile(r"^(\+98|0)?9\d{9}$")
 
-PASSWORD_REGEX = re.compile(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$')
+PASSWORD_REGEX = re.compile(
+    r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+)
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -18,7 +21,15 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ('email', 'first_name', 'last_name', 'phone_number', 'company_name', 'password', 'password_confirm')
+        fields = (
+            "email",
+            "first_name",
+            "last_name",
+            "phone_number",
+            "company_name",
+            "password",
+            "password_confirm",
+        )
 
     def validate_email(self, value):
         email = User.objects.normalize_email(value).strip().lower()
@@ -36,22 +47,26 @@ class RegisterSerializer(serializers.ModelSerializer):
     def validate_password(self, value):
         if not PASSWORD_REGEX.match(value):
             raise serializers.ValidationError(
-                _("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).")
+                _(
+                    "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)."
+                )
             )
         try:
             validate_password(value)
         except DjangoValidationError as e:
-            raise serializers.ValidationError(list(e.messages))
-            
+            raise serializers.ValidationError(list(e.messages)) from e
+
         return value
 
     def validate(self, attrs):
-        if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError({"password_confirm": _("Passwords do not match.")})
+        if attrs["password"] != attrs["password_confirm"]:
+            raise serializers.ValidationError(
+                {"password_confirm": _("Passwords do not match.")}
+            )
         return attrs
 
     def create(self, validated_data):
-        validated_data.pop('password_confirm')
+        validated_data.pop("password_confirm")
         return User.objects.create_user(
             is_active=False,
             is_email_verified=False,
@@ -63,24 +78,24 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'id',
-            'email',
-            'first_name',
-            'last_name',
-            'phone_number',
-            'company_name',
-            'role',
-            'is_email_verified',
-            'email_verified_at',
-            'created_at',
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "phone_number",
+            "company_name",
+            "role",
+            "is_email_verified",
+            "email_verified_at",
+            "created_at",
         )
         read_only_fields = (
-            'id',
-            'email',
-            'role',
-            'is_email_verified',
-            'email_verified_at',
-            'created_at',
+            "id",
+            "email",
+            "role",
+            "is_email_verified",
+            "email_verified_at",
+            "created_at",
         )
 
     def validate_phone_number(self, value):
@@ -96,12 +111,14 @@ class ChangePasswordSerializer(serializers.Serializer):
     def validate_new_password(self, value):
         if not PASSWORD_REGEX.match(value):
             raise serializers.ValidationError(
-                _("New password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&).")
+                _(
+                    "New password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)."
+                )
             )
         try:
             validate_password(value)
         except DjangoValidationError as e:
-            raise serializers.ValidationError(list(e.messages))
+            raise serializers.ValidationError(list(e.messages)) from e
         return value
 
 

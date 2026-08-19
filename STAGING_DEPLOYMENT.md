@@ -3,7 +3,19 @@
 This guide deploys the Django API with PostgreSQL, Gunicorn, and Caddy. Caddy
 obtains and renews HTTPS certificates automatically.
 
-## 1. Server requirements
+## 1. Code quality checks
+
+Run these checks from a development environment before building the staging
+image:
+
+```bash
+pip install -r requirements-dev.txt
+black --check .
+isort --check-only .
+ruff check .
+```
+
+## 2. Server requirements
 
 - A Linux server with Docker Engine and Docker Compose v2
 - A public DNS `A`/`AAAA` record for the staging API domain
@@ -12,7 +24,7 @@ obtains and renews HTTPS certificates automatically.
 
 Do not expose PostgreSQL port `5432` publicly.
 
-## 2. Create staging secrets
+## 3. Create staging secrets
 
 Copy the example without committing the resulting file:
 

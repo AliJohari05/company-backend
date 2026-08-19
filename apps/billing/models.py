@@ -1,80 +1,80 @@
 from decimal import Decimal
 
-from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
+from django.db import models
 from django.db.models import DecimalField, ExpressionWrapper, F, Sum
 from django.utils.translation import gettext_lazy as _
+
 from apps.projects.models import ProjectRequest
 from apps.services.models import Service
+
 from .storage import private_billing_storage
 
-
-MAX_INVOICE_AMOUNT = Decimal('9999999999.99')
+MAX_INVOICE_AMOUNT = Decimal("9999999999.99")
 
 
 class Invoice(models.Model):
     """
     Financial invoices issued for users regarding project requests or service subscriptions.
     """
+
     class StatusChoices(models.TextChoices):
-        UNPAID = 'UNPAID', _('Unpaid')
-        PARTIALLY_PAID = 'PARTIALLY_PAID', _('Partially Paid')
-        PAID = 'PAID', _('Paid')
-        OVERDUE = 'OVERDUE', _('Overdue')
-        CANCELED = 'CANCELED', _('Canceled')
+        UNPAID = "UNPAID", _("Unpaid")
+        PARTIALLY_PAID = "PARTIALLY_PAID", _("Partially Paid")
+        PAID = "PAID", _("Paid")
+        OVERDUE = "OVERDUE", _("Overdue")
+        CANCELED = "CANCELED", _("Canceled")
 
     invoice_number = models.CharField(
-        max_length=50,
-        unique=True,
-        verbose_name=_("Invoice Number")
+        max_length=50, unique=True, verbose_name=_("Invoice Number")
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='invoices',
-        verbose_name=_("User")
+        related_name="invoices",
+        verbose_name=_("User"),
     )
     project_request = models.ForeignKey(
         ProjectRequest,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='invoices',
-        verbose_name=_("Related Project Request")
+        related_name="invoices",
+        verbose_name=_("Related Project Request"),
     )
     service = models.ForeignKey(
         Service,
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        verbose_name=_("Related Service")
+        verbose_name=_("Related Service"),
     )
     total_amount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
-        default=Decimal('0.00'),
-        verbose_name=_("Total Amount")
+        default=Decimal("0.00"),
+        verbose_name=_("Total Amount"),
     )
     status = models.CharField(
         max_length=20,
         choices=StatusChoices.choices,
         default=StatusChoices.UNPAID,
-        verbose_name=_("Status")
+        verbose_name=_("Status"),
     )
     due_date = models.DateField(verbose_name=_("Due Date"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created At"))
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated At"))
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         verbose_name = _("Invoice")
         verbose_name_plural = _("Invoices")
         constraints = [
             models.CheckConstraint(
                 condition=models.Q(total_amount__gte=0),
-                name='billing_invoice_total_non_negative',
+                name="billing_invoice_total_non_negative",
             ),
         ]
 
@@ -84,13 +84,10 @@ class Invoice(models.Model):
     def recalculate_total(self):
         """Persist the invoice total derived from all line items."""
         line_total = ExpressionWrapper(
-            F('quantity') * F('unit_price'),
+            F("quantity") * F("unit_price"),
             output_field=DecimalField(max_digits=12, decimal_places=2),
         )
-        total = (
-            self.items.aggregate(total=Sum(line_total))['total']
-            or Decimal('0.00')
-        )
+        total = self.items.aggregate(total=Sum(line_total))["total"] or Decimal("0.00")
         Invoice.objects.filter(pk=self.pk).update(total_amount=total)
         self.total_amount = total
         return total
@@ -100,19 +97,13 @@ class Invoice(models.Model):
         if self.status == self.StatusChoices.CANCELED:
             return self.status
 
-        approved_amount = (
-            self.transactions.filter(
-                status=Transaction.StatusChoices.APPROVED
-            ).aggregate(total=Sum('amount'))['total']
-            or Decimal('0.00')
-        )
+        approved_amount = self.transactions.filter(
+            status=Transaction.StatusChoices.APPROVED
+        ).aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
 
-        if (
-            self.total_amount > Decimal('0.00')
-            and approved_amount >= self.total_amount
-        ):
+        if self.total_amount > Decimal("0.00") and approved_amount >= self.total_amount:
             new_status = self.StatusChoices.PAID
-        elif approved_amount > Decimal('0.00'):
+        elif approved_amount > Decimal("0.00"):
             new_status = self.StatusChoices.PARTIALLY_PAID
         elif self.status == self.StatusChoices.OVERDUE:
             new_status = self.StatusChoices.OVERDUE
@@ -121,7 +112,7 @@ class Invoice(models.Model):
 
         if self.status != new_status:
             self.status = new_status
-            self.save(update_fields=['status', 'updated_at'])
+            self.save(update_fields=["status", "updated_at"])
 
         return new_status
 
@@ -130,23 +121,22 @@ class InvoiceItem(models.Model):
     """
     Individual itemized rows inside a specific invoice.
     """
+
     invoice = models.ForeignKey(
         Invoice,
         on_delete=models.CASCADE,
-        related_name='items',
-        verbose_name=_("Invoice")
+        related_name="items",
+        verbose_name=_("Invoice"),
     )
     description = models.CharField(max_length=255, verbose_name=_("Description"))
     quantity = models.PositiveIntegerField(
-        default=1,
-        validators=[MinValueValidator(1)],
-        verbose_name=_("Quantity")
+        default=1, validators=[MinValueValidator(1)], verbose_name=_("Quantity")
     )
     unit_price = models.DecimalField(
         max_digits=12,
         decimal_places=2,
-        validators=[MinValueValidator(Decimal('0.01'))],
-        verbose_name=_("Unit Price")
+        validators=[MinValueValidator(Decimal("0.01"))],
+        verbose_name=_("Unit Price"),
     )
 
     class Meta:
@@ -155,11 +145,11 @@ class InvoiceItem(models.Model):
         constraints = [
             models.CheckConstraint(
                 condition=models.Q(quantity__gt=0),
-                name='billing_invoice_item_quantity_positive',
+                name="billing_invoice_item_quantity_positive",
             ),
             models.CheckConstraint(
                 condition=models.Q(unit_price__gt=0),
-                name='billing_invoice_item_price_positive',
+                name="billing_invoice_item_price_positive",
             ),
         ]
 
@@ -180,7 +170,9 @@ class InvoiceItem(models.Model):
             Invoice.StatusChoices.CANCELED,
         }:
             raise ValidationError(
-                _("Items of a paid, partially paid, or canceled invoice cannot be changed.")
+                _(
+                    "Items of a paid, partially paid, or canceled invoice cannot be changed."
+                )
             )
 
         if invoice.transactions.filter(
@@ -195,22 +187,23 @@ class InvoiceItem(models.Model):
             return
 
         line_total = ExpressionWrapper(
-            F('quantity') * F('unit_price'),
+            F("quantity") * F("unit_price"),
             output_field=DecimalField(max_digits=12, decimal_places=2),
         )
-        other_items_total = (
-            InvoiceItem.objects.filter(invoice_id=self.invoice_id)
-            .exclude(pk=self.pk)
-            .aggregate(total=Sum(line_total))['total']
-            or Decimal('0.00')
+        other_items_total = InvoiceItem.objects.filter(
+            invoice_id=self.invoice_id
+        ).exclude(pk=self.pk).aggregate(total=Sum(line_total))["total"] or Decimal(
+            "0.00"
         )
 
         if other_items_total + self.total_price > MAX_INVOICE_AMOUNT:
-            raise ValidationError({
-                'unit_price': _(
-                    "The sum of invoice items exceeds the maximum invoice amount."
-                )
-            })
+            raise ValidationError(
+                {
+                    "unit_price": _(
+                        "The sum of invoice items exceeds the maximum invoice amount."
+                    )
+                }
+            )
 
     def clean(self):
         super().clean()
@@ -234,59 +227,57 @@ class Transaction(models.Model):
     """
     Offline/Manual payment receipts uploaded by the user for invoice verification.
     """
+
     class StatusChoices(models.TextChoices):
-        PENDING = 'PENDING', _('Pending Verification')
-        APPROVED = 'APPROVED', _('Approved')
-        REJECTED = 'REJECTED', _('Rejected')
+        PENDING = "PENDING", _("Pending Verification")
+        APPROVED = "APPROVED", _("Approved")
+        REJECTED = "REJECTED", _("Rejected")
 
     invoice = models.ForeignKey(
         Invoice,
         on_delete=models.CASCADE,
-        related_name='transactions',
-        verbose_name=_("Related Invoice")
+        related_name="transactions",
+        verbose_name=_("Related Invoice"),
     )
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name=_("User")
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, verbose_name=_("User")
     )
     amount = models.DecimalField(
         max_digits=12,
         decimal_places=2,
-        validators=[MinValueValidator(Decimal('0.01'))],
-        verbose_name=_("Amount Paid")
+        validators=[MinValueValidator(Decimal("0.01"))],
+        verbose_name=_("Amount Paid"),
     )
     reference_code = models.CharField(
-        max_length=100,
-        verbose_name=_("Reference Code / Tracking Number")
+        max_length=100, verbose_name=_("Reference Code / Tracking Number")
     )
     receipt_attachment = models.FileField(
-        upload_to='receipts/',
+        upload_to="receipts/",
         storage=private_billing_storage,
         null=True,
         blank=True,
-        verbose_name=_("Receipt Attachment")
+        verbose_name=_("Receipt Attachment"),
     )
     status = models.CharField(
         max_length=20,
         choices=StatusChoices.choices,
         default=StatusChoices.PENDING,
-        verbose_name=_("Verification Status")
+        verbose_name=_("Verification Status"),
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created At"))
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         verbose_name = _("Transaction")
         verbose_name_plural = _("Transactions")
         constraints = [
             models.CheckConstraint(
                 condition=models.Q(amount__gt=0),
-                name='billing_transaction_amount_positive',
+                name="billing_transaction_amount_positive",
             ),
             models.UniqueConstraint(
-                fields=('invoice', 'reference_code'),
-                name='billing_unique_reference_per_invoice',
+                fields=("invoice", "reference_code"),
+                name="billing_unique_reference_per_invoice",
             ),
         ]
 
@@ -295,43 +286,48 @@ class Transaction(models.Model):
 
         if self.invoice_id and self.user_id:
             if self.user_id != self.invoice.user_id:
-                raise ValidationError({
-                    'user': _("Transaction user must match the invoice user.")
-                })
+                raise ValidationError(
+                    {"user": _("Transaction user must match the invoice user.")}
+                )
 
         if self.invoice_id and self._state.adding:
             if self.invoice.status == Invoice.StatusChoices.CANCELED:
-                raise ValidationError({
-                    'invoice': _("A receipt cannot be submitted for a canceled invoice.")
-                })
+                raise ValidationError(
+                    {
+                        "invoice": _(
+                            "A receipt cannot be submitted for a canceled invoice."
+                        )
+                    }
+                )
 
             if self.invoice.status == Invoice.StatusChoices.PAID:
-                raise ValidationError({
-                    'invoice': _("This invoice has already been paid in full.")
-                })
+                raise ValidationError(
+                    {"invoice": _("This invoice has already been paid in full.")}
+                )
 
-            if self.invoice.total_amount <= Decimal('0.00'):
-                raise ValidationError({
-                    'invoice': _(
-                        "Add at least one invoice item before submitting a receipt."
-                    )
-                })
+            if self.invoice.total_amount <= Decimal("0.00"):
+                raise ValidationError(
+                    {
+                        "invoice": _(
+                            "Add at least one invoice item before submitting a receipt."
+                        )
+                    }
+                )
 
-            approved_total = (
-                self.invoice.transactions.filter(
-                    status=self.StatusChoices.APPROVED
-                ).aggregate(total=Sum('amount'))['total']
-                or Decimal('0.00')
-            )
+            approved_total = self.invoice.transactions.filter(
+                status=self.StatusChoices.APPROVED
+            ).aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
             if (
                 self.amount is not None
                 and self.amount > self.invoice.total_amount - approved_total
             ):
-                raise ValidationError({
-                    'amount': _(
-                        "Transaction amount exceeds the invoice remaining amount."
-                    )
-                })
+                raise ValidationError(
+                    {
+                        "amount": _(
+                            "Transaction amount exceeds the invoice remaining amount."
+                        )
+                    }
+                )
 
         if (
             self.invoice_id
@@ -339,25 +335,28 @@ class Transaction(models.Model):
             and self.amount is not None
         ):
             if self.invoice.status == Invoice.StatusChoices.CANCELED:
-                raise ValidationError({
-                    'status': _("A receipt cannot be approved for a canceled invoice.")
-                })
-
-            approved_total = (
-                Transaction.objects.filter(
-                    invoice_id=self.invoice_id,
-                    status=self.StatusChoices.APPROVED,
+                raise ValidationError(
+                    {
+                        "status": _(
+                            "A receipt cannot be approved for a canceled invoice."
+                        )
+                    }
                 )
-                .exclude(pk=self.pk)
-                .aggregate(total=Sum('amount'))['total']
-                or Decimal('0.00')
+
+            approved_total = Transaction.objects.filter(
+                invoice_id=self.invoice_id,
+                status=self.StatusChoices.APPROVED,
+            ).exclude(pk=self.pk).aggregate(total=Sum("amount"))["total"] or Decimal(
+                "0.00"
             )
             if approved_total + self.amount > self.invoice.total_amount:
-                raise ValidationError({
-                    'status': _(
-                        "Approving this receipt would exceed the invoice total."
-                    )
-                })
+                raise ValidationError(
+                    {
+                        "status": _(
+                            "Approving this receipt would exceed the invoice total."
+                        )
+                    }
+                )
 
     def save(self, *args, **kwargs):
         self.full_clean()
@@ -371,35 +370,36 @@ class Contract(models.Model):
     """
     Legal contracts and PDF documents binding the client and company.
     """
+
     class StatusChoices(models.TextChoices):
-        ACTIVE = 'ACTIVE', _('Active')
-        EXPIRED = 'EXPIRED', _('Expired')
-        TERMINATED = 'TERMINATED', _('Terminated')
+        ACTIVE = "ACTIVE", _("Active")
+        EXPIRED = "EXPIRED", _("Expired")
+        TERMINATED = "TERMINATED", _("Terminated")
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name='contracts',
-        verbose_name=_("User")
+        related_name="contracts",
+        verbose_name=_("User"),
     )
     title = models.CharField(max_length=255, verbose_name=_("Contract Title"))
     file = models.FileField(
-        upload_to='contracts/',
+        upload_to="contracts/",
         storage=private_billing_storage,
-        verbose_name=_("Contract Document (PDF)")
+        verbose_name=_("Contract Document (PDF)"),
     )
     status = models.CharField(
         max_length=20,
         choices=StatusChoices.choices,
         default=StatusChoices.ACTIVE,
-        verbose_name=_("Contract Status")
+        verbose_name=_("Contract Status"),
     )
     start_date = models.DateField(verbose_name=_("Start Date"))
     end_date = models.DateField(verbose_name=_("End Date"))
     created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created At"))
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ["-created_at"]
         verbose_name = _("Contract")
         verbose_name_plural = _("Contracts")
 

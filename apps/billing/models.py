@@ -407,5 +407,5 @@ class Contract(models.Model):
         return f"{self.title} - {self.user.email}"
 
 
-# Module-level alias used by drf-spectacular's enum name resolver.
+# Module-level alias required by drf-spectacular's enum resolver.
 TransactionStatusChoices = Transaction.StatusChoices

@@ -29,7 +29,6 @@ class ProjectRequestListCreateView(generics.ListCreateAPIView):
         filters.OrderingFilter,
     ]
 
-    # Filter and search fields
     filterset_fields = ["status", "estimated_budget"]
     search_fields = ["title", "description"]
     ordering_fields = ["created_at", "updated_at"]
@@ -40,7 +39,6 @@ class ProjectRequestListCreateView(generics.ListCreateAPIView):
             return ProjectRequest.objects.none()
 
         user = self.request.user
-        # Staff members can inspect all requests; standard users access their own only.
         if user.is_staff or user.is_superuser:
             return (
                 ProjectRequest.objects.all()

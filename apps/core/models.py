@@ -23,7 +23,6 @@ class SiteSetting(TimeStampedModel):
     )
     about_us = models.TextField(blank=True, null=True, verbose_name=_("About Us Text"))
 
-    # Contact Information
     email = models.EmailField(blank=True, null=True, verbose_name=_("Contact Email"))
     phone_number = models.CharField(
         max_length=30, blank=True, null=True, verbose_name=_("Phone Number")
@@ -40,7 +39,6 @@ class SiteSetting(TimeStampedModel):
         verbose_name_plural = _("Site Settings")
 
     def save(self, *args, **kwargs):
-        # Ensure only one instance of SiteSetting exists (Singleton pattern)
         if not self.pk and SiteSetting.objects.exists():
             self.pk = SiteSetting.objects.first().pk
         super().save(*args, **kwargs)

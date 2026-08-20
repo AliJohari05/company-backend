@@ -58,7 +58,7 @@ class PortfolioItem(models.Model):
     summary = models.TextField(max_length=500, verbose_name=_("Short Summary"))
     description = models.TextField(verbose_name=_("Full Project Description"))
 
-    # External Links & GitHub Integration
+    # External project links and repository metadata.
     github_url = models.URLField(
         blank=True, null=True, verbose_name=_("GitHub Repository URL")
     )

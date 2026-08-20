@@ -22,7 +22,6 @@ class CustomUserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Ensure email is required during creation
         if "email" in self.fields:
             self.fields["email"].required = True
 
@@ -43,7 +42,6 @@ class CustomUserAdmin(UserAdmin):
     add_form = CustomUserCreationForm
     form = CustomUserChangeForm
 
-    # List view display configuration
     list_display = (
         "email",
         "first_name",
@@ -64,7 +62,6 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ("email", "phone_number", "first_name", "last_name", "company_name")
     ordering = ("-created_at",)
 
-    # User edit page layout
     fieldsets = (
         (_("Credentials"), {"fields": ("email", "password")}),
         (
@@ -98,7 +95,6 @@ class CustomUserAdmin(UserAdmin):
         ),
     )
 
-    # New user creation page layout
     add_fieldsets = (
         (
             None,

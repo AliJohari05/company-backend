@@ -3,7 +3,6 @@ from django.contrib import admin
 from .models import Service, ServiceCategory, ServicePlan
 
 
-# Register your models here.
 class ServicePlanInline(admin.TabularInline):
     model = ServicePlan
     extra = 1

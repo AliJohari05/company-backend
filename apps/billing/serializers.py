@@ -307,7 +307,6 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "items",
             "transactions",
         )
-        # user and invoice_number removed from read_only_fields so admins can populate them
         read_only_fields = ("id", "status", "total_amount", "created_at", "updated_at")
 
     @extend_schema_field(serializers.DecimalField(max_digits=12, decimal_places=2))
@@ -338,7 +337,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
 class ContractSerializer(serializers.ModelSerializer):
     """Serializer for legal customer contracts and documents."""
 
-    MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+    MAX_FILE_SIZE = 10 * 1024 * 1024
 
     file = serializers.FileField(write_only=True)
     download_url = serializers.SerializerMethodField()
@@ -360,7 +359,6 @@ class ContractSerializer(serializers.ModelSerializer):
             "end_date",
             "created_at",
         )
-        # 'user' is writable so admin can assign the contract to a specific user
         read_only_fields = ("id", "created_at")
 
     @extend_schema_field(serializers.URLField())

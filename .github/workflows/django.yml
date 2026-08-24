@@ -9,10 +9,14 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: django-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     services:
       postgres:
@@ -55,7 +59,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y gettext
           python -m pip install --upgrade pip
-          python -m pip install -r requirements.txt
+          python -m pip install -r requirements-dev.txt
+
+      - name: Check code formatting with Black
+        run: black --check .
+
+      - name: Check import ordering with isort
+        run: isort --check-only .
+
+      - name: Run Ruff lint
+        run: ruff check .
 
       - name: Compile translations
         run: python manage.py compilemessages
@@ -71,3 +84,21 @@ jobs:
 
       - name: Run tests
         run: python manage.py test --verbosity 1 --noinput
+
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: test
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Build application image
+        run: docker build --tag ctrlops-backend:ci .
+
+      - name: Check image metadata
+        run: docker image inspect ctrlops-backend:ci

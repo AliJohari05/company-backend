@@ -36,7 +36,8 @@ jobs:
 
     env:
       DEBUG: "False"
-      SECRET_KEY: ci-only-secret-key
+      SECRET_KEY: ci-only-secret-key-with-more-than-thirty-two-characters
+      API_DOCS_ENABLED: "True"
       ALLOWED_HOSTS: localhost,127.0.0.1,testserver
       DB_ENGINE: django.db.backends.postgresql
       DB_NAME: agency_test_db

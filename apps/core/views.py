@@ -6,7 +6,8 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import exceptions, generics, permissions
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from apps.accounts.authentication import CookieJWTAuthentication
 
 from .files import (
     FileDownloadContentNegotiation,
@@ -34,7 +35,7 @@ def health_check(request):
 class PrivateMediaFileDownloadView(APIView):
     """Authenticated storage URL used by Django Admin file widgets."""
 
-    authentication_classes = [JWTAuthentication, SessionAuthentication]
+    authentication_classes = [CookieJWTAuthentication, SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     content_negotiation_class = FileDownloadContentNegotiation
 

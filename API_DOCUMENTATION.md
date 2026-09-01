@@ -41,10 +41,9 @@ The live OpenAPI/Swagger documentation is the single source of truth for endpoin
 
 ## 3. Authentication & Authorization
 
-The API uses **JWT (JSON Web Token)** Bearer Authentication.
-
-* **Header Format:** `Authorization: Bearer <access_token>`
-* **Security Scheme:** `Bearer` / `JWT`
+The browser client uses JWT authentication stored in secure HttpOnly cookies.
+The backend also accepts `Authorization: Bearer <access_token>` for non-browser
+clients and automated integrations.
 
 ### Token Flow
 
@@ -52,12 +51,15 @@ The API uses **JWT (JSON Web Token)** Bearer Authentication.
    its email address is verified.
 2. Open the email verification link. The frontend sends its `uid` and `token`
    to `/accounts/verify-email/`.
-3. Send verified credentials to `/accounts/login/` to receive `access` and
-   `refresh` tokens.
-4. Store tokens securely on the client side.
-5. Attach the `access` token to all protected API requests.
-6. When the access token expires (`401 Unauthorized`), send the refresh token
-   to `/accounts/refresh/` to obtain a new access token.
+3. Call `/accounts/csrf/` once to receive the CSRF cookie.
+4. Send verified credentials to `/accounts/login/` with the CSRF token in the
+   `X-CSRFToken` header. The response sets `ctrlops_access` and
+   `ctrlops_refresh` as HttpOnly cookies.
+5. Send requests with credentials enabled. Do not store JWTs in localStorage.
+6. Send the CSRF token in `X-CSRFToken` for every POST, PUT, PATCH, or DELETE.
+7. When the access cookie expires, call `/accounts/refresh/` with credentials
+   and a valid CSRF header.
+8. Call `/accounts/logout/` to blacklist the refresh token and clear cookies.
 
 ---
 
@@ -126,9 +128,10 @@ All monetary fields (`amount`, `unit_price`, `total_price`, `estimated_budget`) 
 | `POST` | `/accounts/register/` | Public | Register an inactive account and send its verification email |
 | `POST` | `/accounts/verify-email/` | Public | Verify the signed email token and activate the account |
 | `POST` | `/accounts/resend-verification/` | Public | Resend verification without revealing whether an account exists |
-| `POST` | `/accounts/login/` | Public | Authenticate and obtain JWT token pair |
-| `POST` | `/accounts/refresh/` | Public | Obtain a new access token using refresh token |
-| `POST` | `/accounts/logout/` | JWT | Logout and blacklist refresh token |
+| `GET` | `/accounts/csrf/` | Public | Set the CSRF cookie for browser clients |
+| `POST` | `/accounts/login/` | Public | Authenticate and set HttpOnly JWT cookies |
+| `POST` | `/accounts/refresh/` | Public | Refresh the HttpOnly JWT cookies |
+| `POST` | `/accounts/logout/` | Public | Blacklist the refresh token and clear cookies |
 | `GET` | `/accounts/profile/` | JWT | Get current user's profile |
 | `PUT` | `/accounts/profile/` | JWT | Update user profile |
 | `PATCH` | `/accounts/profile/` | JWT | Partially update user profile |
@@ -338,9 +341,7 @@ Secure file download example:
 
 ```javascript
 const response = await fetch(contract.download_url, {
-  headers: {
-    Authorization: `Bearer ${accessToken}`
-  }
+  credentials: "include"
 });
 
 if (!response.ok) {
@@ -370,19 +371,27 @@ python manage.py move_billing_files_to_private
 ```javascript
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// Helper function for authenticated JSON requests
+function getCookie(name) {
+  return document.cookie
+    .split("; ")
+    .find((row) => row.startsWith(`${name}=`))
+    ?.split("=")[1];
+}
+
+// Helper for authenticated browser requests.
 async function fetchAPI(endpoint, options = {}) {
-  const token = localStorage.getItem("accessToken");
-  
   const headers = {
     "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }),
+    ...(!["GET", "HEAD", "OPTIONS"].includes((options.method || "GET").toUpperCase())
+      ? { "X-CSRFToken": decodeURIComponent(getCookie("csrftoken") || "") }
+      : {}),
     ...options.headers
   };
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     ...options,
-    headers
+    headers,
+    credentials: "include"
   });
 
   if (response.status === 401) {

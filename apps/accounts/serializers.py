@@ -122,16 +122,16 @@ class ChangePasswordSerializer(serializers.Serializer):
         return value
 
 
-class LogoutSerializer(serializers.Serializer):
-    refresh = serializers.CharField(write_only=True)
-
-
 class DetailResponseSerializer(serializers.Serializer):
     detail = serializers.CharField(read_only=True)
 
 
 class RegisterResponseSerializer(DetailResponseSerializer):
     email = serializers.EmailField(read_only=True)
+
+
+class CSRFTokenResponseSerializer(DetailResponseSerializer):
+    csrf_token = serializers.CharField(read_only=True)
 
 
 class VerifyEmailSerializer(serializers.Serializer):

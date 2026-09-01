@@ -1,11 +1,10 @@
 from django.urls import path
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
 
 from .views import (
     ChangePasswordView,
+    CSRFTokenView,
+    CookieTokenObtainPairView,
+    CookieTokenRefreshView,
     LogoutView,
     RegisterView,
     ResendVerificationEmailView,
@@ -26,8 +25,9 @@ urlpatterns = [
         ResendVerificationEmailView.as_view(),
         name="resend_verification",
     ),
-    path("login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
-    path("refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("csrf/", CSRFTokenView.as_view(), name="csrf_token"),
+    path("login/", CookieTokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("refresh/", CookieTokenRefreshView.as_view(), name="token_refresh"),
     path("logout/", LogoutView.as_view(), name="auth_logout"),
     # Profile & Security
     path("profile/", UserProfileView.as_view(), name="user_profile"),

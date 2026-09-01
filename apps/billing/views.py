@@ -17,8 +17,8 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.negotiation import DefaultContentNegotiation
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
+from apps.accounts.authentication import CookieJWTAuthentication
 from apps.core.pagination import InvoiceListPagination
 
 from .models import Contract, Invoice, InvoiceItem, Transaction
@@ -390,7 +390,7 @@ class PrivateBillingFileDownloadView(APIView):
     React clients should use the resource-specific download endpoints instead.
     """
 
-    authentication_classes = [JWTAuthentication, SessionAuthentication]
+    authentication_classes = [CookieJWTAuthentication, SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
     content_negotiation_class = FileDownloadContentNegotiation
 

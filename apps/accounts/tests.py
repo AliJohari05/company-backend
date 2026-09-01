@@ -6,7 +6,7 @@ from django.core import mail
 from django.test import override_settings
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase
+from rest_framework.test import APIClient, APITestCase
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .emails import build_verification_url
@@ -20,11 +20,22 @@ from .tokens import email_verification_token
 )
 class AccountsAPITests(APITestCase):
     def setUp(self):
+        self.client = APIClient(enforce_csrf_checks=True)
         self.user = User.objects.create_user(
             email="account-user@example.com",
             password="OldStrong1!",
             first_name="Initial",
         )
+        response = self.client.get(reverse("csrf_token"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(response.data["csrf_token"])
+        self.assertIn("csrftoken", response.cookies)
+        self.client.defaults["HTTP_X_CSRFTOKEN"] = self.client.cookies[
+            "csrftoken"
+        ].value
+
+    def _csrf_headers(self):
+        return {"HTTP_X_CSRFTOKEN": self.client.cookies["csrftoken"].value}
 
     def test_register_creates_client_user(self):
         with self.captureOnCommitCallbacks(execute=True):
@@ -92,10 +103,13 @@ class AccountsAPITests(APITestCase):
                 "password": "StrongPass1!",
             },
             format="json",
+            **self._csrf_headers(),
         )
         self.assertEqual(login_response.status_code, status.HTTP_200_OK)
-        self.assertIn("access", login_response.data)
-        self.assertIn("refresh", login_response.data)
+        self.assertNotIn("access", login_response.data)
+        self.assertNotIn("refresh", login_response.data)
+        self.assertIn("ctrlops_access", login_response.cookies)
+        self.assertIn("ctrlops_refresh", login_response.cookies)
 
     def test_unverified_user_cannot_login(self):
         user = User.objects.create_user(
@@ -111,6 +125,7 @@ class AccountsAPITests(APITestCase):
                 "password": "StrongPass1!",
             },
             format="json",
+            **self._csrf_headers(),
         )
         self.assertEqual(
             response.status_code,
@@ -338,7 +353,6 @@ class AccountsAPITests(APITestCase):
         self.assertTrue(self.user.check_password("NewStrong1!"))
 
     def test_logout_validates_and_blacklists_refresh_token(self):
-        self.client.force_authenticate(user=self.user)
         url = reverse("auth_logout")
 
         missing_response = self.client.post(url, {}, format="json")
@@ -347,23 +361,54 @@ class AccountsAPITests(APITestCase):
             status.HTTP_400_BAD_REQUEST,
         )
 
-        invalid_response = self.client.post(
-            url,
-            {"refresh": "not-a-token"},
-            format="json",
-        )
+        self.client.cookies["ctrlops_refresh"] = "not-a-token"
+        invalid_response = self.client.post(url, {}, format="json")
         self.assertEqual(
             invalid_response.status_code,
             status.HTTP_400_BAD_REQUEST,
         )
 
         refresh = RefreshToken.for_user(self.user)
-        response = self.client.post(
-            url,
-            {"refresh": str(refresh)},
-            format="json",
-        )
+        self.client.cookies["ctrlops_refresh"] = str(refresh)
+        response = self.client.post(url, {}, format="json")
         self.assertEqual(
             response.status_code,
             status.HTTP_205_RESET_CONTENT,
         )
+        self.assertEqual(response.cookies["ctrlops_access"]["max-age"], 0)
+        self.assertEqual(response.cookies["ctrlops_refresh"]["max-age"], 0)
+
+    def test_login_and_refresh_use_http_only_cookies(self):
+        login_response = self.client.post(
+            reverse("token_obtain_pair"),
+            {"email": self.user.email, "password": "OldStrong1!"},
+            format="json",
+        )
+        self.assertEqual(login_response.status_code, status.HTTP_200_OK)
+        self.assertNotIn("access", login_response.data)
+        self.assertNotIn("refresh", login_response.data)
+        self.assertEqual(
+            login_response.cookies["ctrlops_access"]["httponly"],
+            True,
+        )
+        self.assertEqual(
+            login_response.cookies["ctrlops_refresh"]["httponly"],
+            True,
+        )
+
+        refresh_response = self.client.post(
+            reverse("token_refresh"),
+            {},
+            format="json",
+        )
+        self.assertEqual(refresh_response.status_code, status.HTTP_200_OK)
+        self.assertNotIn("access", refresh_response.data)
+
+    def test_login_rejects_missing_csrf_header(self):
+        self.client.defaults.pop("HTTP_X_CSRFTOKEN")
+        response = self.client.post(
+            reverse("token_obtain_pair"),
+            {"email": self.user.email, "password": "OldStrong1!"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)

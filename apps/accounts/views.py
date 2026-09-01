@@ -1,23 +1,34 @@
 from functools import partial
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from django.middleware.csrf import get_token
 from django.utils import timezone
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.throttling import ScopedRateThrottle
+from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from .auth_serializers import (
+    CookieTokenObtainPairSerializer,
+    CookieTokenRefreshSerializer,
+)
+from .authentication import enforce_csrf
 from .emails import send_verification_email
 from .serializers import (
     ChangePasswordSerializer,
+    CSRFTokenResponseSerializer,
     DetailResponseSerializer,
-    LogoutSerializer,
     RegisterResponseSerializer,
     RegisterSerializer,
     ResendVerificationSerializer,
@@ -27,6 +38,87 @@ from .serializers import (
 from .tokens import email_verification_token
 
 User = get_user_model()
+
+
+def _set_auth_cookies(response, token_data):
+    response.set_cookie(
+        settings.ACCESS_TOKEN_COOKIE_NAME,
+        token_data["access"],
+        max_age=int(settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds()),
+        httponly=settings.AUTH_COOKIE_HTTPONLY,
+        secure=settings.AUTH_COOKIE_SECURE,
+        samesite=settings.AUTH_COOKIE_SAMESITE,
+        path=settings.AUTH_COOKIE_PATH,
+    )
+    response.set_cookie(
+        settings.REFRESH_TOKEN_COOKIE_NAME,
+        token_data.get("refresh", ""),
+        max_age=int(settings.SIMPLE_JWT["REFRESH_TOKEN_LIFETIME"].total_seconds()),
+        httponly=settings.AUTH_COOKIE_HTTPONLY,
+        secure=settings.AUTH_COOKIE_SECURE,
+        samesite=settings.AUTH_COOKIE_SAMESITE,
+        path=settings.REFRESH_COOKIE_PATH,
+    )
+    return response
+
+
+class CookieTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CookieTokenObtainPairSerializer
+
+    @extend_schema(
+        responses={200: OpenApiResponse(description="Authentication cookies set.")},
+    )
+    def post(self, request, *args, **kwargs):
+        enforce_csrf(request)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        response = Response(
+            {"detail": _("Login successful.")},
+            status=status.HTTP_200_OK,
+        )
+        return _set_auth_cookies(response, serializer.validated_data)
+
+
+class CookieTokenRefreshView(TokenRefreshView):
+    serializer_class = CookieTokenRefreshSerializer
+
+    @extend_schema(
+        responses={
+            200: OpenApiResponse(description="Authentication cookies refreshed.")
+        },
+    )
+    def post(self, request, *args, **kwargs):
+        enforce_csrf(request)
+        refresh = request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE_NAME)
+        if not refresh:
+            return Response(
+                {"detail": _("Refresh token cookie is missing.")},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+        serializer = self.get_serializer(data={"refresh": refresh})
+        serializer.is_valid(raise_exception=True)
+        response = Response(
+            {"detail": _("Token refreshed successfully.")},
+            status=status.HTTP_200_OK,
+        )
+        return _set_auth_cookies(response, serializer.validated_data)
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class CSRFTokenView(APIView):
+    authentication_classes = ()
+    permission_classes = (permissions.AllowAny,)
+
+    @extend_schema(
+        responses={200: CSRFTokenResponseSerializer},
+    )
+    def get(self, request):
+        return Response(
+            {
+                "detail": _("CSRF cookie set."),
+                "csrf_token": get_token(request),
+            }
+        )
 
 
 class RegisterView(generics.CreateAPIView):
@@ -40,6 +132,7 @@ class RegisterView(generics.CreateAPIView):
         responses={201: RegisterResponseSerializer},
     )
     def create(self, request, *args, **kwargs):
+        enforce_csrf(request)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -75,6 +168,7 @@ class VerifyEmailView(generics.GenericAPIView):
         },
     )
     def post(self, request):
+        enforce_csrf(request)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -137,6 +231,7 @@ class ResendVerificationEmailView(generics.GenericAPIView):
         responses={200: DetailResponseSerializer},
     )
     def post(self, request):
+        enforce_csrf(request)
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         email = serializer.validated_data["email"]
@@ -171,28 +266,37 @@ class UserProfileView(generics.RetrieveUpdateAPIView):
 
 
 class LogoutView(generics.GenericAPIView):
-    permission_classes = (permissions.IsAuthenticated,)
-    serializer_class = LogoutSerializer
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = DetailResponseSerializer
 
     @extend_schema(
-        request=LogoutSerializer,
         responses={
             205: DetailResponseSerializer,
             400: DetailResponseSerializer,
         },
     )
     def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        enforce_csrf(request)
 
         try:
-            refresh_token = serializer.validated_data["refresh"]
+            refresh_token = request.COOKIES.get(settings.REFRESH_TOKEN_COOKIE_NAME)
+            if not refresh_token:
+                raise TokenError("Refresh token cookie is missing.")
             token = RefreshToken(refresh_token)
             token.blacklist()
-            return Response(
+            response = Response(
                 {"detail": _("Successfully logged out.")},
                 status=status.HTTP_205_RESET_CONTENT,
             )
+            response.delete_cookie(
+                settings.ACCESS_TOKEN_COOKIE_NAME,
+                path=settings.AUTH_COOKIE_PATH,
+            )
+            response.delete_cookie(
+                settings.REFRESH_TOKEN_COOKIE_NAME,
+                path=settings.REFRESH_COOKIE_PATH,
+            )
+            return response
         except TokenError:
             return Response(
                 {"detail": _("Invalid token.")}, status=status.HTTP_400_BAD_REQUEST

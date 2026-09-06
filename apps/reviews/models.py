@@ -26,8 +26,10 @@ class Review(TimeStampedModel):
     def clean(self):
         if (self.post_id is None) == (self.service_id is None):
             raise ValidationError(_("A review must target exactly one post or service."))
-        if self.parent_id and self.parent.post_id != self.post_id or self.parent_id and self.parent.service_id != self.service_id:
+        if self.parent_id and (self.parent.post_id != self.post_id or self.parent.service_id != self.service_id):
             raise ValidationError(_("Reply must belong to the same target."))
+        if self.parent_id and self.parent.parent_id:
+            raise ValidationError(_("Replies cannot be nested more than one level."))
 
     def __str__(self):
         return f"Review #{self.pk}"

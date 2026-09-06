@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: CtrlOps API 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-08-18 08:34+0000\n"
+"POT-Creation-Date: 2026-09-06 13:42+0000\n"
 "PO-Revision-Date: 2026-08-18 12:15+0330\n"
 "Last-Translator: CtrlOps Team\n"
 "Language-Team: Persian\n"
@@ -13,561 +13,605 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 msgid "Credentials"
-msgstr "اطلاعات ورود"
+msgstr "Ã˜Â§Ã˜Â·Ã™â€žÃ˜Â§Ã˜Â¹Ã˜Â§Ã˜Âª Ã™Ë†Ã˜Â±Ã™Ë†Ã˜Â¯"
 
 msgid "Personal Info"
-msgstr "اطلاعات شخصی"
+msgstr "Ã˜Â§Ã˜Â·Ã™â€žÃ˜Â§Ã˜Â¹Ã˜Â§Ã˜Âª Ã˜Â´Ã˜Â®Ã˜ÂµÃ›Å’"
 
 msgid "Permissions & Roles"
-msgstr "مجوزها و نقش‌ها"
+msgstr "Ã™â€¦Ã˜Â¬Ã™Ë†Ã˜Â²Ã™â€¡Ã˜Â§ Ã™Ë† Ã™â€ Ã™â€šÃ˜Â´Ã¢â‚¬Å’Ã™â€¡Ã˜Â§"
 
 msgid "Important dates"
-msgstr "تاریخ‌های مهم"
+msgstr "Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â®Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã™â€¦Ã™â€¡Ã™â€¦"
 
 msgid "Email address is required."
-msgstr "آدرس ایمیل الزامی است."
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜Â§Ã™â€žÃ˜Â²Ã˜Â§Ã™â€¦Ã›Å’ Ã˜Â§Ã˜Â³Ã˜Âª."
 
 msgid "Superuser must have is_staff=True."
-msgstr "برای ابرکاربر مقدار is_staff باید True باشد."
+msgstr "Ã˜Â¨Ã˜Â±Ã˜Â§Ã›Å’ Ã˜Â§Ã˜Â¨Ã˜Â±ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â¨Ã˜Â± Ã™â€¦Ã™â€šÃ˜Â¯Ã˜Â§Ã˜Â± is_staff Ã˜Â¨Ã˜Â§Ã›Å’Ã˜Â¯ True Ã˜Â¨Ã˜Â§Ã˜Â´Ã˜Â¯."
 
 msgid "Superuser must have is_superuser=True."
-msgstr "برای ابرکاربر مقدار is_superuser باید True باشد."
+msgstr "Ã˜Â¨Ã˜Â±Ã˜Â§Ã›Å’ Ã˜Â§Ã˜Â¨Ã˜Â±ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â¨Ã˜Â± Ã™â€¦Ã™â€šÃ˜Â¯Ã˜Â§Ã˜Â± is_superuser Ã˜Â¨Ã˜Â§Ã›Å’Ã˜Â¯ True Ã˜Â¨Ã˜Â§Ã˜Â´Ã˜Â¯."
 
 msgid "Administrator"
-msgstr "مدیر"
+msgstr "Ã™â€¦Ã˜Â¯Ã›Å’Ã˜Â±"
 
 msgid "Staff"
-msgstr "کارمند"
+msgstr "ÃšÂ©Ã˜Â§Ã˜Â±Ã™â€¦Ã™â€ Ã˜Â¯"
 
 msgid "Client"
-msgstr "مشتری"
+msgstr "Ã™â€¦Ã˜Â´Ã˜ÂªÃ˜Â±Ã›Å’"
 
 msgid "Email Address"
-msgstr "آدرس ایمیل"
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž"
 
 msgid "Email Verified"
-msgstr "ایمیل تأیید شده"
+msgstr "Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Email Verified At"
-msgstr "زمان تأیید ایمیل"
+msgstr "Ã˜Â²Ã™â€¦Ã˜Â§Ã™â€  Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž"
 
 msgid "Phone Number"
-msgstr "شماره تلفن"
+msgstr "Ã˜Â´Ã™â€¦Ã˜Â§Ã˜Â±Ã™â€¡ Ã˜ÂªÃ™â€žÃ™ÂÃ™â€ "
 
 msgid "Company Name"
-msgstr "نام شرکت"
+msgstr "Ã™â€ Ã˜Â§Ã™â€¦ Ã˜Â´Ã˜Â±ÃšÂ©Ã˜Âª"
 
 msgid "User Role"
-msgstr "نقش کاربر"
+msgstr "Ã™â€ Ã™â€šÃ˜Â´ ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â¨Ã˜Â±"
 
 msgid "A user with this email address already exists."
-msgstr "کاربری با این آدرس ایمیل از قبل وجود دارد."
+msgstr "ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â¨Ã˜Â±Ã›Å’ Ã˜Â¨Ã˜Â§ Ã˜Â§Ã›Å’Ã™â€  Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜Â§Ã˜Â² Ã™â€šÃ˜Â¨Ã™â€ž Ã™Ë†Ã˜Â¬Ã™Ë†Ã˜Â¯ Ã˜Â¯Ã˜Â§Ã˜Â±Ã˜Â¯."
 
 msgid "Invalid phone number format."
-msgstr "قالب شماره تلفن معتبر نیست."
+msgstr "Ã™â€šÃ˜Â§Ã™â€žÃ˜Â¨ Ã˜Â´Ã™â€¦Ã˜Â§Ã˜Â±Ã™â€¡ Ã˜ÂªÃ™â€žÃ™ÂÃ™â€  Ã™â€¦Ã˜Â¹Ã˜ÂªÃ˜Â¨Ã˜Â± Ã™â€ Ã›Å’Ã˜Â³Ã˜Âª."
 
-msgid "Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)."
-msgstr "رمز عبور باید حداقل ۸ کاراکتر داشته باشد و شامل حداقل یک حرف بزرگ، یک حرف کوچک، یک عدد و یک نویسه ویژه (@$!%*?&) باشد."
+msgid ""
+"Password must be at least 8 characters long and contain at least one "
+"uppercase letter, one lowercase letter, one number, and one special "
+"character (@$!%*?&)."
+msgstr ""
+"Ã˜Â±Ã™â€¦Ã˜Â² Ã˜Â¹Ã˜Â¨Ã™Ë†Ã˜Â± Ã˜Â¨Ã˜Â§Ã›Å’Ã˜Â¯ Ã˜Â­Ã˜Â¯Ã˜Â§Ã™â€šÃ™â€ž Ã›Â¸ ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â§ÃšÂ©Ã˜ÂªÃ˜Â± Ã˜Â¯Ã˜Â§Ã˜Â´Ã˜ÂªÃ™â€¡ Ã˜Â¨Ã˜Â§Ã˜Â´Ã˜Â¯ Ã™Ë† Ã˜Â´Ã˜Â§Ã™â€¦Ã™â€ž Ã˜Â­Ã˜Â¯Ã˜Â§Ã™â€šÃ™â€ž Ã›Å’ÃšÂ© Ã˜Â­Ã˜Â±Ã™Â Ã˜Â¨Ã˜Â²Ã˜Â±ÃšÂ¯Ã˜Å’ Ã›Å’ÃšÂ© Ã˜Â­Ã˜Â±Ã™Â "
+"ÃšÂ©Ã™Ë†Ãšâ€ ÃšÂ©Ã˜Å’ Ã›Å’ÃšÂ© Ã˜Â¹Ã˜Â¯Ã˜Â¯ Ã™Ë† Ã›Å’ÃšÂ© Ã™â€ Ã™Ë†Ã›Å’Ã˜Â³Ã™â€¡ Ã™Ë†Ã›Å’ÃšËœÃ™â€¡ (@$!%*?&) Ã˜Â¨Ã˜Â§Ã˜Â´Ã˜Â¯."
 
 msgid "Passwords do not match."
-msgstr "رمزهای عبور یکسان نیستند."
+msgstr "Ã˜Â±Ã™â€¦Ã˜Â²Ã™â€¡Ã˜Â§Ã›Å’ Ã˜Â¹Ã˜Â¨Ã™Ë†Ã˜Â± Ã›Å’ÃšÂ©Ã˜Â³Ã˜Â§Ã™â€  Ã™â€ Ã›Å’Ã˜Â³Ã˜ÂªÃ™â€ Ã˜Â¯."
 
-msgid "New password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)."
-msgstr "رمز عبور جدید باید حداقل ۸ کاراکتر داشته باشد و شامل حداقل یک حرف بزرگ، یک حرف کوچک، یک عدد و یک نویسه ویژه (@$!%*?&) باشد."
+msgid ""
+"New password must be at least 8 characters long and contain at least one "
+"uppercase letter, one lowercase letter, one number, and one special "
+"character (@$!%*?&)."
+msgstr ""
+"Ã˜Â±Ã™â€¦Ã˜Â² Ã˜Â¹Ã˜Â¨Ã™Ë†Ã˜Â± Ã˜Â¬Ã˜Â¯Ã›Å’Ã˜Â¯ Ã˜Â¨Ã˜Â§Ã›Å’Ã˜Â¯ Ã˜Â­Ã˜Â¯Ã˜Â§Ã™â€šÃ™â€ž Ã›Â¸ ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â§ÃšÂ©Ã˜ÂªÃ˜Â± Ã˜Â¯Ã˜Â§Ã˜Â´Ã˜ÂªÃ™â€¡ Ã˜Â¨Ã˜Â§Ã˜Â´Ã˜Â¯ Ã™Ë† Ã˜Â´Ã˜Â§Ã™â€¦Ã™â€ž Ã˜Â­Ã˜Â¯Ã˜Â§Ã™â€šÃ™â€ž Ã›Å’ÃšÂ© Ã˜Â­Ã˜Â±Ã™Â Ã˜Â¨Ã˜Â²Ã˜Â±ÃšÂ¯Ã˜Å’ Ã›Å’ÃšÂ© "
+"Ã˜Â­Ã˜Â±Ã™Â ÃšÂ©Ã™Ë†Ãšâ€ ÃšÂ©Ã˜Å’ Ã›Å’ÃšÂ© Ã˜Â¹Ã˜Â¯Ã˜Â¯ Ã™Ë† Ã›Å’ÃšÂ© Ã™â€ Ã™Ë†Ã›Å’Ã˜Â³Ã™â€¡ Ã™Ë†Ã›Å’ÃšËœÃ™â€¡ (@$!%*?&) Ã˜Â¨Ã˜Â§Ã˜Â´Ã˜Â¯."
 
 msgid "Verify your email address"
-msgstr "آدرس ایمیل خود را تأیید کنید"
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜Â®Ã™Ë†Ã˜Â¯ Ã˜Â±Ã˜Â§ Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ ÃšÂ©Ã™â€ Ã›Å’Ã˜Â¯"
 
 #, python-format
 msgid "Hello %(name)s,"
-msgstr "سلام %(name)s،"
+msgstr "Ã˜Â³Ã™â€žÃ˜Â§Ã™â€¦ %(name)sÃ˜Å’"
 
-msgid "Thank you for creating a CtrlOps account. Verify your email address to activate your account."
-msgstr "از ایجاد حساب کاربری در CtrlOps سپاسگزاریم. برای فعال‌سازی حساب، آدرس ایمیل خود را تأیید کنید."
+msgid ""
+"Thank you for creating a CtrlOps account. Verify your email address to "
+"activate your account."
+msgstr ""
+"Ã˜Â§Ã˜Â² Ã˜Â§Ã›Å’Ã˜Â¬Ã˜Â§Ã˜Â¯ Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â¨Ã˜Â±Ã›Å’ Ã˜Â¯Ã˜Â± CtrlOps Ã˜Â³Ã™Â¾Ã˜Â§Ã˜Â³ÃšÂ¯Ã˜Â²Ã˜Â§Ã˜Â±Ã›Å’Ã™â€¦. Ã˜Â¨Ã˜Â±Ã˜Â§Ã›Å’ Ã™ÂÃ˜Â¹Ã˜Â§Ã™â€žÃ¢â‚¬Å’Ã˜Â³Ã˜Â§Ã˜Â²Ã›Å’ Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨Ã˜Å’ Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž "
+"Ã˜Â®Ã™Ë†Ã˜Â¯ Ã˜Â±Ã˜Â§ Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ ÃšÂ©Ã™â€ Ã›Å’Ã˜Â¯."
 
 msgid "Verify email address"
-msgstr "تأیید آدرس ایمیل"
+msgstr "Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž"
 
 #, python-format
-msgid "This link expires in %(expires_in_hours)s hours. If you did not create this account, you can ignore this email."
-msgstr "این لینک پس از %(expires_in_hours)s ساعت منقضی می‌شود. اگر این حساب را ایجاد نکرده‌اید، می‌توانید این ایمیل را نادیده بگیرید."
+msgid ""
+"This link expires in %(expires_in_hours)s hours. If you did not create this "
+"account, you can ignore this email."
+msgstr ""
+"Ã˜Â§Ã›Å’Ã™â€  Ã™â€žÃ›Å’Ã™â€ ÃšÂ© Ã™Â¾Ã˜Â³ Ã˜Â§Ã˜Â² %(expires_in_hours)s Ã˜Â³Ã˜Â§Ã˜Â¹Ã˜Âª Ã™â€¦Ã™â€ Ã™â€šÃ˜Â¶Ã›Å’ Ã™â€¦Ã›Å’Ã¢â‚¬Å’Ã˜Â´Ã™Ë†Ã˜Â¯. Ã˜Â§ÃšÂ¯Ã˜Â± Ã˜Â§Ã›Å’Ã™â€  Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ Ã˜Â±Ã˜Â§ Ã˜Â§Ã›Å’Ã˜Â¬Ã˜Â§Ã˜Â¯ "
+"Ã™â€ ÃšÂ©Ã˜Â±Ã˜Â¯Ã™â€¡Ã¢â‚¬Å’Ã˜Â§Ã›Å’Ã˜Â¯Ã˜Å’ Ã™â€¦Ã›Å’Ã¢â‚¬Å’Ã˜ÂªÃ™Ë†Ã˜Â§Ã™â€ Ã›Å’Ã˜Â¯ Ã˜Â§Ã›Å’Ã™â€  Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜Â±Ã˜Â§ Ã™â€ Ã˜Â§Ã˜Â¯Ã›Å’Ã˜Â¯Ã™â€¡ Ã˜Â¨ÃšÂ¯Ã›Å’Ã˜Â±Ã›Å’Ã˜Â¯."
 
 msgid "CtrlOps Team"
-msgstr "تیم CtrlOps"
+msgstr "Ã˜ÂªÃ›Å’Ã™â€¦ CtrlOps"
 
 msgid "Thank you for creating a CtrlOps account."
-msgstr "از ایجاد حساب کاربری در CtrlOps سپاسگزاریم."
+msgstr "Ã˜Â§Ã˜Â² Ã˜Â§Ã›Å’Ã˜Â¬Ã˜Â§Ã˜Â¯ Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â¨Ã˜Â±Ã›Å’ Ã˜Â¯Ã˜Â± CtrlOps Ã˜Â³Ã™Â¾Ã˜Â§Ã˜Â³ÃšÂ¯Ã˜Â²Ã˜Â§Ã˜Â±Ã›Å’Ã™â€¦."
 
-msgid "Use the link below to verify your email address and activate your account:"
-msgstr "برای تأیید آدرس ایمیل و فعال‌سازی حساب خود از لینک زیر استفاده کنید:"
+msgid ""
+"Use the link below to verify your email address and activate your account:"
+msgstr "Ã˜Â¨Ã˜Â±Ã˜Â§Ã›Å’ Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã™Ë† Ã™ÂÃ˜Â¹Ã˜Â§Ã™â€žÃ¢â‚¬Å’Ã˜Â³Ã˜Â§Ã˜Â²Ã›Å’ Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ Ã˜Â®Ã™Ë†Ã˜Â¯ Ã˜Â§Ã˜Â² Ã™â€žÃ›Å’Ã™â€ ÃšÂ© Ã˜Â²Ã›Å’Ã˜Â± Ã˜Â§Ã˜Â³Ã˜ÂªÃ™ÂÃ˜Â§Ã˜Â¯Ã™â€¡ ÃšÂ©Ã™â€ Ã›Å’Ã˜Â¯:"
 
 msgid "Verify your CtrlOps email address"
-msgstr "آدرس ایمیل حساب CtrlOps خود را تأیید کنید"
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ CtrlOps Ã˜Â®Ã™Ë†Ã˜Â¯ Ã˜Â±Ã˜Â§ Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ ÃšÂ©Ã™â€ Ã›Å’Ã˜Â¯"
+
+msgid "Login successful."
+msgstr ""
+
+msgid "Refresh token cookie is missing."
+msgstr ""
+
+#, fuzzy
+#| msgid "Email address verified successfully."
+msgid "Token refreshed successfully."
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜Â¨Ã˜Â§ Ã™â€¦Ã™Ë†Ã™ÂÃ™â€šÃ›Å’Ã˜Âª Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â´Ã˜Â¯."
+
+msgid "CSRF cookie set."
+msgstr ""
 
 msgid "Registration successful. Please verify your email address."
-msgstr "ثبت‌نام با موفقیت انجام شد. لطفاً آدرس ایمیل خود را تأیید کنید."
+msgstr "Ã˜Â«Ã˜Â¨Ã˜ÂªÃ¢â‚¬Å’Ã™â€ Ã˜Â§Ã™â€¦ Ã˜Â¨Ã˜Â§ Ã™â€¦Ã™Ë†Ã™ÂÃ™â€šÃ›Å’Ã˜Âª Ã˜Â§Ã™â€ Ã˜Â¬Ã˜Â§Ã™â€¦ Ã˜Â´Ã˜Â¯. Ã™â€žÃ˜Â·Ã™ÂÃ˜Â§Ã™â€¹ Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜Â®Ã™Ë†Ã˜Â¯ Ã˜Â±Ã˜Â§ Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ ÃšÂ©Ã™â€ Ã›Å’Ã˜Â¯."
 
 msgid "Email address is already verified."
-msgstr "آدرس ایمیل قبلاً تأیید شده است."
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã™â€šÃ˜Â¨Ã™â€žÃ˜Â§Ã™â€¹ Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â´Ã˜Â¯Ã™â€¡ Ã˜Â§Ã˜Â³Ã˜Âª."
 
 msgid "Email address verified successfully."
-msgstr "آدرس ایمیل با موفقیت تأیید شد."
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜Â¨Ã˜Â§ Ã™â€¦Ã™Ë†Ã™ÂÃ™â€šÃ›Å’Ã˜Âª Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â´Ã˜Â¯."
 
 msgid "The verification link is invalid or has expired."
-msgstr "لینک تأیید نامعتبر است یا منقضی شده است."
+msgstr "Ã™â€žÃ›Å’Ã™â€ ÃšÂ© Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã™â€ Ã˜Â§Ã™â€¦Ã˜Â¹Ã˜ÂªÃ˜Â¨Ã˜Â± Ã˜Â§Ã˜Â³Ã˜Âª Ã›Å’Ã˜Â§ Ã™â€¦Ã™â€ Ã™â€šÃ˜Â¶Ã›Å’ Ã˜Â´Ã˜Â¯Ã™â€¡ Ã˜Â§Ã˜Â³Ã˜Âª."
 
 msgid "If an eligible account exists, a verification email has been sent."
-msgstr "اگر حساب واجد شرایطی وجود داشته باشد، ایمیل تأیید ارسال شده است."
+msgstr "Ã˜Â§ÃšÂ¯Ã˜Â± Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ Ã™Ë†Ã˜Â§Ã˜Â¬Ã˜Â¯ Ã˜Â´Ã˜Â±Ã˜Â§Ã›Å’Ã˜Â·Ã›Å’ Ã™Ë†Ã˜Â¬Ã™Ë†Ã˜Â¯ Ã˜Â¯Ã˜Â§Ã˜Â´Ã˜ÂªÃ™â€¡ Ã˜Â¨Ã˜Â§Ã˜Â´Ã˜Â¯Ã˜Å’ Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â§Ã˜Â±Ã˜Â³Ã˜Â§Ã™â€ž Ã˜Â´Ã˜Â¯Ã™â€¡ Ã˜Â§Ã˜Â³Ã˜Âª."
 
 msgid "Successfully logged out."
-msgstr "خروج از حساب با موفقیت انجام شد."
+msgstr "Ã˜Â®Ã˜Â±Ã™Ë†Ã˜Â¬ Ã˜Â§Ã˜Â² Ã˜Â­Ã˜Â³Ã˜Â§Ã˜Â¨ Ã˜Â¨Ã˜Â§ Ã™â€¦Ã™Ë†Ã™ÂÃ™â€šÃ›Å’Ã˜Âª Ã˜Â§Ã™â€ Ã˜Â¬Ã˜Â§Ã™â€¦ Ã˜Â´Ã˜Â¯."
 
 msgid "Invalid token."
-msgstr "توکن نامعتبر است."
+msgstr "Ã˜ÂªÃ™Ë†ÃšÂ©Ã™â€  Ã™â€ Ã˜Â§Ã™â€¦Ã˜Â¹Ã˜ÂªÃ˜Â¨Ã˜Â± Ã˜Â§Ã˜Â³Ã˜Âª."
 
 msgid "Wrong password."
-msgstr "رمز عبور نادرست است."
+msgstr "Ã˜Â±Ã™â€¦Ã˜Â² Ã˜Â¹Ã˜Â¨Ã™Ë†Ã˜Â± Ã™â€ Ã˜Â§Ã˜Â¯Ã˜Â±Ã˜Â³Ã˜Âª Ã˜Â§Ã˜Â³Ã˜Âª."
 
 msgid "Password updated successfully."
-msgstr "رمز عبور با موفقیت به‌روزرسانی شد."
+msgstr "Ã˜Â±Ã™â€¦Ã˜Â² Ã˜Â¹Ã˜Â¨Ã™Ë†Ã˜Â± Ã˜Â¨Ã˜Â§ Ã™â€¦Ã™Ë†Ã™ÂÃ™â€šÃ›Å’Ã˜Âª Ã˜Â¨Ã™â€¡Ã¢â‚¬Å’Ã˜Â±Ã™Ë†Ã˜Â²Ã˜Â±Ã˜Â³Ã˜Â§Ã™â€ Ã›Å’ Ã˜Â´Ã˜Â¯."
 
 msgid "Unpaid"
-msgstr "پرداخت‌نشده"
+msgstr "Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜ÂªÃ¢â‚¬Å’Ã™â€ Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Partially Paid"
-msgstr "بخشی پرداخت‌شده"
+msgstr "Ã˜Â¨Ã˜Â®Ã˜Â´Ã›Å’ Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜ÂªÃ¢â‚¬Å’Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Paid"
-msgstr "پرداخت‌شده"
+msgstr "Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜ÂªÃ¢â‚¬Å’Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Overdue"
-msgstr "سررسید گذشته"
+msgstr "Ã˜Â³Ã˜Â±Ã˜Â±Ã˜Â³Ã›Å’Ã˜Â¯ ÃšÂ¯Ã˜Â°Ã˜Â´Ã˜ÂªÃ™â€¡"
 
 msgid "Canceled"
-msgstr "لغوشده"
+msgstr "Ã™â€žÃ˜ÂºÃ™Ë†Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Invoice Number"
-msgstr "شماره فاکتور"
+msgstr "Ã˜Â´Ã™â€¦Ã˜Â§Ã˜Â±Ã™â€¡ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â±"
 
 msgid "User"
-msgstr "کاربر"
+msgstr "ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â¨Ã˜Â±"
 
 msgid "Related Project Request"
-msgstr "درخواست پروژه مرتبط"
+msgstr "Ã˜Â¯Ã˜Â±Ã˜Â®Ã™Ë†Ã˜Â§Ã˜Â³Ã˜Âª Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡ Ã™â€¦Ã˜Â±Ã˜ÂªÃ˜Â¨Ã˜Â·"
 
 msgid "Related Service"
-msgstr "خدمت مرتبط"
+msgstr "Ã˜Â®Ã˜Â¯Ã™â€¦Ã˜Âª Ã™â€¦Ã˜Â±Ã˜ÂªÃ˜Â¨Ã˜Â·"
 
 msgid "Total Amount"
-msgstr "مبلغ کل"
+msgstr "Ã™â€¦Ã˜Â¨Ã™â€žÃ˜Âº ÃšÂ©Ã™â€ž"
 
 msgid "Status"
-msgstr "وضعیت"
+msgstr "Ã™Ë†Ã˜Â¶Ã˜Â¹Ã›Å’Ã˜Âª"
 
 msgid "Due Date"
-msgstr "تاریخ سررسید"
+msgstr "Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â³Ã˜Â±Ã˜Â±Ã˜Â³Ã›Å’Ã˜Â¯"
 
 msgid "Created At"
-msgstr "زمان ایجاد"
+msgstr "Ã˜Â²Ã™â€¦Ã˜Â§Ã™â€  Ã˜Â§Ã›Å’Ã˜Â¬Ã˜Â§Ã˜Â¯"
 
 msgid "Updated At"
-msgstr "زمان به‌روزرسانی"
+msgstr "Ã˜Â²Ã™â€¦Ã˜Â§Ã™â€  Ã˜Â¨Ã™â€¡Ã¢â‚¬Å’Ã˜Â±Ã™Ë†Ã˜Â²Ã˜Â±Ã˜Â³Ã˜Â§Ã™â€ Ã›Å’"
 
 msgid "Invoice"
-msgstr "فاکتور"
+msgstr "Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â±"
 
 msgid "Invoices"
-msgstr "فاکتورها"
+msgstr "Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â±Ã™â€¡Ã˜Â§"
 
 msgid "Description"
-msgstr "توضیحات"
+msgstr "Ã˜ÂªÃ™Ë†Ã˜Â¶Ã›Å’Ã˜Â­Ã˜Â§Ã˜Âª"
 
 msgid "Quantity"
-msgstr "تعداد"
+msgstr "Ã˜ÂªÃ˜Â¹Ã˜Â¯Ã˜Â§Ã˜Â¯"
 
 msgid "Unit Price"
-msgstr "قیمت واحد"
+msgstr "Ã™â€šÃ›Å’Ã™â€¦Ã˜Âª Ã™Ë†Ã˜Â§Ã˜Â­Ã˜Â¯"
 
 msgid "Invoice Item"
-msgstr "آیتم فاکتور"
+msgstr "Ã˜Â¢Ã›Å’Ã˜ÂªÃ™â€¦ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â±"
 
 msgid "Invoice Items"
-msgstr "آیتم‌های فاکتور"
+msgstr "Ã˜Â¢Ã›Å’Ã˜ÂªÃ™â€¦Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â±"
 
 msgid "Items of a paid, partially paid, or canceled invoice cannot be changed."
-msgstr "آیتم‌های فاکتور پرداخت‌شده، بخشی پرداخت‌شده یا لغوشده قابل تغییر نیستند."
+msgstr "Ã˜Â¢Ã›Å’Ã˜ÂªÃ™â€¦Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜ÂªÃ¢â‚¬Å’Ã˜Â´Ã˜Â¯Ã™â€¡Ã˜Å’ Ã˜Â¨Ã˜Â®Ã˜Â´Ã›Å’ Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜ÂªÃ¢â‚¬Å’Ã˜Â´Ã˜Â¯Ã™â€¡ Ã›Å’Ã˜Â§ Ã™â€žÃ˜ÂºÃ™Ë†Ã˜Â´Ã˜Â¯Ã™â€¡ Ã™â€šÃ˜Â§Ã˜Â¨Ã™â€ž Ã˜ÂªÃ˜ÂºÃ›Å’Ã›Å’Ã˜Â± Ã™â€ Ã›Å’Ã˜Â³Ã˜ÂªÃ™â€ Ã˜Â¯."
 
 msgid "Invoice items cannot be changed after a payment is approved."
-msgstr "پس از تأیید پرداخت، آیتم‌های فاکتور قابل تغییر نیستند."
+msgstr "Ã™Â¾Ã˜Â³ Ã˜Â§Ã˜Â² Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜ÂªÃ˜Å’ Ã˜Â¢Ã›Å’Ã˜ÂªÃ™â€¦Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã™â€šÃ˜Â§Ã˜Â¨Ã™â€ž Ã˜ÂªÃ˜ÂºÃ›Å’Ã›Å’Ã˜Â± Ã™â€ Ã›Å’Ã˜Â³Ã˜ÂªÃ™â€ Ã˜Â¯."
 
 msgid "The sum of invoice items exceeds the maximum invoice amount."
-msgstr "مجموع آیتم‌های فاکتور از حداکثر مبلغ مجاز بیشتر است."
+msgstr "Ã™â€¦Ã˜Â¬Ã™â€¦Ã™Ë†Ã˜Â¹ Ã˜Â¢Ã›Å’Ã˜ÂªÃ™â€¦Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã˜Â§Ã˜Â² Ã˜Â­Ã˜Â¯Ã˜Â§ÃšÂ©Ã˜Â«Ã˜Â± Ã™â€¦Ã˜Â¨Ã™â€žÃ˜Âº Ã™â€¦Ã˜Â¬Ã˜Â§Ã˜Â² Ã˜Â¨Ã›Å’Ã˜Â´Ã˜ÂªÃ˜Â± Ã˜Â§Ã˜Â³Ã˜Âª."
 
 msgid "Pending Verification"
-msgstr "در انتظار بررسی"
+msgstr "Ã˜Â¯Ã˜Â± Ã˜Â§Ã™â€ Ã˜ÂªÃ˜Â¸Ã˜Â§Ã˜Â± Ã˜Â¨Ã˜Â±Ã˜Â±Ã˜Â³Ã›Å’"
 
 msgid "Approved"
-msgstr "تأییدشده"
+msgstr "Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Rejected"
-msgstr "ردشده"
+msgstr "Ã˜Â±Ã˜Â¯Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Related Invoice"
-msgstr "فاکتور مرتبط"
+msgstr "Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã™â€¦Ã˜Â±Ã˜ÂªÃ˜Â¨Ã˜Â·"
 
 msgid "Amount Paid"
-msgstr "مبلغ پرداختی"
+msgstr "Ã™â€¦Ã˜Â¨Ã™â€žÃ˜Âº Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜ÂªÃ›Å’"
 
 msgid "Reference Code / Tracking Number"
-msgstr "کد مرجع / شماره پیگیری"
+msgstr "ÃšÂ©Ã˜Â¯ Ã™â€¦Ã˜Â±Ã˜Â¬Ã˜Â¹ / Ã˜Â´Ã™â€¦Ã˜Â§Ã˜Â±Ã™â€¡ Ã™Â¾Ã›Å’ÃšÂ¯Ã›Å’Ã˜Â±Ã›Å’"
 
 msgid "Receipt Attachment"
-msgstr "فایل پیوست رسید"
+msgstr "Ã™ÂÃ˜Â§Ã›Å’Ã™â€ž Ã™Â¾Ã›Å’Ã™Ë†Ã˜Â³Ã˜Âª Ã˜Â±Ã˜Â³Ã›Å’Ã˜Â¯"
 
 msgid "Verification Status"
-msgstr "وضعیت بررسی"
+msgstr "Ã™Ë†Ã˜Â¶Ã˜Â¹Ã›Å’Ã˜Âª Ã˜Â¨Ã˜Â±Ã˜Â±Ã˜Â³Ã›Å’"
 
 msgid "Transaction"
-msgstr "تراکنش"
+msgstr "Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ©Ã™â€ Ã˜Â´"
 
 msgid "Transactions"
-msgstr "تراکنش‌ها"
+msgstr "Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ©Ã™â€ Ã˜Â´Ã¢â‚¬Å’Ã™â€¡Ã˜Â§"
 
 msgid "Transaction user must match the invoice user."
-msgstr "کاربر تراکنش باید با کاربر فاکتور یکسان باشد."
+msgstr "ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â¨Ã˜Â± Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ©Ã™â€ Ã˜Â´ Ã˜Â¨Ã˜Â§Ã›Å’Ã˜Â¯ Ã˜Â¨Ã˜Â§ ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â¨Ã˜Â± Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã›Å’ÃšÂ©Ã˜Â³Ã˜Â§Ã™â€  Ã˜Â¨Ã˜Â§Ã˜Â´Ã˜Â¯."
 
 msgid "A receipt cannot be submitted for a canceled invoice."
-msgstr "برای فاکتور لغوشده نمی‌توان رسید ثبت کرد."
+msgstr "Ã˜Â¨Ã˜Â±Ã˜Â§Ã›Å’ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã™â€žÃ˜ÂºÃ™Ë†Ã˜Â´Ã˜Â¯Ã™â€¡ Ã™â€ Ã™â€¦Ã›Å’Ã¢â‚¬Å’Ã˜ÂªÃ™Ë†Ã˜Â§Ã™â€  Ã˜Â±Ã˜Â³Ã›Å’Ã˜Â¯ Ã˜Â«Ã˜Â¨Ã˜Âª ÃšÂ©Ã˜Â±Ã˜Â¯."
 
 msgid "This invoice has already been paid in full."
-msgstr "این فاکتور قبلاً به‌طور کامل پرداخت شده است."
+msgstr "Ã˜Â§Ã›Å’Ã™â€  Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã™â€šÃ˜Â¨Ã™â€žÃ˜Â§Ã™â€¹ Ã˜Â¨Ã™â€¡Ã¢â‚¬Å’Ã˜Â·Ã™Ë†Ã˜Â± ÃšÂ©Ã˜Â§Ã™â€¦Ã™â€ž Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜Âª Ã˜Â´Ã˜Â¯Ã™â€¡ Ã˜Â§Ã˜Â³Ã˜Âª."
 
 msgid "Add at least one invoice item before submitting a receipt."
-msgstr "پیش از ثبت رسید، حداقل یک آیتم به فاکتور اضافه کنید."
+msgstr "Ã™Â¾Ã›Å’Ã˜Â´ Ã˜Â§Ã˜Â² Ã˜Â«Ã˜Â¨Ã˜Âª Ã˜Â±Ã˜Â³Ã›Å’Ã˜Â¯Ã˜Å’ Ã˜Â­Ã˜Â¯Ã˜Â§Ã™â€šÃ™â€ž Ã›Å’ÃšÂ© Ã˜Â¢Ã›Å’Ã˜ÂªÃ™â€¦ Ã˜Â¨Ã™â€¡ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã˜Â§Ã˜Â¶Ã˜Â§Ã™ÂÃ™â€¡ ÃšÂ©Ã™â€ Ã›Å’Ã˜Â¯."
 
 msgid "Transaction amount exceeds the invoice remaining amount."
-msgstr "مبلغ تراکنش از مبلغ باقی‌مانده فاکتور بیشتر است."
+msgstr "Ã™â€¦Ã˜Â¨Ã™â€žÃ˜Âº Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ©Ã™â€ Ã˜Â´ Ã˜Â§Ã˜Â² Ã™â€¦Ã˜Â¨Ã™â€žÃ˜Âº Ã˜Â¨Ã˜Â§Ã™â€šÃ›Å’Ã¢â‚¬Å’Ã™â€¦Ã˜Â§Ã™â€ Ã˜Â¯Ã™â€¡ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã˜Â¨Ã›Å’Ã˜Â´Ã˜ÂªÃ˜Â± Ã˜Â§Ã˜Â³Ã˜Âª."
 
 msgid "A receipt cannot be approved for a canceled invoice."
-msgstr "رسید مربوط به فاکتور لغوشده قابل تأیید نیست."
+msgstr "Ã˜Â±Ã˜Â³Ã›Å’Ã˜Â¯ Ã™â€¦Ã˜Â±Ã˜Â¨Ã™Ë†Ã˜Â· Ã˜Â¨Ã™â€¡ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã™â€žÃ˜ÂºÃ™Ë†Ã˜Â´Ã˜Â¯Ã™â€¡ Ã™â€šÃ˜Â§Ã˜Â¨Ã™â€ž Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã™â€ Ã›Å’Ã˜Â³Ã˜Âª."
 
 msgid "Approving this receipt would exceed the invoice total."
-msgstr "با تأیید این رسید، مبلغ پرداختی از مبلغ کل فاکتور بیشتر می‌شود."
+msgstr "Ã˜Â¨Ã˜Â§ Ã˜ÂªÃ˜Â£Ã›Å’Ã›Å’Ã˜Â¯ Ã˜Â§Ã›Å’Ã™â€  Ã˜Â±Ã˜Â³Ã›Å’Ã˜Â¯Ã˜Å’ Ã™â€¦Ã˜Â¨Ã™â€žÃ˜Âº Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜ÂªÃ›Å’ Ã˜Â§Ã˜Â² Ã™â€¦Ã˜Â¨Ã™â€žÃ˜Âº ÃšÂ©Ã™â€ž Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã˜Â¨Ã›Å’Ã˜Â´Ã˜ÂªÃ˜Â± Ã™â€¦Ã›Å’Ã¢â‚¬Å’Ã˜Â´Ã™Ë†Ã˜Â¯."
 
 msgid "Active"
-msgstr "فعال"
+msgstr "Ã™ÂÃ˜Â¹Ã˜Â§Ã™â€ž"
 
 msgid "Expired"
-msgstr "منقضی‌شده"
+msgstr "Ã™â€¦Ã™â€ Ã™â€šÃ˜Â¶Ã›Å’Ã¢â‚¬Å’Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Terminated"
-msgstr "فسخ‌شده"
+msgstr "Ã™ÂÃ˜Â³Ã˜Â®Ã¢â‚¬Å’Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Contract Title"
-msgstr "عنوان قرارداد"
+msgstr "Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  Ã™â€šÃ˜Â±Ã˜Â§Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â¯"
 
 msgid "Contract Document (PDF)"
-msgstr "سند قرارداد (PDF)"
+msgstr "Ã˜Â³Ã™â€ Ã˜Â¯ Ã™â€šÃ˜Â±Ã˜Â§Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â¯ (PDF)"
 
 msgid "Contract Status"
-msgstr "وضعیت قرارداد"
+msgstr "Ã™Ë†Ã˜Â¶Ã˜Â¹Ã›Å’Ã˜Âª Ã™â€šÃ˜Â±Ã˜Â§Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â¯"
 
 msgid "Start Date"
-msgstr "تاریخ شروع"
+msgstr "Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã˜Â´Ã˜Â±Ã™Ë†Ã˜Â¹"
 
 msgid "End Date"
-msgstr "تاریخ پایان"
+msgstr "Ã˜ÂªÃ˜Â§Ã˜Â±Ã›Å’Ã˜Â® Ã™Â¾Ã˜Â§Ã›Å’Ã˜Â§Ã™â€ "
 
 msgid "Contract"
-msgstr "قرارداد"
+msgstr "Ã™â€šÃ˜Â±Ã˜Â§Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â¯"
 
 msgid "Contracts"
-msgstr "قراردادها"
+msgstr "Ã™â€šÃ˜Â±Ã˜Â§Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â¯Ã™â€¡Ã˜Â§"
 
 msgid "File not found."
-msgstr "فایل پیدا نشد."
+msgstr "Ã™ÂÃ˜Â§Ã›Å’Ã™â€ž Ã™Â¾Ã›Å’Ã˜Â¯Ã˜Â§ Ã™â€ Ã˜Â´Ã˜Â¯."
 
 msgid "You do not have permission to modify this invoice."
-msgstr "اجازه تغییر این فاکتور را ندارید."
+msgstr "Ã˜Â§Ã˜Â¬Ã˜Â§Ã˜Â²Ã™â€¡ Ã˜ÂªÃ˜ÂºÃ›Å’Ã›Å’Ã˜Â± Ã˜Â§Ã›Å’Ã™â€  Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â± Ã˜Â±Ã˜Â§ Ã™â€ Ã˜Â¯Ã˜Â§Ã˜Â±Ã›Å’Ã˜Â¯."
 
 msgid "You can only submit payment receipts for your own invoices."
-msgstr "فقط برای فاکتورهای خودتان می‌توانید رسید پرداخت ثبت کنید."
+msgstr "Ã™ÂÃ™â€šÃ˜Â· Ã˜Â¨Ã˜Â±Ã˜Â§Ã›Å’ Ã™ÂÃ˜Â§ÃšÂ©Ã˜ÂªÃ™Ë†Ã˜Â±Ã™â€¡Ã˜Â§Ã›Å’ Ã˜Â®Ã™Ë†Ã˜Â¯Ã˜ÂªÃ˜Â§Ã™â€  Ã™â€¦Ã›Å’Ã¢â‚¬Å’Ã˜ÂªÃ™Ë†Ã˜Â§Ã™â€ Ã›Å’Ã˜Â¯ Ã˜Â±Ã˜Â³Ã›Å’Ã˜Â¯ Ã™Â¾Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â®Ã˜Âª Ã˜Â«Ã˜Â¨Ã˜Âª ÃšÂ©Ã™â€ Ã›Å’Ã˜Â¯."
 
 msgid "You do not have permission to modify this transaction."
-msgstr "اجازه تغییر این تراکنش را ندارید."
+msgstr "Ã˜Â§Ã˜Â¬Ã˜Â§Ã˜Â²Ã™â€¡ Ã˜ÂªÃ˜ÂºÃ›Å’Ã›Å’Ã˜Â± Ã˜Â§Ã›Å’Ã™â€  Ã˜ÂªÃ˜Â±Ã˜Â§ÃšÂ©Ã™â€ Ã˜Â´ Ã˜Â±Ã˜Â§ Ã™â€ Ã˜Â¯Ã˜Â§Ã˜Â±Ã›Å’Ã˜Â¯."
 
 msgid "You do not have permission to modify this contract."
-msgstr "اجازه تغییر این قرارداد را ندارید."
+msgstr "Ã˜Â§Ã˜Â¬Ã˜Â§Ã˜Â²Ã™â€¡ Ã˜ÂªÃ˜ÂºÃ›Å’Ã›Å’Ã˜Â± Ã˜Â§Ã›Å’Ã™â€  Ã™â€šÃ˜Â±Ã˜Â§Ã˜Â±Ã˜Â¯Ã˜Â§Ã˜Â¯ Ã˜Â±Ã˜Â§ Ã™â€ Ã˜Â¯Ã˜Â§Ã˜Â±Ã›Å’Ã˜Â¯."
 
 msgid "Name"
-msgstr "نام"
+msgstr "Ã™â€ Ã˜Â§Ã™â€¦"
 
 msgid "Slug"
-msgstr "نامک"
+msgstr "Ã™â€ Ã˜Â§Ã™â€¦ÃšÂ©"
 
 msgid "Category"
-msgstr "دسته‌بندی"
+msgstr "Ã˜Â¯Ã˜Â³Ã˜ÂªÃ™â€¡Ã¢â‚¬Å’Ã˜Â¨Ã™â€ Ã˜Â¯Ã›Å’"
 
 msgid "Categories"
-msgstr "دسته‌بندی‌ها"
+msgstr "Ã˜Â¯Ã˜Â³Ã˜ÂªÃ™â€¡Ã¢â‚¬Å’Ã˜Â¨Ã™â€ Ã˜Â¯Ã›Å’Ã¢â‚¬Å’Ã™â€¡Ã˜Â§"
 
 msgid "Tag"
-msgstr "برچسب"
+msgstr "Ã˜Â¨Ã˜Â±Ãšâ€ Ã˜Â³Ã˜Â¨"
 
 msgid "Tags"
-msgstr "برچسب‌ها"
+msgstr "Ã˜Â¨Ã˜Â±Ãšâ€ Ã˜Â³Ã˜Â¨Ã¢â‚¬Å’Ã™â€¡Ã˜Â§"
 
 msgid "Author"
-msgstr "نویسنده"
+msgstr "Ã™â€ Ã™Ë†Ã›Å’Ã˜Â³Ã™â€ Ã˜Â¯Ã™â€¡"
 
 msgid "Title"
-msgstr "عنوان"
+msgstr "Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€ "
 
 msgid "Content"
-msgstr "محتوا"
+msgstr "Ã™â€¦Ã˜Â­Ã˜ÂªÃ™Ë†Ã˜Â§"
 
 msgid "Featured Image"
-msgstr "تصویر شاخص"
+msgstr "Ã˜ÂªÃ˜ÂµÃ™Ë†Ã›Å’Ã˜Â± Ã˜Â´Ã˜Â§Ã˜Â®Ã˜Âµ"
 
 msgid "Meta Description"
-msgstr "توضیحات متا"
+msgstr "Ã˜ÂªÃ™Ë†Ã˜Â¶Ã›Å’Ã˜Â­Ã˜Â§Ã˜Âª Ã™â€¦Ã˜ÂªÃ˜Â§"
 
 msgid "Is Published"
-msgstr "منتشر شده"
+msgstr "Ã™â€¦Ã™â€ Ã˜ÂªÃ˜Â´Ã˜Â± Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Published At"
-msgstr "زمان انتشار"
+msgstr "Ã˜Â²Ã™â€¦Ã˜Â§Ã™â€  Ã˜Â§Ã™â€ Ã˜ÂªÃ˜Â´Ã˜Â§Ã˜Â±"
 
 msgid "Views Count"
-msgstr "تعداد بازدید"
+msgstr "Ã˜ÂªÃ˜Â¹Ã˜Â¯Ã˜Â§Ã˜Â¯ Ã˜Â¨Ã˜Â§Ã˜Â²Ã˜Â¯Ã›Å’Ã˜Â¯"
 
 msgid "Post"
-msgstr "نوشته"
+msgstr "Ã™â€ Ã™Ë†Ã˜Â´Ã˜ÂªÃ™â€¡"
 
 msgid "Posts"
-msgstr "نوشته‌ها"
+msgstr "Ã™â€ Ã™Ë†Ã˜Â´Ã˜ÂªÃ™â€¡Ã¢â‚¬Å’Ã™â€¡Ã˜Â§"
 
 msgid "Site Name"
-msgstr "نام سایت"
+msgstr "Ã™â€ Ã˜Â§Ã™â€¦ Ã˜Â³Ã˜Â§Ã›Å’Ã˜Âª"
 
 msgid "Site Logo"
-msgstr "لوگوی سایت"
+msgstr "Ã™â€žÃ™Ë†ÃšÂ¯Ã™Ë†Ã›Å’ Ã˜Â³Ã˜Â§Ã›Å’Ã˜Âª"
 
 msgid "About Us Text"
-msgstr "متن درباره ما"
+msgstr "Ã™â€¦Ã˜ÂªÃ™â€  Ã˜Â¯Ã˜Â±Ã˜Â¨Ã˜Â§Ã˜Â±Ã™â€¡ Ã™â€¦Ã˜Â§"
 
 msgid "Contact Email"
-msgstr "ایمیل تماس"
+msgstr "Ã˜Â§Ã›Å’Ã™â€¦Ã›Å’Ã™â€ž Ã˜ÂªÃ™â€¦Ã˜Â§Ã˜Â³"
 
 msgid "Physical Address"
-msgstr "آدرس"
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³"
 
 msgid "Working Hours"
-msgstr "ساعات کاری"
+msgstr "Ã˜Â³Ã˜Â§Ã˜Â¹Ã˜Â§Ã˜Âª ÃšÂ©Ã˜Â§Ã˜Â±Ã›Å’"
 
 msgid "Site Setting"
-msgstr "تنظیمات سایت"
+msgstr "Ã˜ÂªÃ™â€ Ã˜Â¸Ã›Å’Ã™â€¦Ã˜Â§Ã˜Âª Ã˜Â³Ã˜Â§Ã›Å’Ã˜Âª"
 
 msgid "Site Settings"
-msgstr "تنظیمات سایت"
+msgstr "Ã˜ÂªÃ™â€ Ã˜Â¸Ã›Å’Ã™â€¦Ã˜Â§Ã˜Âª Ã˜Â³Ã˜Â§Ã›Å’Ã˜Âª"
 
 msgid "Platform Name"
-msgstr "نام پلتفرم"
+msgstr "Ã™â€ Ã˜Â§Ã™â€¦ Ã™Â¾Ã™â€žÃ˜ÂªÃ™ÂÃ˜Â±Ã™â€¦"
 
 msgid "Profile URL"
-msgstr "آدرس پروفایل"
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã™Â¾Ã˜Â±Ã™Ë†Ã™ÂÃ˜Â§Ã›Å’Ã™â€ž"
 
 msgid "Icon / SVG"
-msgstr "آیکون / SVG"
+msgstr "Ã˜Â¢Ã›Å’ÃšÂ©Ã™Ë†Ã™â€  / SVG"
 
 msgid "Is Active"
-msgstr "فعال است"
+msgstr "Ã™ÂÃ˜Â¹Ã˜Â§Ã™â€ž Ã˜Â§Ã˜Â³Ã˜Âª"
 
 msgid "Social Link"
-msgstr "لینک شبکه اجتماعی"
+msgstr "Ã™â€žÃ›Å’Ã™â€ ÃšÂ© Ã˜Â´Ã˜Â¨ÃšÂ©Ã™â€¡ Ã˜Â§Ã˜Â¬Ã˜ÂªÃ™â€¦Ã˜Â§Ã˜Â¹Ã›Å’"
 
 msgid "Social Links"
-msgstr "لینک‌های شبکه اجتماعی"
+msgstr "Ã™â€žÃ›Å’Ã™â€ ÃšÂ©Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã˜Â´Ã˜Â¨ÃšÂ©Ã™â€¡ Ã˜Â§Ã˜Â¬Ã˜ÂªÃ™â€¦Ã˜Â§Ã˜Â¹Ã›Å’"
 
 msgid "Question"
-msgstr "پرسش"
+msgstr "Ã™Â¾Ã˜Â±Ã˜Â³Ã˜Â´"
 
 msgid "Answer"
-msgstr "پاسخ"
+msgstr "Ã™Â¾Ã˜Â§Ã˜Â³Ã˜Â®"
 
 msgid "Display Order"
-msgstr "ترتیب نمایش"
+msgstr "Ã˜ÂªÃ˜Â±Ã˜ÂªÃ›Å’Ã˜Â¨ Ã™â€ Ã™â€¦Ã˜Â§Ã›Å’Ã˜Â´"
 
 msgid "FAQ"
-msgstr "پرسش متداول"
+msgstr "Ã™Â¾Ã˜Â±Ã˜Â³Ã˜Â´ Ã™â€¦Ã˜ÂªÃ˜Â¯Ã˜Â§Ã™Ë†Ã™â€ž"
 
 msgid "FAQs"
-msgstr "پرسش‌های متداول"
+msgstr "Ã™Â¾Ã˜Â±Ã˜Â³Ã˜Â´Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã™â€¦Ã˜ÂªÃ˜Â¯Ã˜Â§Ã™Ë†Ã™â€ž"
 
 msgid "Category Title"
-msgstr "عنوان دسته‌بندی"
+msgstr "Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  Ã˜Â¯Ã˜Â³Ã˜ÂªÃ™â€¡Ã¢â‚¬Å’Ã˜Â¨Ã™â€ Ã˜Â¯Ã›Å’"
 
 msgid "Technology Name"
-msgstr "نام فناوری"
+msgstr "Ã™â€ Ã˜Â§Ã™â€¦ Ã™ÂÃ™â€ Ã˜Â§Ã™Ë†Ã˜Â±Ã›Å’"
 
 msgid "Technology"
-msgstr "فناوری"
+msgstr "Ã™ÂÃ™â€ Ã˜Â§Ã™Ë†Ã˜Â±Ã›Å’"
 
 msgid "Technologies"
-msgstr "فناوری‌ها"
+msgstr "Ã™ÂÃ™â€ Ã˜Â§Ã™Ë†Ã˜Â±Ã›Å’Ã¢â‚¬Å’Ã™â€¡Ã˜Â§"
 
 msgid "Project Title"
-msgstr "عنوان پروژه"
+msgstr "Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡"
 
 msgid "Technologies Used"
-msgstr "فناوری‌های استفاده‌شده"
+msgstr "Ã™ÂÃ™â€ Ã˜Â§Ã™Ë†Ã˜Â±Ã›Å’Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã˜Â§Ã˜Â³Ã˜ÂªÃ™ÂÃ˜Â§Ã˜Â¯Ã™â€¡Ã¢â‚¬Å’Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Cover Image"
-msgstr "تصویر کاور"
+msgstr "Ã˜ÂªÃ˜ÂµÃ™Ë†Ã›Å’Ã˜Â± ÃšÂ©Ã˜Â§Ã™Ë†Ã˜Â±"
 
 msgid "Short Summary"
-msgstr "خلاصه کوتاه"
+msgstr "Ã˜Â®Ã™â€žÃ˜Â§Ã˜ÂµÃ™â€¡ ÃšÂ©Ã™Ë†Ã˜ÂªÃ˜Â§Ã™â€¡"
 
 msgid "Full Project Description"
-msgstr "توضیحات کامل پروژه"
+msgstr "Ã˜ÂªÃ™Ë†Ã˜Â¶Ã›Å’Ã˜Â­Ã˜Â§Ã˜Âª ÃšÂ©Ã˜Â§Ã™â€¦Ã™â€ž Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡"
 
 msgid "GitHub Repository URL"
-msgstr "آدرس مخزن GitHub"
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã™â€¦Ã˜Â®Ã˜Â²Ã™â€  GitHub"
 
 msgid "Live Demo URL"
-msgstr "آدرس دموی آنلاین"
+msgstr "Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â¯Ã™â€¦Ã™Ë†Ã›Å’ Ã˜Â¢Ã™â€ Ã™â€žÃ˜Â§Ã›Å’Ã™â€ "
 
 msgid "Client Name"
-msgstr "نام مشتری"
+msgstr "Ã™â€ Ã˜Â§Ã™â€¦ Ã™â€¦Ã˜Â´Ã˜ÂªÃ˜Â±Ã›Å’"
 
 msgid "Show on Home Page"
-msgstr "نمایش در صفحه اصلی"
+msgstr "Ã™â€ Ã™â€¦Ã˜Â§Ã›Å’Ã˜Â´ Ã˜Â¯Ã˜Â± Ã˜ÂµÃ™ÂÃ˜Â­Ã™â€¡ Ã˜Â§Ã˜ÂµÃ™â€žÃ›Å’"
 
 msgid "Portfolio Item"
-msgstr "نمونه‌کار"
+msgstr "Ã™â€ Ã™â€¦Ã™Ë†Ã™â€ Ã™â€¡Ã¢â‚¬Å’ÃšÂ©Ã˜Â§Ã˜Â±"
 
 msgid "Portfolio Items"
-msgstr "نمونه‌کارها"
+msgstr "Ã™â€ Ã™â€¦Ã™Ë†Ã™â€ Ã™â€¡Ã¢â‚¬Å’ÃšÂ©Ã˜Â§Ã˜Â±Ã™â€¡Ã˜Â§"
 
 msgid "Portfolio Project"
-msgstr "پروژه نمونه‌کار"
+msgstr "Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡ Ã™â€ Ã™â€¦Ã™Ë†Ã™â€ Ã™â€¡Ã¢â‚¬Å’ÃšÂ©Ã˜Â§Ã˜Â±"
 
 msgid "Image"
-msgstr "تصویر"
+msgstr "Ã˜ÂªÃ˜ÂµÃ™Ë†Ã›Å’Ã˜Â±"
 
 msgid "Caption"
-msgstr "عنوان تصویر"
+msgstr "Ã˜Â¹Ã™â€ Ã™Ë†Ã˜Â§Ã™â€  Ã˜ÂªÃ˜ÂµÃ™Ë†Ã›Å’Ã˜Â±"
 
 msgid "Portfolio Image"
-msgstr "تصویر نمونه‌کار"
+msgstr "Ã˜ÂªÃ˜ÂµÃ™Ë†Ã›Å’Ã˜Â± Ã™â€ Ã™â€¦Ã™Ë†Ã™â€ Ã™â€¡Ã¢â‚¬Å’ÃšÂ©Ã˜Â§Ã˜Â±"
 
 msgid "Portfolio Images"
-msgstr "تصاویر نمونه‌کار"
+msgstr "Ã˜ÂªÃ˜ÂµÃ˜Â§Ã™Ë†Ã›Å’Ã˜Â± Ã™â€ Ã™â€¦Ã™Ë†Ã™â€ Ã™â€¡Ã¢â‚¬Å’ÃšÂ©Ã˜Â§Ã˜Â±"
 
 msgid "Pending"
-msgstr "در انتظار"
+msgstr "Ã˜Â¯Ã˜Â± Ã˜Â§Ã™â€ Ã˜ÂªÃ˜Â¸Ã˜Â§Ã˜Â±"
 
 msgid "In Progress"
-msgstr "در حال انجام"
+msgstr "Ã˜Â¯Ã˜Â± Ã˜Â­Ã˜Â§Ã™â€ž Ã˜Â§Ã™â€ Ã˜Â¬Ã˜Â§Ã™â€¦"
 
 msgid "Completed"
-msgstr "تکمیل‌شده"
+msgstr "Ã˜ÂªÃšÂ©Ã™â€¦Ã›Å’Ã™â€žÃ¢â‚¬Å’Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Service"
-msgstr "خدمت"
+msgstr "Ã˜Â®Ã˜Â¯Ã™â€¦Ã˜Âª"
 
 msgid "Estimated Budget"
-msgstr "بودجه تخمینی"
+msgstr "Ã˜Â¨Ã™Ë†Ã˜Â¯Ã˜Â¬Ã™â€¡ Ã˜ÂªÃ˜Â®Ã™â€¦Ã›Å’Ã™â€ Ã›Å’"
 
 msgid "Project Request"
-msgstr "درخواست پروژه"
+msgstr "Ã˜Â¯Ã˜Â±Ã˜Â®Ã™Ë†Ã˜Â§Ã˜Â³Ã˜Âª Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡"
 
 msgid "Project Requests"
-msgstr "درخواست‌های پروژه"
+msgstr "Ã˜Â¯Ã˜Â±Ã˜Â®Ã™Ë†Ã˜Â§Ã˜Â³Ã˜ÂªÃ¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡"
 
 msgid "File"
-msgstr "فایل"
+msgstr "Ã™ÂÃ˜Â§Ã›Å’Ã™â€ž"
 
 msgid "Project Attachment"
-msgstr "پیوست پروژه"
+msgstr "Ã™Â¾Ã›Å’Ã™Ë†Ã˜Â³Ã˜Âª Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡"
 
 msgid "Project Attachments"
-msgstr "پیوست‌های پروژه"
+msgstr "Ã™Â¾Ã›Å’Ã™Ë†Ã˜Â³Ã˜ÂªÃ¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã™Â¾Ã˜Â±Ã™Ë†ÃšËœÃ™â€¡"
+
+msgid "A review must target exactly one post or service."
+msgstr "Ù†Ø¸Ø± Ø¨Ø§ÛŒØ¯ Ø¯Ù‚ÛŒÙ‚Ø§Ù‹ Ø¨Ù‡ ÛŒÚ© Ù¾Ø³Øª ÛŒØ§ Ø®Ø¯Ù…Øª Ù…Ø±Ø¨ÙˆØ· Ø¨Ø§Ø´Ø¯."
+
+msgid "Reply must belong to the same target."
+msgstr "Ù¾Ø§Ø³Ø® Ø¨Ø§ÛŒØ¯ Ù…ØªØ¹Ù„Ù‚ Ø¨Ù‡ Ù‡Ù…Ø§Ù† Ù‡Ø¯Ù Ø¨Ø§Ø´Ø¯."
+
+msgid "Replies cannot be nested more than one level."
+msgstr "Ù¾Ø§Ø³Ø®â€ŒÙ‡Ø§ Ù†Ù…ÛŒâ€ŒØªÙˆØ§Ù†Ù†Ø¯ Ø¨ÛŒØ´ Ø§Ø² ÛŒÚ© Ø³Ø·Ø­ ØªÙˆâ€ŒØ¯Ø±â€ŒØªÙˆ Ø¨Ø§Ø´Ù†Ø¯."
 
 msgid "Icon Class or URL"
-msgstr "کلاس آیکون یا آدرس آن"
+msgstr "ÃšÂ©Ã™â€žÃ˜Â§Ã˜Â³ Ã˜Â¢Ã›Å’ÃšÂ©Ã™Ë†Ã™â€  Ã›Å’Ã˜Â§ Ã˜Â¢Ã˜Â¯Ã˜Â±Ã˜Â³ Ã˜Â¢Ã™â€ "
 
 msgid "Service Category"
-msgstr "دسته‌بندی خدمات"
+msgstr "Ã˜Â¯Ã˜Â³Ã˜ÂªÃ™â€¡Ã¢â‚¬Å’Ã˜Â¨Ã™â€ Ã˜Â¯Ã›Å’ Ã˜Â®Ã˜Â¯Ã™â€¦Ã˜Â§Ã˜Âª"
 
 msgid "Service Categories"
-msgstr "دسته‌بندی‌های خدمات"
+msgstr "Ã˜Â¯Ã˜Â³Ã˜ÂªÃ™â€¡Ã¢â‚¬Å’Ã˜Â¨Ã™â€ Ã˜Â¯Ã›Å’Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã˜Â®Ã˜Â¯Ã™â€¦Ã˜Â§Ã˜Âª"
 
 msgid "Short Description"
-msgstr "توضیحات کوتاه"
+msgstr "Ã˜ÂªÃ™Ë†Ã˜Â¶Ã›Å’Ã˜Â­Ã˜Â§Ã˜Âª ÃšÂ©Ã™Ë†Ã˜ÂªÃ˜Â§Ã™â€¡"
 
 msgid "Full Description"
-msgstr "توضیحات کامل"
+msgstr "Ã˜ÂªÃ™Ë†Ã˜Â¶Ã›Å’Ã˜Â­Ã˜Â§Ã˜Âª ÃšÂ©Ã˜Â§Ã™â€¦Ã™â€ž"
 
 msgid "Services"
-msgstr "خدمات"
+msgstr "Ã˜Â®Ã˜Â¯Ã™â€¦Ã˜Â§Ã˜Âª"
 
 msgid "Price"
-msgstr "قیمت"
+msgstr "Ã™â€šÃ›Å’Ã™â€¦Ã˜Âª"
 
 msgid "Features"
-msgstr "ویژگی‌ها"
+msgstr "Ã™Ë†Ã›Å’ÃšËœÃšÂ¯Ã›Å’Ã¢â‚¬Å’Ã™â€¡Ã˜Â§"
 
 msgid "Is Popular"
-msgstr "محبوب است"
+msgstr "Ã™â€¦Ã˜Â­Ã˜Â¨Ã™Ë†Ã˜Â¨ Ã˜Â§Ã˜Â³Ã˜Âª"
 
 msgid "Service Plan"
-msgstr "پلن خدمت"
+msgstr "Ã™Â¾Ã™â€žÃ™â€  Ã˜Â®Ã˜Â¯Ã™â€¦Ã˜Âª"
 
 msgid "Service Plans"
-msgstr "پلن‌های خدمات"
+msgstr "Ã™Â¾Ã™â€žÃ™â€ Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã˜Â®Ã˜Â¯Ã™â€¦Ã˜Â§Ã˜Âª"
 
 msgid "Low"
-msgstr "کم"
+msgstr "ÃšÂ©Ã™â€¦"
 
 msgid "Medium"
-msgstr "متوسط"
+msgstr "Ã™â€¦Ã˜ÂªÃ™Ë†Ã˜Â³Ã˜Â·"
 
 msgid "High"
-msgstr "زیاد"
+msgstr "Ã˜Â²Ã›Å’Ã˜Â§Ã˜Â¯"
 
 msgid "Open"
-msgstr "باز"
+msgstr "Ã˜Â¨Ã˜Â§Ã˜Â²"
 
 msgid "Pending User Reply"
-msgstr "در انتظار پاسخ کاربر"
+msgstr "Ã˜Â¯Ã˜Â± Ã˜Â§Ã™â€ Ã˜ÂªÃ˜Â¸Ã˜Â§Ã˜Â± Ã™Â¾Ã˜Â§Ã˜Â³Ã˜Â® ÃšÂ©Ã˜Â§Ã˜Â±Ã˜Â¨Ã˜Â±"
 
 msgid "Answered"
-msgstr "پاسخ داده‌شده"
+msgstr "Ã™Â¾Ã˜Â§Ã˜Â³Ã˜Â® Ã˜Â¯Ã˜Â§Ã˜Â¯Ã™â€¡Ã¢â‚¬Å’Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Resolved"
-msgstr "حل‌شده"
+msgstr "Ã˜Â­Ã™â€žÃ¢â‚¬Å’Ã˜Â´Ã˜Â¯Ã™â€¡"
 
 msgid "Closed"
-msgstr "بسته"
+msgstr "Ã˜Â¨Ã˜Â³Ã˜ÂªÃ™â€¡"
 
 msgid "Priority"
-msgstr "اولویت"
+msgstr "Ã˜Â§Ã™Ë†Ã™â€žÃ™Ë†Ã›Å’Ã˜Âª"
 
 msgid "Ticket"
-msgstr "تیکت"
+msgstr "Ã˜ÂªÃ›Å’ÃšÂ©Ã˜Âª"
 
 msgid "Tickets"
-msgstr "تیکت‌ها"
+msgstr "Ã˜ÂªÃ›Å’ÃšÂ©Ã˜ÂªÃ¢â‚¬Å’Ã™â€¡Ã˜Â§"
 
 msgid "Message"
-msgstr "پیام"
+msgstr "Ã™Â¾Ã›Å’Ã˜Â§Ã™â€¦"
 
 msgid "Attachment"
-msgstr "پیوست"
+msgstr "Ã™Â¾Ã›Å’Ã™Ë†Ã˜Â³Ã˜Âª"
 
 msgid "Ticket Message"
-msgstr "پیام تیکت"
+msgstr "Ã™Â¾Ã›Å’Ã˜Â§Ã™â€¦ Ã˜ÂªÃ›Å’ÃšÂ©Ã˜Âª"
 
 msgid "Ticket Messages"
-msgstr "پیام‌های تیکت"
+msgstr "Ã™Â¾Ã›Å’Ã˜Â§Ã™â€¦Ã¢â‚¬Å’Ã™â€¡Ã˜Â§Ã›Å’ Ã˜ÂªÃ›Å’ÃšÂ©Ã˜Âª"
+
+

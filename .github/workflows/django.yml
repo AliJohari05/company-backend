@@ -76,6 +76,9 @@ jobs:
       - name: Compile translations
         run: python manage.py compilemessages
 
+      - name: Validate translation catalogs
+        run: msgfmt --check locale/fa/LC_MESSAGES/django.po
+
       - name: Run Django system checks
         run: python manage.py check
 

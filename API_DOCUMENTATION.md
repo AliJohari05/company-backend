@@ -366,7 +366,93 @@ python manage.py move_billing_files_to_private
 
 ---
 
-## 9. Recommended Frontend Integration Example
+## 9. Reviews, Ratings & Administrator Replies
+
+Reviews are available for published blog posts and active services. A review
+must target exactly one resource: `post` or `service`. Review submission
+requires an authenticated user and a valid CSRF header for browser clients.
+
+New user reviews require administrator approval before they are visible to
+regular users. Administrator replies are published immediately.
+
+### List approved reviews
+
+```http
+GET /api/v1/reviews/?post=10
+GET /api/v1/reviews/?service=3
+```
+
+Regular users receive approved top-level reviews and their approved replies.
+Staff users can see pending reviews as well.
+
+### Create a review
+
+```http
+POST /api/v1/reviews/
+Content-Type: application/json
+X-CSRFToken: <csrf-token>
+```
+
+For a blog post:
+
+```json
+{
+  "post": 10,
+  "content": "The article was clear and useful.",
+  "rating": 5
+}
+```
+
+For a service:
+
+```json
+{
+  "service": 3,
+  "content": "The delivery quality was excellent.",
+  "rating": 5
+}
+```
+
+`rating` is optional for top-level reviews and must be between 1 and 5.
+Do not send both `post` and `service`.
+
+### Administrator reply
+
+Only staff/admin users may call this endpoint:
+
+```http
+POST /api/v1/reviews/{review_id}/reply/
+Content-Type: application/json
+X-CSRFToken: <csrf-token>
+```
+
+Request body:
+
+```json
+{
+  "content": "Thank you for your valuable feedback."
+}
+```
+
+The backend automatically determines the original target and parent review,
+associates the reply with the authenticated administrator, and sets
+`is_approved=true`. Replies cannot be nested beyond one level.
+
+### Review detail, update and delete
+
+```http
+GET    /api/v1/reviews/{review_id}/
+PATCH  /api/v1/reviews/{review_id}/
+DELETE /api/v1/reviews/{review_id}/
+```
+
+Regular users may update or delete their own reviews. Updating a user review
+returns it to moderation (`is_approved=false`). Staff users can moderate any
+review. Replies do not support ratings.
+
+---
+
+## 10. Recommended Frontend Integration Example
 
 ```javascript
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;

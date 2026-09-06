@@ -40,6 +40,7 @@ urlpatterns = [
     path("api/v1/blog/", include("apps.blog.urls", namespace="blog")),
     path("api/v1/billing/", include("apps.billing.urls", namespace="billing")),
     path("api/v1/portfolio/", include("apps.portfolio.urls", namespace="portfolio")),
+    path("api/v1/reviews/", include("apps.reviews.urls")),
 ]
 
 if settings.API_DOCS_ENABLED:

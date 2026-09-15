@@ -21,7 +21,7 @@ from rest_framework.views import APIView
 from apps.accounts.authentication import CookieJWTAuthentication
 from apps.core.pagination import InvoiceListPagination
 
-from .models import Contract, Invoice, InvoiceItem, Transaction
+from .models import Contract, Invoice, InvoiceItem, Transaction, refresh_expired_statuses
 from .serializers import (
     ContractSerializer,
     InvoiceItemSerializer,
@@ -117,6 +117,7 @@ class InvoiceListCreateView(generics.ListCreateAPIView):
         if getattr(self, "swagger_fake_view", False):
             return Invoice.objects.none()
 
+        refresh_expired_statuses()
         user = self.request.user
         if user.is_staff:
             queryset = Invoice.objects.all()
@@ -143,6 +144,7 @@ class InvoiceDetailView(generics.RetrieveUpdateDestroyAPIView):
         if getattr(self, "swagger_fake_view", False):
             return Invoice.objects.none()
 
+        refresh_expired_statuses()
         user = self.request.user
         if user.is_staff:
             queryset = Invoice.objects.all()
@@ -190,11 +192,13 @@ class TransactionListCreateView(generics.ListCreateAPIView):
         if getattr(self, "swagger_fake_view", False):
             return Transaction.objects.none()
 
+        refresh_expired_statuses()
         user = self.request.user
         if user.is_staff:
             return Transaction.objects.all().select_related("invoice", "user")
         return Transaction.objects.filter(user=user).select_related("invoice", "user")
 
+    @db_transaction.atomic
     def perform_create(self, serializer):
         invoice = serializer.validated_data.get("invoice")
         if not self.request.user.is_staff and invoice.user != self.request.user:
@@ -206,7 +210,8 @@ class TransactionListCreateView(generics.ListCreateAPIView):
                 }
             )
         try:
-            serializer.save(user=invoice.user)
+            locked_invoice = Invoice.objects.select_for_update().get(pk=invoice.pk)
+            serializer.save(invoice=locked_invoice, user=locked_invoice.user)
         except DjangoValidationError as error:
             raise exceptions.ValidationError(
                 django_validation_details(error)
@@ -230,6 +235,7 @@ class TransactionDetailView(generics.RetrieveUpdateDestroyAPIView):
         if getattr(self, "swagger_fake_view", False):
             return Transaction.objects.none()
 
+        refresh_expired_statuses()
         user = self.request.user
         if user.is_staff:
             return Transaction.objects.all().select_related("invoice", "user")
@@ -319,6 +325,7 @@ class ContractListCreateView(generics.ListCreateAPIView):
         if getattr(self, "swagger_fake_view", False):
             return Contract.objects.none()
 
+        refresh_expired_statuses()
         user = self.request.user
         if user.is_staff:
             return Contract.objects.all().select_related("user")
@@ -338,6 +345,7 @@ class ContractDetailView(generics.RetrieveUpdateDestroyAPIView):
         if getattr(self, "swagger_fake_view", False):
             return Contract.objects.none()
 
+        refresh_expired_statuses()
         user = self.request.user
         if user.is_staff:
             return Contract.objects.all().select_related("user")

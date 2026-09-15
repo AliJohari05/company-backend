@@ -48,3 +48,20 @@ class ReviewAPITests(APITestCase):
         response = self.client.post(self.url("review-reply", pk=review.pk), {"content": "No"}, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_admin_change_page_renders_for_existing_review(self):
+        admin_user = User.objects.create_superuser(
+            email="review-admin@example.com",
+            password="StrongPass1!",
+        )
+        review = Review.objects.create(
+            user=self.client_user,
+            service=self.service,
+            content="Admin page test",
+        )
+        self.client.force_authenticate(user=None)
+        self.client.force_login(admin_user)
+        response = self.client.get(
+            reverse("admin:reviews_review_change", args=(review.pk,))
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertContains(response, "Reply as administrator")

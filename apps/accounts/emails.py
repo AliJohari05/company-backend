@@ -2,11 +2,13 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from django.utils.translation import gettext as _
 
-from .tokens import email_verification_token
+from .tokens import email_verification_token, password_reset_token
 
 
 def build_verification_url(user):
@@ -48,3 +50,19 @@ def send_verification_email(user):
     )
     email.attach_alternative(html_body, "text/html")
     return email.send()
+
+
+def build_password_reset_url(user):
+    uid = urlsafe_base64_encode(force_bytes(user.pk))
+    token = password_reset_token.make_token(user)
+    return f"{settings.FRONTEND_URL}/reset-password?{urlencode({'uid': uid, 'token': token})}"
+
+
+def send_password_reset_email(user):
+    """Send a reset link without exposing whether an account exists to callers."""
+    reset_url = build_password_reset_url(user)
+    subject = _("Reset your password")
+    body = _(
+        "Use the link below to reset your password. This link expires soon:\n{url}"
+    ).format(url=reset_url)
+    return send_mail(subject, body, settings.DEFAULT_FROM_EMAIL, [user.email])

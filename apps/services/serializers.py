@@ -8,7 +8,7 @@ class ServicePlanSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ServicePlan
-        fields = ("id", "title", "price", "features", "is_popular")
+        fields = ("id", "title", "title_en", "price", "features", "features_en", "is_popular")
 
 
 class ServiceListSerializer(serializers.ModelSerializer):
@@ -25,8 +25,10 @@ class ServiceListSerializer(serializers.ModelSerializer):
             "category_name",
             "category_slug",
             "title",
+            "title_en",
             "slug",
             "short_description",
+            "short_description_en",
             "icon",
             "is_active",
         )
@@ -47,9 +49,12 @@ class ServiceDetailSerializer(serializers.ModelSerializer):
             "category_name",
             "category_slug",
             "title",
+            "title_en",
             "slug",
             "short_description",
+            "short_description_en",
             "full_description",
+            "full_description_en",
             "icon",
             "is_active",
             "plans",
@@ -63,4 +68,4 @@ class ServiceCategorySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ServiceCategory
-        fields = ("id", "title", "slug", "description", "icon", "services")
+        fields = ("id", "title", "title_en", "slug", "description", "description_en", "icon", "services")

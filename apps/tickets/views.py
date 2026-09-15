@@ -144,9 +144,11 @@ class TicketMessageCreateView(generics.CreateAPIView):
         serializer.save(ticket=ticket, user=user)
 
         if user.is_staff or user.is_superuser:
-            ticket.status = TicketStatus.ANSWERED
-        else:
+            # A staff reply hands the conversation back to the client.
             ticket.status = TicketStatus.PENDING
+        else:
+            # A client reply needs a staff response.
+            ticket.status = TicketStatus.ANSWERED
 
         ticket.save(update_fields=["status", "updated_at"])
 

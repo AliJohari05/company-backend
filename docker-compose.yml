@@ -27,5 +27,21 @@ services:
     depends_on:
       - db
 
+  locust:
+    profiles: ["loadtest"]
+    build:
+      context: .
+      dockerfile: Dockerfile.locust
+    container_name: agency_locust
+    command: >-
+      locust -f /app/loadtests/locustfile.py
+      --host http://web:8000
+      --web-host 0.0.0.0
+      --web-port 8089
+    ports:
+      - "8089:8089"
+    depends_on:
+      - web
+
 volumes:
   postgres_data:

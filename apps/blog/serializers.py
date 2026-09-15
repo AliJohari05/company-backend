@@ -6,14 +6,14 @@ from .models import Category, Post, Tag
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ["id", "name", "slug", "description", "created_at", "updated_at"]
+        fields = ["id", "name", "name_en", "slug", "description", "description_en", "created_at", "updated_at"]
         read_only_fields = ["id", "slug", "created_at", "updated_at"]
 
 
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
-        fields = ["id", "name", "slug", "created_at", "updated_at"]
+        fields = ["id", "name", "name_en", "slug", "created_at", "updated_at"]
         read_only_fields = ["id", "slug", "created_at", "updated_at"]
 
 
@@ -28,10 +28,12 @@ class PostListSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "title_en",
             "slug",
             "excerpt",
             "featured_image",
             "meta_description",
+            "meta_description_en",
             "author",
             "category",
             "tags",
@@ -53,10 +55,13 @@ class PostDetailSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "title",
+            "title_en",
             "slug",
             "content",
+            "content_en",
             "featured_image",
             "meta_description",
+            "meta_description_en",
             "author",
             "category",
             "tags",

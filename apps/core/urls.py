@@ -13,4 +13,5 @@ urlpatterns = [
     path("settings/", views.SiteSettingDetailView.as_view(), name="site-settings"),
     path("social-links/", views.SocialLinkListView.as_view(), name="social-links-list"),
     path("faqs/", views.FAQListView.as_view(), name="faq-list"),
+    path("contact/", views.ContactMessageCreateView.as_view(), name="contact-create"),
 ]

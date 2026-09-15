@@ -18,10 +18,12 @@ class SiteSetting(TimeStampedModel):
     site_name = models.CharField(
         max_length=150, default="Agency Name", verbose_name=_("Site Name")
     )
+    site_name_en = models.CharField(max_length=150, blank=True, verbose_name=_("Site Name (English)"))
     site_logo = models.ImageField(
         upload_to="core/logos/", null=True, blank=True, verbose_name=_("Site Logo")
     )
     about_us = models.TextField(blank=True, null=True, verbose_name=_("About Us Text"))
+    about_us_en = models.TextField(blank=True, verbose_name=_("About Us Text (English)"))
 
     email = models.EmailField(blank=True, null=True, verbose_name=_("Contact Email"))
     phone_number = models.CharField(
@@ -30,9 +32,11 @@ class SiteSetting(TimeStampedModel):
     address = models.TextField(
         blank=True, null=True, verbose_name=_("Physical Address")
     )
+    address_en = models.TextField(blank=True, verbose_name=_("Physical Address (English)"))
     working_hours = models.CharField(
         max_length=150, blank=True, null=True, verbose_name=_("Working Hours")
     )
+    working_hours_en = models.CharField(max_length=150, blank=True, verbose_name=_("Working Hours (English)"))
 
     class Meta:
         verbose_name = _("Site Setting")
@@ -78,6 +82,8 @@ class FAQ(TimeStampedModel):
 
     question = models.CharField(max_length=255, verbose_name=_("Question"))
     answer = models.TextField(verbose_name=_("Answer"))
+    question_en = models.CharField(max_length=255, blank=True, verbose_name=_("Question (English)"))
+    answer_en = models.TextField(blank=True, verbose_name=_("Answer (English)"))
     order = models.PositiveIntegerField(default=0, verbose_name=_("Display Order"))
     is_active = models.BooleanField(default=True, verbose_name=_("Is Active"))
 
@@ -88,3 +94,22 @@ class FAQ(TimeStampedModel):
 
     def __str__(self):
         return self.question
+
+
+class ContactMessage(TimeStampedModel):
+    """Messages from the public contact form; no account is required."""
+
+    name = models.CharField(max_length=150, verbose_name=_("Name"))
+    email = models.EmailField(verbose_name=_("Email Address"))
+    phone_number = models.CharField(max_length=30, blank=True, verbose_name=_("Phone Number"))
+    subject = models.CharField(max_length=255, verbose_name=_("Subject"))
+    message = models.TextField(max_length=5000, verbose_name=_("Message"))
+    is_read = models.BooleanField(default=False, verbose_name=_("Is Read"))
+
+    class Meta:
+        ordering = ["-created_at"]
+        verbose_name = _("Contact Message")
+        verbose_name_plural = _("Contact Messages")
+
+    def __str__(self):
+        return f"{self.subject} - {self.email}"

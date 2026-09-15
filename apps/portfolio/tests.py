@@ -44,6 +44,7 @@ class PortfolioAPITests(APITestCase):
             cover_image=ContentFile(b"cover", name="cover.jpg"),
             summary="Business automation platform",
             description="A complete Django and React project.",
+            video_url="https://video.example.com/demo",
             is_featured=True,
         )
         self.item.technologies.add(self.technology)
@@ -82,3 +83,4 @@ class PortfolioAPITests(APITestCase):
         )
         self.assertEqual(len(response.data["images"]), 1)
         self.assertEqual(response.data["images"][0]["caption"], "Dashboard")
+        self.assertEqual(response.data["video_url"], "https://video.example.com/demo")

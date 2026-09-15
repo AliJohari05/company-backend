@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+COPY requirements-loadtest.txt /app/
+RUN python -m pip install --no-cache-dir --upgrade pip && \
+    python -m pip install --no-cache-dir -r requirements-loadtest.txt
+
+COPY loadtests /app/loadtests
+
+EXPOSE 8089
+
+CMD ["locust", "-f", "/app/loadtests/locustfile.py", "--host", "http://web:8000", "--web-host", "0.0.0.0"]

@@ -5,7 +5,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from .models import FAQ, SiteSetting, SocialLink
+from .models import ContactMessage, FAQ, SiteSetting, SocialLink
 
 
 class CoreAPITests(APITestCase):
@@ -56,6 +56,20 @@ class CoreAPITests(APITestCase):
             result_ids,
             [self.first_faq.pk, self.second_faq.pk],
         )
+
+    def test_public_contact_form_creates_message_without_authentication(self):
+        response = self.client.post(
+            reverse("core:contact-create"),
+            {
+                "name": "Visitor",
+                "email": "visitor@example.com",
+                "subject": "Project inquiry",
+                "message": "I would like a proposal.",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ContactMessage.objects.count(), 1)
 
     def test_health_check_reports_database_readiness(self):
         response = self.client.get(reverse("health-check"))

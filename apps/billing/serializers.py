@@ -214,11 +214,14 @@ class TransactionSerializer(serializers.ModelSerializer):
                 }
             )
 
-        approved_total = invoice.transactions.filter(
-            status=Transaction.StatusChoices.APPROVED
+        committed_total = invoice.transactions.filter(
+            status__in=(
+                Transaction.StatusChoices.PENDING,
+                Transaction.StatusChoices.APPROVED,
+            )
         ).aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
         remaining_amount = max(
-            invoice.total_amount - approved_total,
+            invoice.total_amount - committed_total,
             Decimal("0.00"),
         )
         if amount is not None and amount > remaining_amount:
@@ -307,7 +310,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "items",
             "transactions",
         )
-        read_only_fields = ("id", "status", "total_amount", "created_at", "updated_at")
+        read_only_fields = ("id", "invoice_number", "status", "total_amount", "created_at", "updated_at")
 
     @extend_schema_field(serializers.DecimalField(max_digits=12, decimal_places=2))
     def get_approved_amount(self, obj):

@@ -8,7 +8,7 @@ class AdminReplySerializer(serializers.Serializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    user_name = serializers.StringRelatedField(source="user", read_only=True)
+    user_name = serializers.SerializerMethodField()
     replies = serializers.SerializerMethodField()
 
     class Meta:
@@ -19,6 +19,14 @@ class ReviewSerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.ListField(child=serializers.DictField()))
     def get_replies(self, obj):
         return ReviewSerializer(obj.replies.filter(is_approved=True), many=True, context=self.context).data
+
+    @extend_schema_field(serializers.CharField())
+    def get_user_name(self, obj):
+        """Never expose a reviewer's email address on public endpoints."""
+        request = self.context.get("request")
+        if request and request.user.is_staff:
+            return obj.user.email
+        return obj.user.get_full_name().strip() or "Customer"
 
     def validate(self, attrs):
         parent = attrs.get("parent", getattr(self.instance, "parent", None))

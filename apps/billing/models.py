@@ -1,4 +1,5 @@
 from decimal import Decimal
+from uuid import uuid4
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -6,6 +7,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import DecimalField, ExpressionWrapper, F, Sum
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 from apps.projects.models import ProjectRequest
 from apps.services.models import Service
@@ -28,7 +30,7 @@ class Invoice(models.Model):
         CANCELED = "CANCELED", _("Canceled")
 
     invoice_number = models.CharField(
-        max_length=50, unique=True, verbose_name=_("Invoice Number")
+        max_length=50, unique=True, blank=True, verbose_name=_("Invoice Number")
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -81,6 +83,14 @@ class Invoice(models.Model):
     def __str__(self):
         return f"Invoice #{self.invoice_number} - {self.user.email}"
 
+    def save(self, *args, **kwargs):
+        if not self.invoice_number:
+            # Random suffix avoids race conditions while retaining a readable date.
+            self.invoice_number = (
+                f"INV-{timezone.localdate():%Y%m%d}-{uuid4().hex[:10].upper()}"
+            )
+        return super().save(*args, **kwargs)
+
     def recalculate_total(self):
         """Persist the invoice total derived from all line items."""
         line_total = ExpressionWrapper(
@@ -103,6 +113,8 @@ class Invoice(models.Model):
 
         if self.total_amount > Decimal("0.00") and approved_amount >= self.total_amount:
             new_status = self.StatusChoices.PAID
+        elif self.due_date < timezone.localdate():
+            new_status = self.StatusChoices.OVERDUE
         elif approved_amount > Decimal("0.00"):
             new_status = self.StatusChoices.PARTIALLY_PAID
         elif self.status == self.StatusChoices.OVERDUE:
@@ -314,17 +326,17 @@ class Transaction(models.Model):
                     }
                 )
 
-            approved_total = self.invoice.transactions.filter(
-                status=self.StatusChoices.APPROVED
+            committed_total = self.invoice.transactions.filter(
+                status__in=(self.StatusChoices.PENDING, self.StatusChoices.APPROVED)
             ).aggregate(total=Sum("amount"))["total"] or Decimal("0.00")
             if (
                 self.amount is not None
-                and self.amount > self.invoice.total_amount - approved_total
+                and self.amount > self.invoice.total_amount - committed_total
             ):
                 raise ValidationError(
                     {
                         "amount": _(
-                            "Transaction amount exceeds the invoice remaining amount."
+                            "Receipt amount exceeds the invoice remaining amount."
                         )
                     }
                 )
@@ -405,6 +417,19 @@ class Contract(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.user.email}"
+
+
+def refresh_expired_statuses():
+    """Synchronize date-based billing statuses for requests and scheduled jobs."""
+    today = timezone.localdate()
+    Invoice.objects.filter(
+        due_date__lt=today,
+        status__in=(Invoice.StatusChoices.UNPAID, Invoice.StatusChoices.PARTIALLY_PAID),
+    ).update(status=Invoice.StatusChoices.OVERDUE)
+    Contract.objects.filter(
+        end_date__lt=today,
+        status=Contract.StatusChoices.ACTIVE,
+    ).update(status=Contract.StatusChoices.EXPIRED)
 
 
 # Module-level alias required by drf-spectacular's enum resolver.

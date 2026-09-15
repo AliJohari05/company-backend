@@ -144,3 +144,28 @@ class ResendVerificationSerializer(serializers.Serializer):
 
     def validate_email(self, value):
         return User.objects.normalize_email(value).strip().lower()
+
+
+class PasswordResetRequestSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def validate_email(self, value):
+        return User.objects.normalize_email(value).strip().lower()
+
+
+class PasswordResetConfirmSerializer(serializers.Serializer):
+    uid = serializers.CharField()
+    token = serializers.CharField()
+    new_password = serializers.CharField(write_only=True)
+    new_password_confirm = serializers.CharField(write_only=True)
+
+    def validate_new_password(self, value):
+        # Keep the reset flow subject to exactly the same password policy.
+        return ChangePasswordSerializer().validate_new_password(value)
+
+    def validate(self, attrs):
+        if attrs["new_password"] != attrs["new_password_confirm"]:
+            raise serializers.ValidationError(
+                {"new_password_confirm": _("Passwords do not match.")}
+            )
+        return attrs

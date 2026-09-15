@@ -24,18 +24,20 @@ from .auth_serializers import (
     CookieTokenRefreshSerializer,
 )
 from .authentication import enforce_csrf
-from .emails import send_verification_email
+from .emails import send_password_reset_email, send_verification_email
 from .serializers import (
     ChangePasswordSerializer,
     CSRFTokenResponseSerializer,
     DetailResponseSerializer,
     RegisterResponseSerializer,
     RegisterSerializer,
+    PasswordResetConfirmSerializer,
+    PasswordResetRequestSerializer,
     ResendVerificationSerializer,
     UserProfileSerializer,
     VerifyEmailSerializer,
 )
-from .tokens import email_verification_token
+from .tokens import email_verification_token, password_reset_token
 
 User = get_user_model()
 
@@ -254,6 +256,57 @@ class ResendVerificationEmailView(generics.GenericAPIView):
                 )
             },
             status=status.HTTP_200_OK,
+        )
+
+
+class PasswordResetRequestView(generics.GenericAPIView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = PasswordResetRequestSerializer
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "password_reset"
+
+    def post(self, request):
+        enforce_csrf(request)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = User.objects.filter(
+            email__iexact=serializer.validated_data["email"],
+            is_active=True,
+            is_email_verified=True,
+        ).first()
+        if user is not None:
+            transaction.on_commit(partial(send_password_reset_email, user), robust=True)
+        return Response(
+            {"detail": _("If an eligible account exists, a reset email has been sent.")}
+        )
+
+
+class PasswordResetConfirmView(generics.GenericAPIView):
+    permission_classes = (permissions.AllowAny,)
+    serializer_class = PasswordResetConfirmSerializer
+
+    def post(self, request):
+        enforce_csrf(request)
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        try:
+            user_id = force_str(urlsafe_base64_decode(serializer.validated_data["uid"]))
+            user = User.objects.get(pk=user_id)
+        except (User.DoesNotExist, TypeError, ValueError, OverflowError):
+            return self._invalid_token_response()
+
+        if not password_reset_token.check_token(user, serializer.validated_data["token"]):
+            return self._invalid_token_response()
+
+        user.set_password(serializer.validated_data["new_password"])
+        user.save(update_fields=("password", "updated_at"))
+        return Response({"detail": _("Password reset successfully.")})
+
+    @staticmethod
+    def _invalid_token_response():
+        return Response(
+            {"detail": _("The password reset link is invalid or has expired.")},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 

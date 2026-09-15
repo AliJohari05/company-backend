@@ -14,7 +14,7 @@ from .files import (
     private_file_response,
 )
 from .models import FAQ, SiteSetting, SocialLink
-from .serializers import FAQSerializer, SiteSettingSerializer, SocialLinkSerializer
+from .serializers import ContactMessageSerializer, FAQSerializer, SiteSettingSerializer, SocialLinkSerializer
 
 
 def health_check(request):
@@ -99,4 +99,11 @@ class FAQListView(generics.ListAPIView):
 
     queryset = FAQ.objects.filter(is_active=True)
     serializer_class = FAQSerializer
+    permission_classes = [permissions.AllowAny]
+
+
+class ContactMessageCreateView(generics.CreateAPIView):
+    """Public contact endpoint, intentionally available before login."""
+
+    serializer_class = ContactMessageSerializer
     permission_classes = [permissions.AllowAny]

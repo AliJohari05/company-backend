@@ -6,8 +6,10 @@ from apps.core.models import TimeStampedModel
 
 class ServiceCategory(TimeStampedModel):
     title = models.CharField(_("Title"), max_length=250)
+    title_en = models.CharField(_("Title (English)"), max_length=250, blank=True)
     slug = models.SlugField(_("Slug"), unique=True, allow_unicode=True)
     description = models.TextField(_("Description"), blank=True, null=True)
+    description_en = models.TextField(_("Description (English)"), blank=True)
     icon = models.CharField(
         _("Icon Class or URL"), max_length=100, blank=True, null=True
     )
@@ -30,9 +32,12 @@ class Service(TimeStampedModel):
         verbose_name=_("Category"),
     )
     title = models.CharField(_("Title"), max_length=250)
+    title_en = models.CharField(_("Title (English)"), max_length=250, blank=True)
     slug = models.SlugField(_("Slug"), unique=True, allow_unicode=True)
     short_description = models.TextField(_("Short Description"), blank=True, null=True)
+    short_description_en = models.TextField(_("Short Description (English)"), blank=True)
     full_description = models.TextField(_("Full Description"), blank=True, null=True)
+    full_description_en = models.TextField(_("Full Description (English)"), blank=True)
     icon = models.CharField(
         _("Icon Class or URL"), max_length=100, blank=True, null=True
     )
@@ -55,8 +60,10 @@ class ServicePlan(TimeStampedModel):
         verbose_name=_("Service"),
     )
     title = models.CharField(_("Title"), max_length=250)
+    title_en = models.CharField(_("Title (English)"), max_length=250, blank=True)
     price = models.DecimalField(_("Price"), max_digits=12, decimal_places=2)
     features = models.JSONField(_("Features"), default=list, blank=True)
+    features_en = models.JSONField(_("Features (English)"), default=list, blank=True)
     is_popular = models.BooleanField(_("Is Popular"), default=False)
 
     class Meta:

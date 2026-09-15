@@ -158,6 +158,42 @@ class BillingAPITests(APITestCase):
             status.HTTP_400_BAD_REQUEST,
         )
 
+        self.authenticate(self.client_user)
+        first_pending = self.client.post(
+            url,
+            {"invoice": self.invoice.pk, "amount": "500.00", "reference_code": "TRACK-004"},
+            format="json",
+        )
+        self.assertEqual(first_pending.status_code, status.HTTP_201_CREATED)
+        over_committed = self.client.post(
+            url,
+            {"invoice": self.invoice.pk, "amount": "200.00", "reference_code": "TRACK-005"},
+            format="json",
+        )
+        self.assertEqual(over_committed.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invoice_number_is_generated_and_dates_refresh_statuses(self):
+        generated = Invoice.objects.create(
+            user=self.client_user,
+            due_date=date.today() - timedelta(days=1),
+        )
+        self.assertTrue(generated.invoice_number.startswith("INV-"))
+
+        contract = Contract.objects.create(
+            user=self.client_user,
+            title="Expired contract",
+            file=ContentFile(b"%PDF-1.4", name="expired.pdf"),
+            start_date=date.today() - timedelta(days=30),
+            end_date=date.today() - timedelta(days=1),
+        )
+        self.authenticate(self.client_user)
+        self.client.get(reverse("billing:invoice-list-create"))
+        self.client.get(reverse("billing:contract-list-create"))
+        generated.refresh_from_db()
+        contract.refresh_from_db()
+        self.assertEqual(generated.status, Invoice.StatusChoices.OVERDUE)
+        self.assertEqual(contract.status, Contract.StatusChoices.EXPIRED)
+
     def test_approval_updates_invoice_and_locks_items(self):
         payment = Transaction.objects.create(
             invoice=self.invoice,

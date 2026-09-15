@@ -7,8 +7,10 @@ from apps.core.models import TimeStampedModel
 
 class Category(TimeStampedModel):
     name = models.CharField(_("Name"), max_length=100)
+    name_en = models.CharField(_("Name (English)"), max_length=100, blank=True)
     slug = models.SlugField(_("Slug"), max_length=100, unique=True, allow_unicode=True)
     description = models.TextField(_("Description"), blank=True, null=True)
+    description_en = models.TextField(_("Description (English)"), blank=True)
     pagination_class = None
 
     class Meta:
@@ -27,6 +29,7 @@ class Category(TimeStampedModel):
 
 class Tag(TimeStampedModel):
     name = models.CharField(_("Name"), max_length=100)
+    name_en = models.CharField(_("Name (English)"), max_length=100, blank=True)
     slug = models.SlugField(_("Slug"), max_length=100, unique=True, allow_unicode=True)
     pagination_class = None
 
@@ -52,14 +55,17 @@ class Post(TimeStampedModel):
         verbose_name=_("Author"),
     )
     title = models.CharField(_("Title"), max_length=250)
+    title_en = models.CharField(_("Title (English)"), max_length=250, blank=True)
     slug = models.SlugField(_("Slug"), max_length=250, unique=True, allow_unicode=True)
     content = models.TextField(_("Content"))
+    content_en = models.TextField(_("Content (English)"), blank=True)
     featured_image = models.ImageField(
         _("Featured Image"), upload_to="blog/featured_images/", blank=True, null=True
     )
     meta_description = models.CharField(
         _("Meta Description"), max_length=160, blank=True, null=True
     )
+    meta_description_en = models.CharField(_("Meta Description (English)"), max_length=160, blank=True)
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,

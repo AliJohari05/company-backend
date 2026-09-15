@@ -147,7 +147,7 @@ class TicketAPITests(APITestCase):
         self.assertEqual(staff_message.status_code, status.HTTP_201_CREATED)
         self.assertIn("id", staff_message.data)
         ticket = Ticket.objects.get(pk=ticket_id)
-        self.assertEqual(ticket.status, TicketStatus.ANSWERED)
+        self.assertEqual(ticket.status, TicketStatus.PENDING)
 
         self.authenticate(self.client_user)
         client_message = self.client.post(
@@ -157,7 +157,7 @@ class TicketAPITests(APITestCase):
         )
         self.assertEqual(client_message.status_code, status.HTTP_201_CREATED)
         ticket.refresh_from_db()
-        self.assertEqual(ticket.status, TicketStatus.PENDING)
+        self.assertEqual(ticket.status, TicketStatus.ANSWERED)
 
         self.authenticate(self.staff)
         resolve_response = self.client.post(

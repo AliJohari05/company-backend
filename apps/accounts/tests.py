@@ -25,6 +25,7 @@ class AccountsAPITests(APITestCase):
             email="account-user@example.com",
             password="OldStrong1!",
             first_name="Initial",
+            is_email_verified=True,
         )
         response = self.client.get(reverse("csrf_token"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -131,6 +132,31 @@ class AccountsAPITests(APITestCase):
             response.status_code,
             status.HTTP_401_UNAUTHORIZED,
         )
+        self.assertEqual(response.data["code"], "email_not_verified")
+
+    def test_password_reset_request_and_confirmation(self):
+        with self.captureOnCommitCallbacks(execute=True):
+            request_response = self.client.post(
+                reverse("password_reset"),
+                {"email": self.user.email},
+                format="json",
+            )
+        self.assertEqual(request_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(mail.outbox), 1)
+        query = parse_qs(urlparse(mail.outbox[0].body.splitlines()[-1]).query)
+        reset_response = self.client.post(
+            reverse("password_reset_confirm"),
+            {
+                "uid": query["uid"][0],
+                "token": query["token"][0],
+                "new_password": "ResetStrong1!",
+                "new_password_confirm": "ResetStrong1!",
+            },
+            format="json",
+        )
+        self.assertEqual(reset_response.status_code, status.HTTP_200_OK)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password("ResetStrong1!"))
 
     def test_verify_rejects_invalid_and_expired_tokens(self):
         user = User.objects.create_user(

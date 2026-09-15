@@ -6,19 +6,19 @@ from .models import Category, PortfolioImage, PortfolioItem, Technology
 class PortfolioCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ("id", "title", "slug")
+        fields = ("id", "title", "title_en", "slug")
 
 
 class TechnologySerializer(serializers.ModelSerializer):
     class Meta:
         model = Technology
-        fields = ("id", "name", "icon")
+        fields = ("id", "name", "name_en", "icon")
 
 
 class PortfolioImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PortfolioImage
-        fields = ("id", "image", "caption")
+        fields = ("id", "image", "caption", "caption_en")
 
 
 class PortfolioItemListSerializer(serializers.ModelSerializer):
@@ -32,11 +32,14 @@ class PortfolioItemListSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "title",
+            "title_en",
             "slug",
             "category",
             "technologies",
             "cover_image",
             "summary",
+            "summary_en",
+            "video_url",
             "github_url",
             "live_demo_url",
             "is_featured",
@@ -55,12 +58,16 @@ class PortfolioItemDetailSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "title",
+            "title_en",
             "slug",
             "category",
             "technologies",
             "cover_image",
             "summary",
+            "summary_en",
             "description",
+            "description_en",
+            "video_url",
             "github_url",
             "live_demo_url",
             "client_name",

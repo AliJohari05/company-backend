@@ -177,7 +177,18 @@ class BillingAPITests(APITestCase):
             user=self.client_user,
             due_date=date.today() - timedelta(days=1),
         )
-        self.assertTrue(generated.invoice_number.startswith("INV-"))
+        self.assertRegex(generated.invoice_number, r"^INV-\d{4}-\d{6}$")
+        year = date.today().year
+        Invoice.objects.create(
+            invoice_number=f"INV-{year}-000010",
+            user=self.client_user,
+            due_date=date.today(),
+        )
+        after_existing = Invoice.objects.create(
+            user=self.client_user,
+            due_date=date.today(),
+        )
+        self.assertEqual(after_existing.invoice_number, f"INV-{year}-000011")
 
         contract = Contract.objects.create(
             user=self.client_user,

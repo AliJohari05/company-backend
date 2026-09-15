@@ -1,10 +1,8 @@
 from decimal import Decimal
-from uuid import uuid4
-
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-from django.db import models
+from django.db import IntegrityError, models, transaction
 from django.db.models import DecimalField, ExpressionWrapper, F, Sum
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
@@ -85,10 +83,32 @@ class Invoice(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.invoice_number:
-            # Random suffix avoids race conditions while retaining a readable date.
-            self.invoice_number = (
-                f"INV-{timezone.localdate():%Y%m%d}-{uuid4().hex[:10].upper()}"
-            )
+            year = timezone.localdate().year
+            with transaction.atomic():
+                try:
+                    with transaction.atomic():
+                        sequence, _ = InvoiceSequence.objects.select_for_update().get_or_create(
+                            year=year,
+                            defaults={"last_value": 0},
+                        )
+                except IntegrityError:
+                    # A concurrent first invoice for a year created the row.
+                    sequence = InvoiceSequence.objects.select_for_update().get(year=year)
+
+                prefix = f"INV-{year}-"
+                existing_numbers = Invoice.objects.filter(
+                    invoice_number__startswith=prefix
+                ).exclude(pk=self.pk).values_list("invoice_number", flat=True)
+                existing_last_values = (
+                    int(number.removeprefix(prefix))
+                    for number in existing_numbers
+                    if number.removeprefix(prefix).isdigit()
+                )
+                sequence.last_value = max([sequence.last_value, *existing_last_values])
+                sequence.last_value += 1
+                sequence.save(update_fields=["last_value"])
+                self.invoice_number = f"INV-{year}-{sequence.last_value:06d}"
+                return super().save(*args, **kwargs)
         return super().save(*args, **kwargs)
 
     def recalculate_total(self):
@@ -417,6 +437,13 @@ class Contract(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.user.email}"
+
+
+class InvoiceSequence(models.Model):
+    """Database-backed yearly sequence for human-readable invoice numbers."""
+
+    year = models.PositiveIntegerField(unique=True)
+    last_value = models.PositiveIntegerField(default=0)
 
 
 def refresh_expired_statuses():

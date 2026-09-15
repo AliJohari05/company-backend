@@ -2,6 +2,7 @@ from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from .models import ContactMessage, FAQ, SiteSetting, SocialLink
+from .localization import LocalizedContentSerializerMixin
 
 
 class SocialLinkSerializer(serializers.ModelSerializer):
@@ -10,13 +11,15 @@ class SocialLinkSerializer(serializers.ModelSerializer):
         fields = ("id", "title", "url", "icon")
 
 
-class FAQSerializer(serializers.ModelSerializer):
+class FAQSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("question", "answer")
     class Meta:
         model = FAQ
         fields = ("id", "question", "answer", "question_en", "answer_en", "order")
 
 
-class SiteSettingSerializer(serializers.ModelSerializer):
+class SiteSettingSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("site_name", "about_us", "address", "working_hours")
     social_links = serializers.SerializerMethodField()
 
     class Meta:
@@ -43,7 +46,23 @@ class SiteSettingSerializer(serializers.ModelSerializer):
 
 
 class ContactMessageSerializer(serializers.ModelSerializer):
+    website = serializers.CharField(
+        write_only=True,
+        required=False,
+        allow_blank=True,
+        trim_whitespace=True,
+    )
+
     class Meta:
         model = ContactMessage
-        fields = ("id", "name", "email", "phone_number", "subject", "message", "created_at")
+        fields = ("id", "name", "email", "phone_number", "subject", "message", "website", "created_at")
         read_only_fields = ("id", "created_at")
+
+    def validate_website(self, value):
+        if value:
+            raise serializers.ValidationError("Invalid form submission.")
+        return value
+
+    def create(self, validated_data):
+        validated_data.pop("website", None)
+        return super().create(validated_data)

@@ -4,10 +4,12 @@ from django.db import connection
 from django.http import JsonResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework import exceptions, generics, permissions
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 
 from apps.accounts.authentication import CookieJWTAuthentication
+from apps.accounts.authentication import enforce_csrf
 
 from .files import (
     FileDownloadContentNegotiation,
@@ -107,3 +109,9 @@ class ContactMessageCreateView(generics.CreateAPIView):
 
     serializer_class = ContactMessageSerializer
     permission_classes = [permissions.AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "contact"
+
+    def create(self, request, *args, **kwargs):
+        enforce_csrf(request)
+        return super().create(request, *args, **kwargs)

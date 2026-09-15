@@ -48,6 +48,24 @@ services:
     networks:
       - backend
 
+  scheduler:
+    build:
+      context: .
+    restart: unless-stopped
+    env_file:
+      - ${STAGING_ENV_FILE:-.env.staging}
+    depends_on:
+      web:
+        condition: service_healthy
+    command:
+      - /bin/sh
+      - -c
+      - >-
+        while true; do python manage.py refresh_billing_statuses;
+        sleep 86400; done
+    networks:
+      - backend
+
   proxy:
     image: caddy:2-alpine
     restart: unless-stopped

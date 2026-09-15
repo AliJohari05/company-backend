@@ -143,7 +143,11 @@ class AccountsAPITests(APITestCase):
             )
         self.assertEqual(request_response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(mail.outbox), 1)
-        query = parse_qs(urlparse(mail.outbox[0].body.splitlines()[-1]).query)
+        self.assertEqual(len(mail.outbox[0].alternatives), 1)
+        reset_url = next(
+            line for line in mail.outbox[0].body.splitlines() if "reset-password?" in line
+        )
+        query = parse_qs(urlparse(reset_url).query)
         reset_response = self.client.post(
             reverse("password_reset_confirm"),
             {

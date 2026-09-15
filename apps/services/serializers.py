@@ -1,9 +1,12 @@
 from rest_framework import serializers
 
+from apps.core.localization import LocalizedContentSerializerMixin
+
 from .models import Service, ServiceCategory, ServicePlan
 
 
-class ServicePlanSerializer(serializers.ModelSerializer):
+class ServicePlanSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("title", "features")
     """Serializer for pricing plans within a specific service."""
 
     class Meta:
@@ -11,7 +14,8 @@ class ServicePlanSerializer(serializers.ModelSerializer):
         fields = ("id", "title", "title_en", "price", "features", "features_en", "is_popular")
 
 
-class ServiceListSerializer(serializers.ModelSerializer):
+class ServiceListSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("title", "short_description")
     """Compact serializer for service listings and category lists."""
 
     category_name = serializers.CharField(source="category.title", read_only=True)
@@ -34,7 +38,8 @@ class ServiceListSerializer(serializers.ModelSerializer):
         )
 
 
-class ServiceDetailSerializer(serializers.ModelSerializer):
+class ServiceDetailSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("title", "short_description", "full_description")
     """Full detail serializer for a single service including nested plans."""
 
     plans = ServicePlanSerializer(many=True, read_only=True)
@@ -61,7 +66,8 @@ class ServiceDetailSerializer(serializers.ModelSerializer):
         )
 
 
-class ServiceCategorySerializer(serializers.ModelSerializer):
+class ServiceCategorySerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("title", "description")
     """Serializer for categories along with their nested services."""
 
     services = ServiceListSerializer(many=True, read_only=True)

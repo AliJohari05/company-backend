@@ -208,6 +208,7 @@ REST_FRAMEWORK = {
         "email_verification": "20/hour",
         "verification_resend": "3/hour",
         "password_reset": "5/hour",
+        "contact": "5/hour",
     },
 }
 

@@ -1,27 +1,33 @@
 from rest_framework import serializers
 
+from apps.core.localization import LocalizedContentSerializerMixin
+
 from .models import Category, PortfolioImage, PortfolioItem, Technology
 
 
-class PortfolioCategorySerializer(serializers.ModelSerializer):
+class PortfolioCategorySerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("title",)
     class Meta:
         model = Category
         fields = ("id", "title", "title_en", "slug")
 
 
-class TechnologySerializer(serializers.ModelSerializer):
+class TechnologySerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("name",)
     class Meta:
         model = Technology
         fields = ("id", "name", "name_en", "icon")
 
 
-class PortfolioImageSerializer(serializers.ModelSerializer):
+class PortfolioImageSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("caption",)
     class Meta:
         model = PortfolioImage
         fields = ("id", "image", "caption", "caption_en")
 
 
-class PortfolioItemListSerializer(serializers.ModelSerializer):
+class PortfolioItemListSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("title", "summary")
     """Lightweight serializer for listing portfolio items on main pages."""
 
     category = PortfolioCategorySerializer(read_only=True)
@@ -46,7 +52,8 @@ class PortfolioItemListSerializer(serializers.ModelSerializer):
         )
 
 
-class PortfolioItemDetailSerializer(serializers.ModelSerializer):
+class PortfolioItemDetailSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("title", "summary", "description")
     """Detailed serializer including gallery images for full single project view."""
 
     category = PortfolioCategorySerializer(read_only=True)

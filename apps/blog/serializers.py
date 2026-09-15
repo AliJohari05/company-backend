@@ -1,23 +1,28 @@
 from rest_framework import serializers
 
+from apps.core.localization import LocalizedContentSerializerMixin
+
 from .models import Category, Post, Tag
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("name", "description")
     class Meta:
         model = Category
         fields = ["id", "name", "name_en", "slug", "description", "description_en", "created_at", "updated_at"]
         read_only_fields = ["id", "slug", "created_at", "updated_at"]
 
 
-class TagSerializer(serializers.ModelSerializer):
+class TagSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("name",)
     class Meta:
         model = Tag
         fields = ["id", "name", "name_en", "slug", "created_at", "updated_at"]
         read_only_fields = ["id", "slug", "created_at", "updated_at"]
 
 
-class PostListSerializer(serializers.ModelSerializer):
+class PostListSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("title", "meta_description")
     author = serializers.StringRelatedField()
     category = serializers.StringRelatedField()
     tags = serializers.StringRelatedField(many=True)
@@ -45,7 +50,8 @@ class PostListSerializer(serializers.ModelSerializer):
         read_only_fields = ["id", "slug", "author", "created_at", "updated_at"]
 
 
-class PostDetailSerializer(serializers.ModelSerializer):
+class PostDetailSerializer(LocalizedContentSerializerMixin, serializers.ModelSerializer):
+    localized_fields = ("title", "content", "meta_description")
     author = serializers.StringRelatedField(read_only=True)
     category_detail = CategorySerializer(source="category", read_only=True)
     tags_detail = TagSerializer(source="tags", many=True, read_only=True)

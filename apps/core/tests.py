@@ -22,6 +22,8 @@ class CoreAPITests(APITestCase):
         self.second_faq = FAQ.objects.create(
             question="Second question?",
             answer="Second answer.",
+            question_en="Second question in English?",
+            answer_en="Second answer in English.",
             order=2,
         )
         self.first_faq = FAQ.objects.create(
@@ -57,6 +59,16 @@ class CoreAPITests(APITestCase):
             [self.first_faq.pk, self.second_faq.pk],
         )
 
+        english_response = self.client.get(
+            reverse("core:faq-list"),
+            HTTP_ACCEPT_LANGUAGE="en",
+        )
+        self.assertEqual(
+            english_response.data["results"][1]["question"],
+            "Second question in English?",
+        )
+        self.assertNotIn("question_en", english_response.data["results"][1])
+
     def test_public_contact_form_creates_message_without_authentication(self):
         response = self.client.post(
             reverse("core:contact-create"),
@@ -70,6 +82,19 @@ class CoreAPITests(APITestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(ContactMessage.objects.count(), 1)
+
+        spam_response = self.client.post(
+            reverse("core:contact-create"),
+            {
+                "name": "Bot",
+                "email": "bot@example.com",
+                "subject": "Spam",
+                "message": "Spam",
+                "website": "https://spam.example.com",
+            },
+            format="json",
+        )
+        self.assertEqual(spam_response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_health_check_reports_database_readiness(self):
         response = self.client.get(reverse("health-check"))

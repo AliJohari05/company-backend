@@ -1,7 +1,8 @@
 # CtrlOps Staging Deployment
 
-This guide deploys the Django API with PostgreSQL, Gunicorn, and Caddy. Caddy
-obtains and renews HTTPS certificates automatically.
+This guide deploys the Django API with PostgreSQL, Redis, Celery, Gunicorn,
+and Caddy. Caddy obtains and renews HTTPS certificates automatically, so do
+not add Nginx unless a separate infrastructure requirement specifically needs it.
 
 ## 1. Code quality checks
 
@@ -49,6 +50,7 @@ Replace every placeholder in `.env.staging`, particularly:
 - `CORS_ALLOWED_ORIGINS`
 - `CSRF_TRUSTED_ORIGINS`
 - `POSTGRES_PASSWORD`
+- `REDIS_PASSWORD`
 - all SMTP values
 
 Keep `CORS_ALLOW_ALL_ORIGINS=False` and `DEBUG=False`.
@@ -89,11 +91,16 @@ docker compose \
   up -d
 ```
 
-The web entrypoint runs these idempotent deployment tasks before Gunicorn:
+The one-shot `migrate` service runs these deployment tasks before the web,
+worker, and beat services start:
 
 1. `migrate --noinput`
 2. `compilemessages`
 3. `collectstatic --noinput`
+
+Redis is not exposed on a host port: it is only reachable by the Docker
+services. Celery Beat must remain a single replica; running multiple beat
+instances can dispatch a periodic task more than once.
 
 If the staging database/media were copied from an older deployment where
 project or ticket attachments were public, migrate those files once:
@@ -121,7 +128,7 @@ docker compose \
 docker compose \
   --env-file .env.staging \
   -f docker-compose.staging.yml \
-  logs -f web proxy
+  logs -f web worker beat redis proxy
 ```
 
 The readiness endpoint is:
@@ -196,4 +203,6 @@ docker compose \
 ```
 
 After every update, verify `/health/`, Swagger schema generation, login,
-email verification, private downloads, and one database write operation.
+email verification, password-reset delivery, private downloads, and one
+database write operation. Confirm `worker` and `beat` are running with
+`docker compose ... ps`; the daily billing-status task runs at 00:05 UTC.

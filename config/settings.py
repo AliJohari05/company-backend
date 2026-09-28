@@ -1,7 +1,9 @@
 import os
 from datetime import timedelta
 from pathlib import Path
+from urllib.parse import quote
 
+from celery.schedules import crontab
 from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -17,6 +19,20 @@ def env_bool(name, default=False):
 def env_list(name, default=""):
     value = os.environ.get(name, default)
     return [item.strip() for item in value.split(",") if item.strip()]
+
+
+def redis_url(database):
+    configured_url = os.environ.get("REDIS_URL", "").strip()
+    if configured_url:
+        return configured_url.rsplit("/", 1)[0] + f"/{database}"
+
+    password = os.environ.get("REDIS_PASSWORD", "")
+    if not password:
+        return ""
+
+    host = os.environ.get("REDIS_HOST", "redis")
+    port = os.environ.get("REDIS_PORT", "6379")
+    return f"redis://:{quote(password, safe='')}@{host}:{port}/{database}"
 
 
 DEBUG = env_bool("DEBUG", True)
@@ -88,7 +104,7 @@ INSTALLED_APPS = [
     "apps.blog",
     "apps.billing",
       "apps.portfolio",
-      "apps.reviews",
+    "apps.reviews",
 ]
 
 MIDDLEWARE = [
@@ -166,6 +182,51 @@ LOCALE_PATHS = [
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
+
+REDIS_BROKER_URL = redis_url(0)
+REDIS_CACHE_URL = redis_url(1)
+if not DEBUG and not REDIS_BROKER_URL:
+    raise ImproperlyConfigured(
+        "Set REDIS_URL or REDIS_PASSWORD before running with DEBUG=False."
+    )
+
+CACHES = {
+    "default": (
+        {
+            "BACKEND": "django.core.cache.backends.redis.RedisCache",
+            "LOCATION": REDIS_CACHE_URL,
+            "OPTIONS": {"socket_connect_timeout": 5, "socket_timeout": 5},
+        }
+        if REDIS_CACHE_URL
+        else {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "development-cache",
+        }
+    )
+}
+
+CELERY_BROKER_URL = REDIS_BROKER_URL or "memory://"
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_TASK_DEFAULT_QUEUE = "default"
+CELERY_TASK_ROUTES = {
+    "apps.accounts.tasks.*": {"queue": "emails"},
+    "apps.billing.tasks.*": {"queue": "maintenance"},
+}
+CELERY_TASK_IGNORE_RESULT = True
+CELERY_TASK_SERIALIZER = "json"
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_TASK_SOFT_TIME_LIMIT = 60
+CELERY_TASK_TIME_LIMIT = 90
+CELERY_TASK_ALWAYS_EAGER = env_bool("CELERY_TASK_ALWAYS_EAGER", False)
+CELERY_TASK_EAGER_PROPAGATES = env_bool("CELERY_TASK_EAGER_PROPAGATES", False)
+CELERY_BEAT_SCHEDULE = {
+    "refresh-billing-statuses-daily": {
+        "task": "apps.billing.tasks.refresh_billing_statuses",
+        "schedule": crontab(hour=0, minute=5),
+    },
+}
 
 STATIC_URL = "/static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"

@@ -5,10 +5,10 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.middleware.csrf import get_token
 from django.utils import timezone
+from django.utils.decorators import method_decorator
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_decode
 from django.utils.translation import gettext_lazy as _
-from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import generics, permissions, status
@@ -24,19 +24,19 @@ from .auth_serializers import (
     CookieTokenRefreshSerializer,
 )
 from .authentication import enforce_csrf
-from .emails import send_password_reset_email, send_verification_email
 from .serializers import (
     ChangePasswordSerializer,
     CSRFTokenResponseSerializer,
     DetailResponseSerializer,
-    RegisterResponseSerializer,
-    RegisterSerializer,
     PasswordResetConfirmSerializer,
     PasswordResetRequestSerializer,
+    RegisterResponseSerializer,
+    RegisterSerializer,
     ResendVerificationSerializer,
     UserProfileSerializer,
     VerifyEmailSerializer,
 )
+from .tasks import send_password_reset_email_task, send_verification_email_task
 from .tokens import email_verification_token, password_reset_token
 
 User = get_user_model()
@@ -141,7 +141,7 @@ class RegisterView(generics.CreateAPIView):
         with transaction.atomic():
             user = serializer.save()
             transaction.on_commit(
-                partial(send_verification_email, user),
+                partial(send_verification_email_task.delay, user.pk),
                 robust=True,
             )
 
@@ -244,7 +244,7 @@ class ResendVerificationEmailView(generics.GenericAPIView):
         ).first()
         if user is not None:
             transaction.on_commit(
-                partial(send_verification_email, user),
+                partial(send_verification_email_task.delay, user.pk),
                 robust=True,
             )
 
@@ -275,7 +275,10 @@ class PasswordResetRequestView(generics.GenericAPIView):
             is_email_verified=True,
         ).first()
         if user is not None:
-            transaction.on_commit(partial(send_password_reset_email, user), robust=True)
+            transaction.on_commit(
+                partial(send_password_reset_email_task.delay, user.pk),
+                robust=True,
+            )
         return Response(
             {"detail": _("If an eligible account exists, a reset email has been sent.")}
         )

@@ -17,6 +17,8 @@ from .tokens import email_verification_token
 @override_settings(
     EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend",
     FRONTEND_URL="https://frontend.example.com",
+    CELERY_TASK_ALWAYS_EAGER=True,
+    CELERY_TASK_EAGER_PROPAGATES=True,
 )
 class AccountsAPITests(APITestCase):
     def setUp(self):

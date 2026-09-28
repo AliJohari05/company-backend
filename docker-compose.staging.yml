@@ -25,7 +25,9 @@ services:
     env_file:
       - ${STAGING_ENV_FILE:-.env.staging}
     depends_on:
-      db:
+      migrate:
+        condition: service_completed_successfully
+      redis:
         condition: service_healthy
     volumes:
       - staging_static_data:/app/staticfiles
@@ -48,21 +50,85 @@ services:
     networks:
       - backend
 
-  scheduler:
+  redis:
+    image: redis:7.4-alpine
+    restart: unless-stopped
+    env_file:
+      - ${STAGING_ENV_FILE:-.env.staging}
+    command:
+      - /bin/sh
+      - -c
+      - >-
+        exec redis-server --appendonly yes --requirepass "$$REDIS_PASSWORD"
+        --maxmemory 256mb --maxmemory-policy noeviction
+    volumes:
+      - staging_redis_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=$$REDIS_PASSWORD redis-cli ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+  migrate:
+    build:
+      context: .
+    restart: "no"
+    env_file:
+      - ${STAGING_ENV_FILE:-.env.staging}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command:
+      - /bin/sh
+      - -c
+      - >-
+        python manage.py migrate --noinput && python manage.py compilemessages &&
+        python manage.py collectstatic --noinput
+    volumes:
+      - staging_static_data:/app/staticfiles
+      - staging_media_data:/app/media
+      - staging_private_media_data:/app/private_media
+    networks:
+      - backend
+
+  worker:
     build:
       context: .
     restart: unless-stopped
     env_file:
       - ${STAGING_ENV_FILE:-.env.staging}
     depends_on:
-      web:
+      migrate:
+        condition: service_completed_successfully
+      redis:
         condition: service_healthy
     command:
       - /bin/sh
       - -c
       - >-
-        while true; do python manage.py refresh_billing_statuses;
-        sleep 86400; done
+        celery -A config worker --loglevel=INFO
+        --concurrency="$${CELERY_WORKER_CONCURRENCY:-2}"
+    networks:
+      - backend
+
+  beat:
+    build:
+      context: .
+    restart: unless-stopped
+    env_file:
+      - ${STAGING_ENV_FILE:-.env.staging}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    command: celery -A config beat --loglevel=INFO --schedule=/var/run/celery/celerybeat-schedule
+    volumes:
+      - staging_celery_beat_data:/var/run/celery
     networks:
       - backend
 
@@ -91,6 +157,8 @@ volumes:
   staging_static_data:
   staging_media_data:
   staging_private_media_data:
+  staging_redis_data:
+  staging_celery_beat_data:
   staging_caddy_data:
   staging_caddy_config:
 
